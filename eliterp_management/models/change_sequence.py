@@ -96,14 +96,9 @@ class ChangeSequence(models.Model):
             # update account_invoice set number = null;
             # Colocar códigos invoice.sale, invoice.purchase
             if table == 'account.invoice':
-                month = register.date_invoice[5:7]
-                new_name = new_name[0:9] + month + new_name[11:]
-                register.update({'%s' % self.field_change.name: new_name})
                 for pay in register.lines_pay_order:  # Soló las qué son de una factura actualizamos el origen
-                    if pay.invoice_id:
-                        pay.update({'origin': new_name})
-                if register.move_id:
-                    register.move_id.update({'name': new_name})
+                    if pay.invoice_ids:
+                        pay.update({'origin': ', '.join(str(i.number) for i in pay.invoice_ids)})
             # Pagos, Cobros
             if table == 'account.voucher':
                 if self.voucher_type == 'sale':
