@@ -39,7 +39,7 @@ class ChangeSequence(models.Model):
                                                      order=order_by)
                 else:
                     records = self.env[table].search(
-                        [('voucher_type', '=', 'purchase'), ('type_egress', '=', self.type_egress)],
+                        [('voucher_type', '=', 'purchase'), ('type_egress', 'in', ['bank', 'transfer'])],
                         order=order_by)
         for register in records:
             new_name = self.env['ir.sequence'].next_by_code(self.sequence_id.code)  # Nueva secuencia
@@ -115,8 +115,6 @@ class ChangeSequence(models.Model):
                         new_name = "CEG-MQEFC-2018-" + new_name
                     elif self.type_egress == 'credit_card':
                         new_name = "CEG-MQTAR-2018-" + new_name
-                    elif self.type_egress == 'bank':
-                        new_name = "CEG-MQ-" + register.bank_id.exit_code + "-2018-" + register.check_number
                     else:
                         new_name = "CE-MQ-" + register.bank_id.exit_code + "-2018-" + register.bank_id.transfer_sequence_id.next_by_id()
                     register.update({'%s' % self.field_change.name: new_name})
