@@ -323,8 +323,6 @@ class AccountVoucher(models.Model):
         elif self.type_egress == 'credit_card':
             sequence = self.env['ir.sequence'].next_by_code('account.voucher.purchase.credit.card')
             move_name = string + "TAR-" + year + "-" + sequence
-        elif self.type_egress == 'bank':
-            move_name = string + code + "-" + year + "-" + self.check_number
         else:
             move_name = string + code + "-" + year + "-" + self.bank_id.transfer_sequence_id.next_by_id()
         return move_name
