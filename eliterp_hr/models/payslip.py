@@ -72,6 +72,8 @@ class PayslipInput3(models.Model):
                                   help="The contract for which applied this input")
     account_id = fields.Many2one('account.account', string="Cuenta contable",
                                  domain=[('account_type', '=', 'movement')])
+    employee_id = fields.Many2one('hr.employee', related='payslip_id.employee_id', store=True)
+    date_from = fields.Date('hr.employee', related='payslip_id.date_from', store=True)
     total = fields.Float('Total')
 
 
@@ -211,7 +213,7 @@ class Payslip(models.Model):
         if not employee.struct_id:
             return
         self.struct_id = employee.struct_id
-        self.number_absences = self._get_number_absences(employee, date_from, date_to) # Días de faltas
+        self.number_absences = self._get_number_absences(employee, date_from, date_to)  # Días de faltas
         if not self.check_extra_hours:
             self.extra_hours = employee._get_additional_hours_period(date_from, date_to)
 
@@ -239,10 +241,13 @@ class Payslip(models.Model):
         if self.worked_days > 30:
             raise ValidationError(_('No puede haber más de 30 días trabajados en período.'))
 
-    worked_days = fields.Integer(string="Días trabajados", track_visibility='onchange', default=30, required=True, readonly=True, states={'draft': [('readonly', False)]})
-    number_absences = fields.Integer(string="Nº de ausencias", default=0, readonly=True, states={'draft': [('readonly', False)]})
+    worked_days = fields.Integer(string="Días trabajados", track_visibility='onchange', default=30, required=True,
+                                 readonly=True, states={'draft': [('readonly', False)]})
+    number_absences = fields.Integer(string="Nº de ausencias", default=0, readonly=True,
+                                     states={'draft': [('readonly', False)]})
     extra_hours = fields.Float('Horas extras ($)',
-                               track_visibility='onchange', readonly=True, states={'draft': [('readonly', False)]})  # TODO: MAEQ, hasta igualar en día a día
+                               track_visibility='onchange', readonly=True,
+                               states={'draft': [('readonly', False)]})  # TODO: MAEQ, hasta igualar en día a día
     # Egresos
     input_line_ids_2 = fields.One2many('eliterp.payslip.input.2', 'payslip_id', string='Egresos rol',
                                        readonly=True, states={'draft': [('readonly', False)]})

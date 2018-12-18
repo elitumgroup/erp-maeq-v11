@@ -83,6 +83,9 @@
                 <xpath expr="//field[@name='amount_untaxed']" position="attributes">
                     <attribute name="string">Subtotal</attribute>
                 </xpath>
+                <xpath expr="//field[@name='outstanding_credits_debits_widget']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
             </field>
         </record>
         <!--Vistas del menú Facturas de proveedor-->

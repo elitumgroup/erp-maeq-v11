@@ -95,7 +95,7 @@
                                 <field name="gender"/>
                                 <field name="education_level"/>
                             </group>
-                            <group string="Datos laborales" col="4">
+                            <group string="Datos laborales" col="4" groups="hr_payroll.group_hr_payroll_manager">
                                 <field name="department_id"/>
                                 <field name="admission_date"/>
                                 <field name="parent_id" string="Jefe inmediato"/>
