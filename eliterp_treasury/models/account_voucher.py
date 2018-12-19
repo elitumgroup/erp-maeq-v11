@@ -145,7 +145,7 @@ class VoucherCancelReason(models.TransientModel):
             check.update({'state': 'protested'})
         pay = voucher.pay_order_id
         if voucher.line_employee_id:
-            voucher.line_employee_id.update({'voucher_id': False})
+            voucher.line_employee_id.update({'voucher_id': False, 'generated': False})
         else:
             pay.update({'state': 'cancel'})
         if pay.type in ['adq', 'rc']:  # TODO: Soló para RC y ADQ, no sirve

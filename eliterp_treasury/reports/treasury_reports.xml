@@ -99,12 +99,16 @@
                                     <p t-field="doc.pay_order_id"/>
                                 </div>
                                 <div class="col-xs-3">
-                                    <strong>Monto:</strong>
-                                    <p t-esc='"%.2f" %doc.amount_cancel'/>
+                                    <strong>Origen:</strong>
+                                    <p t-field="doc.pay_order_id.origin"/>
                                 </div>
                             </div>
 
                             <div class="row">
+                                <div class="col-xs-3">
+                                    <strong>Monto:</strong>
+                                    <p t-esc="&quot;%.2f&quot; %doc.amount_cancel"/>
+                                </div>
                                 <div class="col-xs-3" t-if="doc.type_egress">
                                     <strong>Forma de pago:</strong>
                                     <p t-field="doc.type_egress"/>
@@ -117,6 +121,9 @@
                                     <strong>Fecha che./tra.:</strong>
                                     <p t-field="doc.check_date"/>
                                 </div>
+                            </div>
+
+                            <div class="row">
                                 <div class="col-xs-3" t-if="doc.check_number">
                                     <strong>No. cheque:</strong>
                                     <p t-field="doc.check_number"/>
@@ -125,9 +132,6 @@
                                     <strong>C. Transferencia:</strong>
                                     <p t-field="doc.transfer_code"/>
                                 </div>
-                            </div>
-
-                            <div class="row">
                                 <div class="col-xs-6" t-if="doc.concept">
                                     <strong>Concepto:</strong>
                                     <p t-field="doc.concept"/>
