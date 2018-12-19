@@ -130,8 +130,7 @@ class PaymentRequest(models.Model):
         ('to_approve', 'Por aprobar'),
         ('approve', 'Aprobado'),
         ('deny', 'Negado'), ], string='Estado RPG', default='draft', copy=False, track_visibility='always')
-    comments = fields.Text('Notas y comentarios', readonly=True, states={'draft': [('readonly', False)]},
-                           track_visibility='onchange')
+    comments = fields.Text('Notas y comentarios', track_visibility='onchange')
     document = fields.Binary('Documento', attachment=True, copy=False)
     document_name = fields.Char('Nombre de documento', copy=False)
     lines_request = fields.One2many('eliterp.payment.request.lines', 'payment_request_id',
