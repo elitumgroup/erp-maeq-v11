@@ -92,8 +92,7 @@ class PurchaseOrder(models.Model):
             'state': 'approve',
         })
 
-    reference = fields.Char('Referencia', track_visibility='onchange', readonly=True,
-                            states={'draft': [('readonly', False)]})
+    reference = fields.Char('Referencia', track_visibility='onchange')
     attach_order = fields.Binary('Adjuntar documento', attachment=True, track_visibility='onchange')
     # CM
     invoice_status = fields.Selection([
