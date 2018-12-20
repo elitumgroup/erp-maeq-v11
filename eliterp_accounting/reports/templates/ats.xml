@@ -42,7 +42,16 @@
             </pagoExterior>{% if detalle_compras['pay'] %}
             <formasDePago>
                 <formaPago>{{ detalle_compras['formaPago'] }}</formaPago>
-            </formasDePago>{% endif %}{% if detalle_compras['retencion'] %}
+            </formasDePago>{% endif %}
+            <air>
+                {% for detalle_air in detalle_compras['detalleAir'] %}
+                <detalleAir>
+                    <codRetAir>{{ detalle_air['codRetAir'] }}</codRetAir>
+                    <baseImpAir>{{ detalle_air['baseImpAir'] }}</baseImpAir>
+                    <porcentajeAir>{{ detalle_air['porcentajeAir'] }}</porcentajeAir>
+                    <valRetAir>{{ detalle_air['valRetAir'] }}</valRetAir>
+                </detalleAir>{% endfor %}
+            </air>{% if detalle_compras['retencion'] %}
             <estabRetencion1>{{ detalle_compras['estabRetencion1'] }}</estabRetencion1>
             <ptoEmiRetencion1>{{ detalle_compras['ptoEmiRetencion1'] }}</ptoEmiRetencion1>
             <secRetencion1>{{ detalle_compras['secRetencion1'] }}</secRetencion1>

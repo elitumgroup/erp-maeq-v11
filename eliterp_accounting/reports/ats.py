@@ -273,6 +273,10 @@ class AtsXml(models.TransientModel):
                     temp[line.tax_id.code]['porcentajeAir'] = int(line.tax_id.amount)
                     temp[line.tax_id.code]['valRetAir'] += abs(line.amount)
         for k, v in temp.items():
+            v.update({
+                'baseImpAir': "{0:.2f}".format(v['baseImpAir']),
+                'valRetAir': "{0:.2f}".format(v['valRetAir'])
+            })
             data_air.append(v)
         return data_air
 
