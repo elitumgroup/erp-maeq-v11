@@ -311,7 +311,7 @@ class AccountVoucher(models.Model):
         :param type:
         :param data:
         """
-        string = "CEG-MQ-"
+        string = "CE-MQ-"
         if self.type_egress in ['cash', 'credit_card']:
             year = self.date[:4]
         else:
