@@ -355,7 +355,7 @@ class ReplacementSmallBox(models.Model):
         """
         Liquidamos caja chica para generar asiento contable
         """
-        if self.total_vouchers > self.residual:
+        if self.total_vouchers > self.amount_allocated:
             raise ValidationError("El monto a reponer es mayor que el monto asignado a %s" % self.custodian_id.name)
         move_id = self.env['account.move'].create({'journal_id': self.journal_id.id,
                                                    'date': self.date,
