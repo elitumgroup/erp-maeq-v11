@@ -348,7 +348,8 @@ class PayslipRun(models.Model):
         """
         for line in self:
             if line.state != 'draft':
-                raise ValidationError("No podemos borrar rol diferente de borrador.")
+                if line.state != 'deny':
+                    raise ValidationError("No podemos borrar rol diferente de borrador.")
         return super(PayslipRun, self).unlink()
 
     @api.multi
