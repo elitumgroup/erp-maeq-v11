@@ -45,13 +45,11 @@
                                 groups="eliterp_treasury.eliterp_group_approve_travel_allowance_request"
                                 type="object"
                                 class="oe_highlight"/>
-                        <!--TODO: Pendiente
-                        <button name=""
+                        <button name="open_reason_deny_solicitud"
                                 states="to_approve"
                                 string="Negar"
                                 groups="eliterp_treasury.eliterp_group_deny_travel_allowance_request"
                                 type="object"/>
-                         -->
                     </header>
                     <sheet>
                         <div class="oe_title">

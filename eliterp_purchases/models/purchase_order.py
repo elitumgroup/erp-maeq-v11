@@ -93,6 +93,7 @@ class PurchaseOrder(models.Model):
         })
 
     reference = fields.Char('Referencia', track_visibility='onchange')
+    notes = fields.Text('Terms and Conditions', track_visibility='onchange')
     attach_order = fields.Binary('Adjuntar documento', attachment=True, track_visibility='onchange')
     # CM
     invoice_status = fields.Selection([

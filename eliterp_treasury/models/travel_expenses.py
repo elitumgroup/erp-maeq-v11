@@ -119,6 +119,11 @@ class TravelAllowanceRequest(models.Model):
         })
 
     @api.multi
+    def open_reason_deny_solicitud(self):
+        # TODO: Verificar luego si se abre la ventana
+        self.write({'state': 'deny'})
+
+    @api.multi
     def to_approve(self):
         """
         Solicitar aprobación
