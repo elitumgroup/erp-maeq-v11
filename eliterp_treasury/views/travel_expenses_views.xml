@@ -110,6 +110,7 @@
                       default_order='date desc'>
                     <field name="name"/>
                     <field name="date"/>
+                    <field name="beneficiary"/>
                     <field name="travel_allowance_request_id"/>
                     <field name="application_date"/>
                     <field name="amount_total"/>
