@@ -170,7 +170,7 @@
                 <button name="open_pay_orders"
                         attrs="{'invisible':['|', '|', ('type', '=', 'in_refund'), ('viaticum', '=', True), ('small_box', '=', True)]}"
                         class="oe_stat_button" icon="fa-list" type="object">
-                    <field name="pay_orders_count" widget="statinfo" string="Órdenes de pago"/>
+                    <field name="pay_orders_count" widget="statinfo" string="Pagos"/>
                 </button>
             </xpath>
             <button name="%(account.action_account_invoice_payment)d" position="after">
@@ -209,7 +209,7 @@
         <field name="arch" type="xml">
             <xpath expr="//div[@class='oe_button_box']" position="inside">
                 <button name="open_pay_orders" class="oe_stat_button" icon="fa-list" type="object">
-                    <field name="pay_orders_count" widget="statinfo" string="Órdenes de pago"/>
+                    <field name="pay_orders_count" widget="statinfo" string="Pagos"/>
                 </button>
             </xpath>
             <xpath expr="//button[@name='action_view_picking']" position="before"><!--Recibir productos-->
@@ -271,7 +271,7 @@
             <xpath expr="//sheet/div[1]" position="before">
                 <div class="oe_button_box" name="button_box">
                     <button name="open_pay_orders" class="oe_stat_button" icon="fa-list" type="object">
-                        <field name="pay_orders_count" widget="statinfo" string="Órdenes de pago"/>
+                        <field name="pay_orders_count" widget="statinfo" string="Pagos"/>
                     </button>
                 </div>
             </xpath>
@@ -359,7 +359,7 @@
             <xpath expr="//sheet/h1" position="before">
                 <div class="oe_button_box" name="button_box">
                     <button name="open_pay_orders" class="oe_stat_button" icon="fa-list" type="object">
-                        <field name="pay_orders_count" widget="statinfo" string="Órdenes de pago"/>
+                        <field name="pay_orders_count" widget="statinfo" string="Pagos"/>
                     </button>
                 </div>
             </xpath>
@@ -439,7 +439,7 @@
             <xpath expr="//sheet/div[1]" position="before">
                 <div class="oe_button_box" name="button_box">
                     <button name="open_pay_orders" class="oe_stat_button" icon="fa-list" type="object">
-                        <field name="pay_orders_count" widget="statinfo" string="Órdenes de pago"/>
+                        <field name="pay_orders_count" widget="statinfo" string="Pagos"/>
                     </button>
                 </div>
             </xpath>
@@ -476,7 +476,7 @@
             <xpath expr="//sheet/div[1]" position="before">
                 <div class="oe_button_box" name="button_box">
                     <button name="open_pay_orders" class="oe_stat_button" icon="fa-list" type="object">
-                        <field name="pay_orders_count" widget="statinfo" string="Órdenes de pago"/>
+                        <field name="pay_orders_count" widget="statinfo" string="Pagos"/>
                     </button>
                 </div>
             </xpath>
@@ -513,7 +513,7 @@
             <xpath expr="//sheet/div[1]" position="before">
                 <div class="oe_button_box" name="button_box">
                     <button name="open_pay_orders" class="oe_stat_button" icon="fa-list" type="object">
-                        <field name="pay_orders_count" widget="statinfo" string="Órdenes de pago"/>
+                        <field name="pay_orders_count" widget="statinfo" string="Pagos"/>
                     </button>
                 </div>
             </xpath>
@@ -550,7 +550,7 @@
             <xpath expr="//sheet/div[1]" position="before">
                 <div class="oe_button_box" name="button_box">
                     <button name="open_pay_orders" class="oe_stat_button" icon="fa-list" type="object">
-                        <field name="pay_orders_count" widget="statinfo" string="Órdenes de pago"/>
+                        <field name="pay_orders_count" widget="statinfo" string="Pagos"/>
                     </button>
                 </div>
             </xpath>
