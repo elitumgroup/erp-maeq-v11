@@ -21,7 +21,8 @@ class ResPartner(models.Model):
         Invoice = self.env['account.invoice']
         for partner in self:
             partner.purchase_order_count = PurchaseOrder.search_count([('partner_id', 'child_of', partner.id)])
-            invoices = Invoice.search([('partner_id', '=', partner.id), ('state', '!=', 'cancel')])
+            invoices = Invoice.search(
+                [('partner_id', '=', partner.id), ('state', '!=', 'cancel'), ('type', '=', 'in_invoice')])
             partner.supplier_invoice_count = round(float(sum(line.amount_total for line in invoices)),
                                                    2)  # Total facturado
             partner.pending_balance = round(float(sum(line.residual for line in invoices)),
@@ -42,7 +43,11 @@ class ResPartner(models.Model):
         """
         if float_is_zero(self.pending_balance, precision_rounding=3):  # Si es 0 no se lleva a la acción
             return
-        invoices = self.env['account.invoice'].search([('partner_id', '=', self.id), ('state', '=', 'open')])
+        invoices = self.env['account.invoice'].search([
+            ('partner_id', '=', self.id),
+            ('state', '=', 'open'),
+            ('type', '=', 'in_invoice')
+        ])
         invoices = invoices.filtered(lambda invoice: not invoice.reconciled)
         action = self.env.ref('purchase.act_res_partner_2_supplier_invoices')
         result = action.read()[0]
@@ -73,7 +78,7 @@ class ResPartner(models.Model):
         journal = self.env['account.journal'].search([('name', '=', 'Notas de venta')])[0].id
         for partner in self:
             if not partner.rise_category_activity_id:
-                raise ValidationError( "Proveedor no tiene configurado RISE.")
+                raise ValidationError("Proveedor no tiene configurado RISE.")
             notes = self.env['account.invoice'].search([
                 ('partner_id', '=', partner.id),
                 ('journal_id', '=', journal),
