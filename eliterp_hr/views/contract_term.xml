@@ -48,6 +48,7 @@
                             <field name="identification_id" readonly="1"/>
                             <field name="renumbering"/>
                             <field name="admission_date"/>
+                            <field name="number_hectares"/>
                         </group>
                         <group string="Texto Libre">
                             <field name="comment" nolabel="1"

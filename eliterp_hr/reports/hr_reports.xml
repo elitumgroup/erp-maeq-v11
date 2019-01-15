@@ -2028,16 +2028,34 @@
                                         <b>SEGUNDA. OBJETO DEL CONTRATO:</b>
                                         <br/>
                                         <br/>
-                                        El TRABAJADOR es operador de maquinaria agrícola, por lo cual declara tener los
-                                        conocimientos necesarios para ejecutar la labor por la que es contratado, En tal
-                                        virtud, el EMPLEADOR, contrata los servicios lícitos y personales del TRABAJADOR
-                                        para que ejecute lo que se detalla a continuación: Trinchado de terreno agrícola
-                                        asignado, en el sector y bloque especificado en la planificación mensual,
-                                        debiendo el trabajador cumplir con el trinchado de 1 hectárea por semana. Para
-                                        el cumplimiento del objeto de este contrato, el trabajador deberá entregar el
-                                        área correctamente trinchada y cumpliendo las normas establecidas, es decir,
-                                        cuidar la plantación, cuidar el sistema de riego y cuidar el equipo asignado. El
-                                        área establecida y asignada al trabajador es de 35 hectáreas.
+                                        <div t-if="not doc.number_hectares">
+                                            El TRABAJADOR es operador de maquinaria agrícola, por lo cual declara tener
+                                            los conocimientos necesarios para ejecutar la labor por la que es
+                                            contratado, En tal virtud, el EMPLEADOR, contrata los servicios lícitos y
+                                            personales del TRABAJADOR para que ejecute lo que se detalla a continuación:
+                                            Trinchado de terreno agrícola asignado, en el sector y bloque especificado
+                                            en la planificación mensual, debiendo el trabajador cumplir con el trinchado
+                                            de 1 hectárea por semana. Para el cumplimiento del objeto de este contrato,
+                                            el trabajador deberá entregar el área correctamente trinchada y cumpliendo
+                                            las normas establecidas, es decir, cuidar la plantación, cuidar el sistema
+                                            de riego y cuidar el equipo asignado. El área establecida y asignada al
+                                            trabajador es de 35 hectáreas.
+                                        </div>
+                                        <div t-if="doc.number_hectares">
+                                            El TRABAJADOR es operador de maquinaria agrícola, por lo cual declara tener
+                                            los conocimientos necesarios para ejecutar la labor por la que es
+                                            contratado, En tal virtud, el EMPLEADOR, contrata los servicios lícitos y
+                                            personales del TRABAJADOR para que ejecute lo que se detalla a continuación:
+                                            Trinchado de terreno agrícola asignado, en el sector y bloque especificado
+                                            en la planificación mensual, debiendo el trabajador cumplir con el trinchado
+                                            de 1 hectárea por semana. Para el cumplimiento del objeto de este contrato,
+                                            el trabajador deberá entregar el área correctamente trinchada y cumpliendo
+                                            las normas establecidas, es decir, cuidar la plantación, cuidar el sistema
+                                            de riego y cuidar el equipo asignado. El área establecida y asignada al
+                                            trabajador es de
+                                            <span t-field="doc.number_hectares"/>
+                                            hectáreas.
+                                        </div>
                                         <br/>
                                         <br/>
                                         <b>TERCERA.- REMUNERACIÓN Y FORMA DE PAGO:</b>
