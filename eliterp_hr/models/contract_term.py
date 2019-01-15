@@ -73,5 +73,4 @@ class ContractTerm(models.Model):
     admission_date = fields.Date(related='employee.admission_date', string='Fecha de ingreso')
     state = fields.Selection(STATES, string='Estado', default='draft')
     comment = fields.Text('Texto Libre')
-    number_hectares = fields.Char(string = 'Nº hectáreas', readonly=True,
-                                     states={'draft': [('readonly', False)]})
+    number_hectares = fields.Char(string = 'Nº hectáreas')
