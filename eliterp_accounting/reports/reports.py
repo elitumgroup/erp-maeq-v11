@@ -685,11 +685,16 @@ class StatusResultsReportPdf(models.AbstractModel):
     def _get_balance(self, account, type, doc):
         beginning_balance = self.env['eliterp.accounting.help']._get_beginning_balance(account, doc.start_date,
                                                                                        doc.end_date)
-        moves = self.env['account.move.line'].search([
+        args = [
             ('account_id', '=', account.id),
             ('date', '>=', doc.start_date),
             ('date', '<=', doc.end_date)
-        ])
+        ]
+        if doc.project_id:
+            args.append(('project_id', '=', doc.project_id.id))
+        if doc.account_analytic_id:
+            args.append(('analytic_account_id', '=', doc.account_analytic_id.id))
+        moves = self.env['account.move.line'].search(args)
         credit = 0.00
         debit = 0.00
         for line in moves:

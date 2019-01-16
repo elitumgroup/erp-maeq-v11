@@ -282,5 +282,18 @@
             </field>
         </record>
 
+        <!--Reportes-->
+        <record id="eliterp_view_form_status_results_wizard_project" model="ir.ui.view">
+            <field name="name">eliterp_view_form_status_results_wizard_project</field>
+            <field name="model">eliterp.status.results.report</field>
+            <field name="inherit_id" ref="eliterp_accounting.eliterp_view_form_status_results_wizard"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='end_date']" position="after">
+                    <field name="project_id" required="1" options="{'no_create': True, 'no_open': True}"/>
+                    <field name="account_analytic_id" options="{'no_create': True, 'no_open': True}"/>
+                </xpath>
+            </field>
+        </record>
+
     </data>
 </odoo>

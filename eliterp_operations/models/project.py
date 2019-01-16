@@ -95,6 +95,13 @@ class EliterpProject(models.Model):
     ]
 
 
+class StatusResultsReport(models.TransientModel):
+    _inherit = 'eliterp.status.results.report'
+
+    project_id = fields.Many2one('eliterp.project', 'Proyecto')
+    account_analytic_id = fields.Many2one('account.analytic.account', domain=[('usage', '=', 'movement')],
+                                          string="Centro de costo")
+
 # Manejar esto por MAEQ (Línea dónde se selecciona la cuenta)
 class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'
