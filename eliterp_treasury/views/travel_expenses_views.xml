@@ -207,9 +207,7 @@
                                             'form_view_ref': 'account.invoice_supplier_form',
                                             'default_viaticum': True
                                     }"/>
-                                    <field name="viatical_concepts_id"
-                                           attrs="{'required':[('type_voucher', '=', 'vale')], 'readonly':[('type_voucher', '!=', 'vale')]}"
-                                           options="{'no_open':True,'no_create':True}"/>
+                                    <field name="viatical_concepts_id" required="1"  options="{'no_open':True,'no_create':True}"/>
                                     <field name="date"
                                            string="Fecha de documento" required="1"/>
                                     <field name="name"
