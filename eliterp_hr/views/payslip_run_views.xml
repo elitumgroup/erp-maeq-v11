@@ -58,7 +58,7 @@
                 <button name="add_roles"
                         string="Añadir roles"
                         type="object"
-                        states="draft"
+                        states="draft,to_approve,reviewed"
                         class="oe_highlight"/>
                 <button name="to_approve"
                         string="Solicitar aprobación"
