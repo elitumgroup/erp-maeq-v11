@@ -77,9 +77,6 @@ class ReasonDenyPayslipRun(models.TransientModel):
         payslip_run_id.update({
             'state': 'deny'
         })
-        for role in payslip_run_id.lines_payslip_run:
-            if role.role_id.state == 'draft': # Soló si no están realizados los roles
-                role.role_id.write({'state': 'cancel'})
         return payslip_run_id
 
 
