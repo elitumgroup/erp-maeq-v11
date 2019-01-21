@@ -253,6 +253,7 @@ class AccountVoucher(models.Model):
                 values['purchase_order_id'] = oc.id
                 values['concept'] = 'Orden de compra %s' % oc.name
                 lines_account.append([0, 0, {
+                    'account_id': oc.partner_id.property_account_payable_id.id,
                     'amount': amount,
                     'project_id': record.project_id.id if record.project_id else False,
                     'account_analytic_id': oc.account_analytic_id.id if oc.account_analytic_id else False,
@@ -507,6 +508,33 @@ class AccountMoveLine(models.Model):
 
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
+
+    def _get_pays_purchase_order(self):
+        args = [
+            ('company_id', '=', self.company_id.id),
+            ('name', '=', self.origin)
+        ]
+        purchase_order = self.env['purchase.order'].search(args)
+        pays = []
+        for line in purchase_order.lines_pay_order.filtered(lambda x: x.state == 'paid'):
+            for move_line in line.voucher_id.move_id.line_ids.filtered(lambda x: x.account_id == self.account_id):
+                pays.append(move_line)
+        return pays
+
+    @api.multi
+    def action_invoice_open(self):
+        """
+        MM: Validamos el voucher de factura para caja chica
+        :return: object
+        """
+
+        res = super(AccountInvoice, self).action_invoice_open()
+        pays = self._get_pays_purchase_order()
+        line_move_invoice = self.move_id.line_ids.filtered(
+            lambda x: x.account_id == self.account_id)
+        for line_pay in pays:
+            (line_move_invoice + line_pay).reconcile()
+        return res
 
     @api.one
     def _get_outstanding_info_JSON(self):
