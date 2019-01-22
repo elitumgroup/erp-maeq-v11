@@ -310,6 +310,7 @@ class AccountVoucher(models.Model):
                 values['beneficiary'] = lvi.beneficiary.name
                 values['concept'] = "Liquidación de viático por: " + (lvi.comment or '/')
                 lines_account.append([0, 0, {
+                    'account_id': self.env.ref('eliterp_accounting.1_eliterp_account_2163').id,
                     'amount': amount,
                     'project_id': record.project_id.id if record.project_id else False,
                     'account_analytic_id': lvi.account_analytic_id.id if lvi.account_analytic_id else False
