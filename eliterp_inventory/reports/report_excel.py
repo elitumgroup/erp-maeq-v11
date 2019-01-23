@@ -39,7 +39,7 @@ class ProductReportXlsx(models.AbstractModel):
         products = self.env['product.template'].search(arg)
         for product in products.sorted(key=lambda r: r.categ_id.name):
             row = []
-            row.append(product.create_uid)
+            row.append(product.create_uid.name)
             row.append(self._get_type(product.type))
             row.append(product.categ_id.name)
             row.append(product.name)
