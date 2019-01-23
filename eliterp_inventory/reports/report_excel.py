@@ -39,6 +39,7 @@ class ProductReportXlsx(models.AbstractModel):
         products = self.env['product.template'].search(arg)
         for product in products.sorted(key=lambda r: r.categ_id.name):
             row = []
+            row.append(product.create_uid)
             row.append(self._get_type(product.type))
             row.append(product.categ_id.name)
             row.append(product.name)
@@ -66,19 +67,20 @@ class ProductReportXlsx(models.AbstractModel):
         # Cabeceras con filtro
         sheet.autofilter('A3:H3')
         sheet.write('A1', 'REPORTE DE PRODUCTOS', title)
-        sheet.write(2, 0, "TIPO DE PRODUCTO", bold)
-        sheet.write(2, 1, "CATEGORÍA", bold)
-        sheet.write(2, 2, "NOMBRE", bold)
-        sheet.write(2, 3, "CÓDIGO PRODUCTO", bold)
-        sheet.write(2, 4, "C. INGRESO", bold)
-        sheet.write(2, 5, "C. GASTO", bold)
-        sheet.write(2, 6, "U. MEDIDA", bold)
-        sheet.write(2, 7, "U. MEDIDA/COMPRA", bold)
-        sheet.write(2, 8, "PRECIO VENTA", bold)
-        sheet.write(2, 9, "PRECIO COMPRA", bold)
+        sheet.write(2, 0, "CREADO POR", bold)
+        sheet.write(2, 1, "TIPO DE PRODUCTO", bold)
+        sheet.write(2, 2, "CATEGORÍA", bold)
+        sheet.write(2, 3, "NOMBRE", bold)
+        sheet.write(2, 4, "CÓDIGO PRODUCTO", bold)
+        sheet.write(2, 5, "C. INGRESO", bold)
+        sheet.write(2, 6, "C. GASTO", bold)
+        sheet.write(2, 7, "U. MEDIDA", bold)
+        sheet.write(2, 8, "U. MEDIDA/COMPRA", bold)
+        sheet.write(2, 9, "PRECIO VENTA", bold)
+        sheet.write(2, 10, "PRECIO COMPRA", bold)
         row = 3
         col = 0
-        for c1, c2, c3, c4, c5, c6, c7, c8, c9, c10 in (data):
+        for c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11 in (data):
             sheet.write(row, col, c1)
             sheet.write(row, col + 1, c2)
             sheet.write(row, col + 2, c3)
@@ -87,7 +89,8 @@ class ProductReportXlsx(models.AbstractModel):
             sheet.write(row, col + 5, c6)
             sheet.write(row, col + 6, c7)
             sheet.write(row, col + 7, c8)
-            sheet.write(row, col + 8, c9, money_format)
+            sheet.write(row, col + 8, c9)
             sheet.write(row, col + 9, c10, money_format)
+            sheet.write(row, col + 10, c11, money_format)
             row += 1
 
