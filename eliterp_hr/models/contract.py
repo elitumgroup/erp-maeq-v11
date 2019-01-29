@@ -57,6 +57,12 @@ class ContractFunctions(models.Model):
     contract_id = fields.Many2one('hr.contract', 'Contrato')
 
 
+class ContractType(models.Model):
+    _inherit = 'hr.contract.type'
+
+    is_piece_contract = fields.Boolean('Es contrato destajo?', default=False)
+
+
 class Contract(models.Model):
     _inherit = 'hr.contract'
 
@@ -195,7 +201,8 @@ class Contract(models.Model):
         Activamos contrato
         """
         number = self.env['ir.sequence'].next_by_code('hr.contract')
-        new_name = "RHCI-%s-%s-%s" % (self.date_start[:4], self.date_start[5:7], str(number))  # Nuevo nombre de contrato
+        new_name = "RHCI-%s-%s-%s" % (
+        self.date_start[:4], self.date_start[5:7], str(number))  # Nuevo nombre de contrato
         return self.write({
             'name': new_name,
             'state_customize': 'active'
@@ -244,3 +251,34 @@ class Contract(models.Model):
     departure_date = fields.Date(string='Fecha de salida')
     adjunt = fields.Binary('Documento firmado', attachment=True)
     adjunt_name = fields.Char('Nombre')
+
+    @api.model
+    def _get_wage_letters(self):
+        """
+        Obtenemos el monto en letras
+        """
+        amount_text = self.env['report.eliterp_treasury.eliterp_report_check_voucher_xlsx']
+        dollar = amount_text.get_amount_to_word(self.renumbering)
+        return dollar.upper()
+
+    @api.model
+    def _get_date_formatlarge(self):
+        return self.env['eliterp.global.functions'].get_date_format_invoice1(self.date)
+
+    @api.model
+    def _get_date_formatlarges(self):
+        return self.env['eliterp.global.functions'].get_date_format_invoicesindia(self.date)
+
+    @api.multi
+    def imprimir_contract_term(self):
+        """
+        Imprimimo Termino de contrato
+        """
+        self.ensure_one()
+        return self.env.ref('eliterp_hr.eliterp_action_report_contract_term').report_action(self)
+
+    date = fields.Date('Fecha documento (Destajo)', default=fields.Date.context_today)
+    renumbering = fields.Float(string='Remuneración', help="Base para el cálculo de bonficación.")
+    comment = fields.Text('Texto Libre')
+    number_hectares = fields.Char(string='Nº hectáreas')
+    is_piece_contract = fields.Boolean('Es contrato destajo?', related='type_id.is_piece_contract', store=True)

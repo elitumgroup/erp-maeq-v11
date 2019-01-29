@@ -318,11 +318,13 @@
                   parent="eliterp_menu_hr_comunicaciones"
                   action='eliterp_action_memo'
                   sequence="1"/>
+        <!--
         <menuitem id="eliterp_menu_hr_employees_contract_term"
                   name="Contrato destajo"
                   parent="eliterp_menu_hr_comunicaciones"
                   action='eliterp_action_contract_term'
                   sequence="1"/>
+         -->
         <menuitem id="eliterp_menu_hr_employees_term_contract"
                   name="Terminación de contrato"
                   parent="eliterp_menu_hr_comunicaciones"

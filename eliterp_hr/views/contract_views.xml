@@ -76,6 +76,11 @@
                                     string="Imprimir certificado"
                                     type="object"
                                     class="oe_highlight"/>
+                            <button name="imprimir_contract_term"
+                                    string="Imprimir contrato (Destajo)"
+                                    type="object"
+                                    attrs="{'invisible':[('state_customize', '=', 'draft'), ('is_piece_contract', '!=', False)]}"
+                                    class="oe_highlight"/>
                             <field name="state_customize" widget="statusbar"
                                    modifiers="{'readonly': true}"/>
                         </header>
@@ -97,21 +102,28 @@
                                 <field name="department_id" attrs="{'readonly':[('state_customize', '!=', 'draft')]}"/>
                                 <field name="job_id" string="Cargo"
                                        attrs="{'readonly':[('state_customize', '!=', 'draft')]}"/>
-                                <field name="date_start" string="Fecha de ingreso" attrs="{'readonly':[('state_customize', '!=', 'draft')]}"/>
-                                <field name="type_id" string="Tipo de contrato" attrs="{'readonly':[('state_customize', '!=', 'draft')]}"/>
-                                <field name="resource_calendar_id" string="Jornada de trabajo" attrs="{'readonly':[('state_customize', '!=', 'draft')]}"/>
-                                <field name="departure_date" attrs="{'invisible':[('departure_date', '=', False)], 'readonly':[('state_customize', '!=', 'draft')]}"/>
+                                <field name="date_start" string="Fecha de ingreso"
+                                       attrs="{'readonly':[('state_customize', '!=', 'draft')]}"/>
+                                <field name="type_id" string="Tipo de contrato"
+                                       attrs="{'readonly':[('state_customize', '!=', 'draft')]}"/>
+                                <field name="resource_calendar_id" string="Jornada de trabajo"
+                                       attrs="{'readonly':[('state_customize', '!=', 'draft')]}"/>
+                                <field name="departure_date"
+                                       attrs="{'invisible':[('departure_date', '=', False)], 'readonly':[('state_customize', '!=', 'draft')]}"/>
                                 <field name="adjunt"
                                        filename="adjunt_name"
                                        widget="binary"/>
                                 <field name="adjunt_name" invisible="1"/>
+                                <field name="is_piece_contract" invisible="1"/>
                             </group>
                             <notebook>
                                 <page name="contract_information" string="Información">
                                     <group>
                                         <group string="Remuneraciones">
-                                            <field name="wage" string="Sueldo" attrs="{'readonly':[('state_customize', '!=', 'draft')]}"/>
-                                            <field name="struct_id" attrs="{'readonly':[('state_customize', '!=', 'draft')]}"/>
+                                            <field name="wage" string="Sueldo"
+                                                   attrs="{'readonly':[('state_customize', '!=', 'draft')]}"/>
+                                            <field name="struct_id"
+                                                   attrs="{'readonly':[('state_customize', '!=', 'draft')]}"/>
                                         </group>
                                         <group string="Duración">
                                             <field name="test_days" invisible="1"/><!--Día de prueba-->
@@ -122,7 +134,9 @@
                                                     <field name="is_trial"
                                                            attrs="{'readonly':[('state_customize', '!=', 'draft')]}"
                                                            class="oe_inline"/>
-                                                    <field name="end_trial" attrs="{'readonly':[('state_customize', '!=', 'draft')]}" class="oe_inline"/>
+                                                    <field name="end_trial"
+                                                           attrs="{'readonly':[('state_customize', '!=', 'draft')]}"
+                                                           class="oe_inline"/>
                                                 </div>
                                                 <div>
                                                     <span attrs="{'invisible':[('end_trial', '=', False)]}"
@@ -136,12 +150,18 @@
                                             />
                                             <div>
                                                 <div attrs="{'invisible':[('is_trial', '=', False)]}">
-                                                    <field name="trial_date_start" attrs="{'readonly':[('state_customize', '!=', 'draft')]}" class="oe_inline"/>
+                                                    <field name="trial_date_start"
+                                                           attrs="{'readonly':[('state_customize', '!=', 'draft')]}"
+                                                           class="oe_inline"/>
                                                     <label string="-" class="oe_inline"/>
-                                                    <field name="trial_date_end" attrs="{'readonly':[('state_customize', '!=', 'draft')]}" class="oe_inline"/>
+                                                    <field name="trial_date_end"
+                                                           attrs="{'readonly':[('state_customize', '!=', 'draft')]}"
+                                                           class="oe_inline"/>
                                                 </div>
                                                 <div attrs="{'invisible':['|', ('is_trial', '=', False), ('end_trial', '=', True)]}">
-                                                    <field name="days_for_trial" attrs="{'readonly':[('state_customize', '!=', 'draft')]}" class="oe_inline"/>
+                                                    <field name="days_for_trial"
+                                                           attrs="{'readonly':[('state_customize', '!=', 'draft')]}"
+                                                           class="oe_inline"/>
                                                     días de prueba
                                                 </div>
                                             </div>
@@ -151,6 +171,19 @@
                                     </group>
                                     <group string="Notas y comentarios">
                                         <field name="notes" nolabel="1"/>
+                                    </group>
+                                </page>
+
+                                <page name="piece_contract"
+                                      attrs="{'invisible':[('is_piece_contract', '=', False)]}"
+                                      string="Información de contrato destajo">
+                                    <group col="4">
+                                        <field name="date"/>
+                                        <field name="renumbering"/>
+                                        <field name="number_hectares"/>
+                                    </group>
+                                    <group string="Texto libre">
+                                        <field name="comment" nolabel="1"/>
                                     </group>
                                 </page>
                             </notebook>

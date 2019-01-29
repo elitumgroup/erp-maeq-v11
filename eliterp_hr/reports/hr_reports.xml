@@ -1995,11 +1995,11 @@
                                         portador de la cédula de ciudadanía Nro. 0917844805 en calidad de EMPLEADOR; y
                                         por otra parte, el señor:
                                         <strong>
-                                            <span t-field="doc.employee"/>,
+                                            <span t-field="doc.employee_id"/>,
                                         </strong>
                                         &amp;nbsp;portador de la cédula de ciudadanía Nro.
                                         <strong>
-                                            <span t-field="doc.identification_id"/>
+                                            <span t-field="doc.employee_id.identification_id"/>
                                         </strong>
                                         en calidad de TRABAJADOR. Los comparecientes son ecuatorianos, domiciliados en
                                         la
@@ -2172,7 +2172,7 @@
                                         <p>
                                             <strong>
                                                 C.I.
-                                                <span t-field="doc.identification_id"/>
+                                                <span t-field="doc.employee_id.identification_id"/>
                                             </strong>
                                         </p>
                                     </div>
@@ -2185,13 +2185,13 @@
         </template>
         <report
                 id="eliterp_action_report_contract_term"
-                model="eliterp.contract.term"
+                model="hr.contract"
                 string="Contrato destajo"
                 report_type="qweb-pdf"
                 menu="False"
                 name="eliterp_hr.eliterp_report_contract_term"
                 file="eliterp_hr.eliterp_report_contract_term"
-                print_report_name="'Contrato destajo- %s' % (object.name or '/')"
+                print_report_name="'Contrato destajo - %s' % (object.name or '/')"
                 paperformat="eliterp_management.eliterp_paperformat_a4_portrait2"
         />
 
