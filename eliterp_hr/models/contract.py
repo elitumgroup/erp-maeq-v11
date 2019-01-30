@@ -280,5 +280,5 @@ class Contract(models.Model):
     date = fields.Date('Fecha documento (Destajo)', default=fields.Date.context_today)
     renumbering = fields.Float(string='Remuneración', help="Base para el cálculo de bonficación.")
     comment = fields.Text('Texto Libre')
-    number_hectares = fields.Char(string='Nº hectáreas')
+    number_hectares = fields.Char(string='Nº hectáreas',help="Numero de hectáreas.")
     is_piece_contract = fields.Boolean('Es contrato destajo?', related='type_id.is_piece_contract', store=True)

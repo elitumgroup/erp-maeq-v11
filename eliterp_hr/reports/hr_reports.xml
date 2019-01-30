@@ -2002,8 +2002,7 @@
                                             <span t-field="doc.employee_id.identification_id"/>
                                         </strong>
                                         en calidad de TRABAJADOR. Los comparecientes son ecuatorianos, domiciliados en
-                                        la
-                                        ciudad de Guayaquil y capaces para contratar, quienes libre y voluntariamente
+                                        la ciudad de Guayaquil y capaces para contratar, quienes libre y voluntariamente
                                         convienen en celebrar este
                                         <b>CONTRATO DE TRABAJO A DESTAJO</b>
                                         con sujeción a las declaraciones y estipulaciones contenidas en las siguientes
@@ -2028,34 +2027,19 @@
                                         <b>SEGUNDA. OBJETO DEL CONTRATO:</b>
                                         <br/>
                                         <br/>
-                                        <div t-if="not doc.number_hectares">
-                                            El TRABAJADOR es operador de maquinaria agrícola, por lo cual declara tener
-                                            los conocimientos necesarios para ejecutar la labor por la que es
-                                            contratado, En tal virtud, el EMPLEADOR, contrata los servicios lícitos y
-                                            personales del TRABAJADOR para que ejecute lo que se detalla a continuación:
-                                            Trinchado de terreno agrícola asignado, en el sector y bloque especificado
-                                            en la planificación mensual, debiendo el trabajador cumplir con el trinchado
-                                            de 1 hectárea por semana. Para el cumplimiento del objeto de este contrato,
-                                            el trabajador deberá entregar el área correctamente trinchada y cumpliendo
-                                            las normas establecidas, es decir, cuidar la plantación, cuidar el sistema
-                                            de riego y cuidar el equipo asignado. El área establecida y asignada al
-                                            trabajador es de 35 hectáreas.
-                                        </div>
-                                        <div t-if="doc.number_hectares">
-                                            El TRABAJADOR es operador de maquinaria agrícola, por lo cual declara tener
-                                            los conocimientos necesarios para ejecutar la labor por la que es
-                                            contratado, En tal virtud, el EMPLEADOR, contrata los servicios lícitos y
-                                            personales del TRABAJADOR para que ejecute lo que se detalla a continuación:
-                                            Trinchado de terreno agrícola asignado, en el sector y bloque especificado
-                                            en la planificación mensual, debiendo el trabajador cumplir con el trinchado
-                                            de 1 hectárea por semana. Para el cumplimiento del objeto de este contrato,
-                                            el trabajador deberá entregar el área correctamente trinchada y cumpliendo
-                                            las normas establecidas, es decir, cuidar la plantación, cuidar el sistema
-                                            de riego y cuidar el equipo asignado. El área establecida y asignada al
-                                            trabajador es de
-                                            <span t-field="doc.number_hectares"/>
-                                            hectáreas.
-                                        </div>
+                                        El TRABAJADOR es operador de maquinaria agrícola, por lo cual declara tener
+                                        los conocimientos necesarios para ejecutar la labor por la que es
+                                        contratado, En tal virtud, el EMPLEADOR, contrata los servicios lícitos y
+                                        personales del TRABAJADOR para que ejecute lo que se detalla a continuación:
+                                        Trinchado de terreno agrícola asignado, en el sector y bloque especificado
+                                        en la planificación mensual, debiendo el trabajador cumplir con el trinchado
+                                        de 1 hectárea por semana. Para el cumplimiento del objeto de este contrato,
+                                        el trabajador deberá entregar el área correctamente trinchada y cumpliendo
+                                        las normas establecidas, es decir, cuidar la plantación, cuidar el sistema
+                                        de riego y cuidar el equipo asignado. El área establecida y asignada al
+                                        trabajador es de
+                                        <span t-field="doc.number_hectares"/>
+                                        hectáreas.
                                         <br/>
                                         <br/>
                                         <b>TERCERA.- REMUNERACIÓN Y FORMA DE PAGO:</b>
@@ -2076,11 +2060,8 @@
                                         entrega de la labor señalada en la cláusula segunda del presente contrato. A la
                                         terminación de dicha labor, automáticamente fenecerá este contrato de trabajo y
                                         se extinguirá el vínculo laboral entre las partes, sin necesidad de trámite
-                                        alguno.
-                                        <br/>
-                                        <br/>
-                                        Además, este contrato podrá terminar por las causales establecidas en los
-                                        artículos 169, 172 y 173 del Código del Trabajo.
+                                        alguno. Además, este contrato podrá terminar por las causales establecidas en
+                                        los artículos 169, 172 y 173 del Código del Trabajo.
                                         <br/>
                                         <br/>
                                         <b>QUINTA.- HORARIO DE TRABAJO:</b>
@@ -2095,21 +2076,36 @@
                                         <b>SEXTA.- LUGAR DE TRABAJO:</b>
                                         <br/>
                                         <br/>
-                                        Las labores indicadas en el objeto de este contrato, se las ejecutará en
-                                        <span t-field="doc.comment"/>
+                                        Las labores indicadas en el objeto de este contrato, se las ejecutará en las
+                                        diferentes haciendas que el empleador indique en las diferentes provincias del
+                                        Ecuador para el cumplimiento cabal de las funciones a él encomendadas.
 
                                         <p style="page-break-before:always;">
                                             <b>SÉPTIMA.- OBLIGACIONES DE LOS TRABAJADORES Y EMPLEADORES:</b>
                                             <br/>
                                             <br/>
                                             En lo que respecta a las obligaciones, derecho y prohibiciones del empleador
-                                            y
-                                            trabajador, estos se sujetan estrictamente a lo dispuesto  en el Código del
-                                            Trabajo en su Capítulo IV de las obligaciones del empleador y del
-                                            trabajador, a
-                                            más de las estipuladas en este contrato, salvando las excepciones
-                                            determinadas
-                                            para los contratos a destajo.
+                                            y trabajador, estos se sujetan estrictamente a lo dispuesto  en el Código
+                                            del Trabajo en su Capítulo IV de las obligaciones del empleador y del
+                                            trabajador, a más de las estipuladas en este contrato, salvando las
+                                            excepciones determinadas para los contratos a destajo.
+                                            <br/>
+                                            <br/>
+                                            Además el trabajador se compromete a:
+                                            <br/>
+                                            <br/>
+                                            Ejecutar el trabajo a destajo, bajo los lineamientos técnicos y demás
+                                            condiciones, determinadas por  “EL EMPLEADOR”, obligándose a cumplir las
+                                            disposiciones verbales o escritas que le determine.
+                                            <br/>
+                                            <br/>
+                                            Ejecutar el trabajo con total profesionalismo, incorporando al servicio de
+                                            “EL EMPLEADOR” todos sus conocimientos técnicos, en la ejecución del
+                                            trabajo.
+                                            <br/>
+                                            <br/>
+                                            Cumplir y hacer cumplir todas y cada una de las disposiciones del Reglamento
+                                            Interno de Trabajo de la compañía contratante.
                                             <br/>
                                             <br/>
                                             <b>OCTAVA.- LEGISLACIÓN APLICABLE:</b>
@@ -2117,30 +2113,47 @@
                                             <br/>
                                             En todo lo no previsto en este Contrato, cuyas modalidades especiales las
                                             reconocen y aceptan las partes, éstas se sujetan al Código del Trabajo, bajo
-                                            la
-                                            modalidad de contratación a destajo.
+                                            la modalidad de contratación a destajo.
                                             <br/>
                                             <br/>
-                                            <b>NOVENA.- JURISDICCIÓN Y COMPETENCIA:</b>
+                                            <b>NOVENA.- CONFIDENCIALIDAD:</b>
+                                            <br/>
+                                            <br/>
+                                            En vista de que “EL TRABAJADOR” tendrá  acceso a información Confidencial de
+                                            propiedad exclusiva de “EL EMPLEADOR”; así como a la proveniente de los
+                                            clientes del mismo, por tanto, el trabajador, se compromete a guardar
+                                            absoluta reserva y confidencialidad respecto a toda la información a la que
+                                            tenga acceso.  Por tanto, todos los documentos, cartas, planes,  proyectos
+                                            comerciales, estudios de mercado, bases de datos, lista de clientes,
+                                            estrategias de negocios, sistemas informáticos, códigos, contraseñas,
+                                            contratos y demás instrumentos privados relacionados a su trabajo, e
+                                            información a la que tenga acceso, será objeto de escrupulosa reserva y 
+                                            permanecerá dentro de las oficinas de “EL EMPLEADOR”. Será prohibido para 
+                                            “EL TRABAJADOR”  efectuar reproducciones, copias o compulsas de los asuntos
+                                            descritos, así como de divulgar la confidencial información a terceros. La
+                                            confidencialidad, como salvaguarda de la integridad de la información de
+                                            propiedad de “EL EMPLEADOR”, se mantendrá, vigente hasta DOS (2) años
+                                            después de la fecha de terminación de  éste contrato.
+                                            <br/>
+                                            <br/>
+                                            <b>DÉCIMA.- JURISDICCIÓN Y COMPETENCIA:</b>
                                             <br/>
                                             <br/>
                                             En caso de suscitarse discrepancias en la interpretación, cumplimiento y
                                             ejecución del presente Contrato y cuando no fuere posible llegar a un
-                                            acuerdo
-                                            entre las partes, estas se someterán a los jueces competentes del lugar en
-                                            que
-                                            este contrato ha sido celebrado, así como al procedimiento oral determinados
-                                            por
-                                            la Ley.
+                                            acuerdo entre las partes, estas se someterán a los jueces competentes del
+                                            lugar en que este contrato ha sido celebrado, así como al procedimiento oral
+                                            determinados por la Ley.
                                             <br/>
                                             <br/>
-                                            <b>DÉCIMA.- SUSCRIPCIÓN:</b>
+                                            <b>DÉCIMA PRIMERA.- SUSCRIPCIÓN:</b>
                                             <br/>
                                             <br/>
                                             Las partes se ratifican en todas y cada una de las cláusulas precedentes y
                                             para constancia y plena validez de lo estipulado firman este contrato en
                                             original y dos ejemplares de igual tenor y valor, en la ciudad de Guayaquil,
                                             el&amp;nbsp;<span t-esc="doc._get_date_formatlarges()"/>.
+
                                             <br/>
                                             <br/>
                                             <br/>
