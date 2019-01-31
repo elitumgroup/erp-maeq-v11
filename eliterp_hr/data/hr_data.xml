@@ -35,7 +35,7 @@
             <field name="code">DC_MENSUAL</field>
             <field name="account_id" ref="eliterp_accounting.1_eliterp_account_52213"/>
             <field name="condition_select">python</field>
-            <field name="condition_python">result = round((float(386)/360)*payslip.worked_days,2)</field>
+            <field name="condition_python">result = round((float(394)/360)*payslip.worked_days,2)</field>
             <field name="amount_select">fix</field>
         </record>
         <record id="eliterp_hr_rule_3" model="hr.salary.rule">

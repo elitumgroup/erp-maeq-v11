@@ -11,7 +11,7 @@ class ConfigSettings(models.TransientModel):
     default_wage = fields.Float(
         'Sueldo básico unficado',
         default_model='hr.employee',
-        default=386
+        default=394
     )
     default_test_days = fields.Integer(
         'Días de período de prueba',

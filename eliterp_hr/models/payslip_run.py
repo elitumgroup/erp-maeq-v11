@@ -269,7 +269,7 @@ class PayslipRun(models.Model):
             amount_provision_tenth_3 += round((tenth_3_object.wage + tenth_3_object.additional_hours) / 12.00, 3)
         amount_provision_tenth_4 = 0.00
         for tenth_4_object in provision_tenth_4:
-            amount_provision_tenth_4 += round((float(386) / 360) * tenth_4_object.worked_days, 3)
+            amount_provision_tenth_4 += round((float(394) / 360) * tenth_4_object.worked_days, 3)
         # Creamos líneas de movimiento de egresos
         _logger.info('***EGRESOS***')
         amount_advances = 0.00
