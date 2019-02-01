@@ -13,6 +13,7 @@
                 <field name="date"/>
                 <field name="amount_total"/>
                 <field name="state"/>
+                <field name="reconciled"/>
             </tree>
         </field>
     </record>
