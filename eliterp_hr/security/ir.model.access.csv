@@ -37,3 +37,5 @@ access_contract_term_manager,contract_term_manager,model_eliterp_contract_term,h
 access_resignation_employment_manager,resignation_employment_manager,model_eliterp_resignation_employment,hr.group_hr_manager,1,1,1,1
 access_term_contract_manager,term_contract_manager,model_eliterp_term_contract,hr.group_hr_manager,1,1,1,1
 
+access_payroll_provision_manager,hr.payroll.provision,model_hr_payroll_provision,hr_payroll.group_hr_payroll_user,1,1,1,1
+access_payroll_provision_line_manager,hr.payroll.provision.line,model_hr_payroll_provision_line,hr_payroll.group_hr_payroll_user,1,1,1,1

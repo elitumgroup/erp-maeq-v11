@@ -15,3 +15,4 @@ from . import memo
 from . import contract_term
 from . import term_contract
 from . import resignation_employment
+from . import payroll_provisions

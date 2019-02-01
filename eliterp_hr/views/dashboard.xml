@@ -187,6 +187,12 @@
             <field name="view_id" ref="eliterp_view_tree_payslip_run"/>
             <field name="search_view_id" ref="hr_payroll.hr_payslip_run_filter"/>
         </record>
+        <record id="eliterp_action_payroll_provision" model="ir.actions.act_window">
+            <field name="name">Provisiones (Décimos)</field>
+            <field name="res_model">hr.payroll.provision</field>
+            <field name="view_type">form</field>
+        </record>
+
         <record id="eliterp_action_absences" model="ir.actions.act_window">
             <field name="name">Registro de ausencias</field>
             <field name="res_model">hr.holidays</field>
@@ -400,6 +406,11 @@
                   parent="eliterp_menu_hr_paysheet"
                   action="eliterp_action_payslip_run"
                   sequence='3'/>
+
+        <menuitem id="eliterp_menu_hr_payroll_provision"
+                  parent="eliterp_menu_hr_paysheet"
+                  action="eliterp_action_payroll_provision"
+                  sequence='10'/>
         <!--Reportes de HR-->
         <menuitem id="eliterp_menu_hr_reports"
                   name="Reportes"

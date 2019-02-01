@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="eliterp_view_tree_payroll_provision" model="ir.ui.view">
+        <field name="name">eliterp_view_tree_advance</field>
+        <field name="model">hr.payroll.provision</field>
+        <field name="arch" type="xml">
+            <tree decoration-muted="state=='cancel'"
+                  decoration-success="state == 'validate' or reconciled"
+                  decoration-bf="reconciled"
+            >
+                <field name="name"/>
+                <field name="type"/>
+                <field name="date"/>
+                <field name="amount_total"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+    <record id="eliterp_view_form_payroll_provision" model="ir.ui.view">
+        <field name="name">eliterp_view_form_payroll_provision</field>
+        <field name="model">hr.payroll.provision</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,validate"
+                           modifiers="{'readonly': true}"/>
+                    <button name="action_calculate"
+                            states="draft"
+                            type="object"
+                            string="Calcular"
+                            class="oe_highlight"/>
+                    <button string="Validar"
+                            name="action_validate"
+                            states="draft"
+                            type="object"
+                            class="oe_highlight"/>
+                    <button name="action_cancel"
+                            type="object"
+                            states="validate"
+                            string="Anular"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="p.e Referencia de provisión"/>
+                        </h1>
+                    </div>
+                    <group col="4">
+                        <field name="date"/>
+                        <field name="type"/>
+                        <label for="date_from" string="Período"/>
+                        <div class="o_row">
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </div>
+                        <field name="amount_total"/>
+                    </group>
+                    <notebook>
+                        <page string="Líneas de empleados">
+                            <field name="line_ids" nolabel="1">
+                                <tree decoration-bf="reconciled" create="false" editable="bottom">
+                                    <field name="parent_state" invisible="1"/>
+                                    <field name="name" readonly="1"/>
+                                    <field name="number_roles" readonly="1"/>
+                                    <field name="amount" attrs="{'readonly':[('parent_state', '=', 'validate')]}"/>
+                                    <field name="reconciled"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+</odoo>

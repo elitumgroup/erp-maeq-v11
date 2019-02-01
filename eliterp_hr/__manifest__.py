@@ -33,6 +33,7 @@
         'views/advance_payment_views.xml',
         'views/payslip_views.xml',
         'views/payslip_run_views.xml',
+        'views/payroll_provisions_views.xml',
         'views/holiday_views.xml',
         'views/attendance_views.xml',
         'views/extra_hours_views.xml',
