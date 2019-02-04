@@ -1232,13 +1232,9 @@
                                     <strong>Fecha fin:</strong>
                                     <p t-field="doc.end_date"/>
                                 </div>
-                                <div class="col-xs-3">
-                                    <strong>Tipo de banco:</strong>
-                                    <p t-field="doc.bank_type"/>
-                                </div>
-                                <div class="col-xs-3" t-if="doc.bank_type != 'all'">
-                                    <strong>Banco:</strong>
-                                    <p t-field="doc.bank_id"/>
+                                <div class="col-xs-6" t-if="doc.bank_ids">
+                                    <strong>Bancos:</strong>
+                                    <p t-esc="', '.join(map( lambda x: x.name, doc.bank_ids))"/>
                                 </div>
                             </div>
                             <table class="table table-condensed">

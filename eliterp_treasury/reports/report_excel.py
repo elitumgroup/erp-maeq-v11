@@ -44,7 +44,7 @@ class ChecksIssuedXlsx(models.AbstractModel):
         sheet.set_column("H:H", 15)
         sheet.set_column("I:I", 15)
         # Cabeceras con filtro
-        sheet.autofilter('A3:H3')
+        sheet.autofilter('A3:I3')
         sheet.write('A1', 'REPORTE DE CHEQUES EMITIDOS', title)
         sheet.write(2, 0, "BANCO", bold)
         sheet.write(2, 1, "FECHA EMISIÓN", bold)
