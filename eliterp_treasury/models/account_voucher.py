@@ -488,7 +488,11 @@ class AccountVoucher(models.Model):
                 self.custodian_id.replacement_small_box_id.update({'replacement_date': self.date})
             new_name = self._get_move_name()
             move_id.with_context(eliterp_moves=True, move_name=new_name).post()
-            move_name = self._get_names(self.type_egress, new_name[16:])
+            if self.type_egress != 'bank':
+                reference = self.check_number
+            else:
+                reference = new_name[16:]
+            move_name = self._get_names(self.type_egress, reference)
             move_id.write({'ref': move_name})
             # OC
             if self.type_pay == 'oc':
