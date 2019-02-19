@@ -976,10 +976,19 @@ class LinesPayslipRun(models.Model):
         Verificamos monto a pagar no sea mayor al  total menos el residuo
         :return:
         """
-        if self.amount_payable > self.residual:
+        if round(self.amount_payable, 2) > round(self.residual, 2):
             raise ValidationError("Monto a pagar (%.2f) mayor al saldo a recibir (%.2f) para %s." % (
                 self.amount_payable, self.residual, self.role_id.employee_id.name
             ))
+
+    @api.onchange('selected')
+    def _onchange_selected(self):
+        """
+        Cambiamos monto a pagar
+        :return:
+        """
+        for line in self:
+            line.update({'amount_payable': line.residual})
 
     selected = fields.Boolean('Seleccionar?', default=False)
     flag = fields.Boolean('Conciliado', compute="_compute_amount", store=True)
