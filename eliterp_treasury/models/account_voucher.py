@@ -126,7 +126,7 @@ class VoucherCancelReason(models.TransientModel):
 
     _description = 'Razón para cancelar recibo'
 
-    description = fields.Text('Descripción', required=True)
+    description = fields.Text('Descripción', required=True, default="Anulado")
 
     @api.multi
     def cancel_voucher(self):
@@ -160,7 +160,7 @@ class VoucherCancelReason(models.TransientModel):
         else:
             object_ = pay.invoice_id or pay.purchase_order_id or pay.payment_request_id
             object_._get_customize_amount()
-        move_id.write({'state': 'cancel', 'ref': self.description})
+        move_id.write({'state': 'cancel', 'ref': self.description + ": "  + move_id.ref})
         voucher.write({'state': 'cancel', 'reason_cancel': self.description})
         return
 
