@@ -844,13 +844,15 @@ class GeneralLedgerReportPdf(models.AbstractModel):
         for account in accounts:
             lines = self.env['account.move.line'].search(
                 [('account_id', '=', account.id), ('date', '>=', doc.start_date), ('date', '<=', doc.end_date)],
-                order="date")  # Movimientos de la cuenta ordenamos por fecha
+                order="date, full_reconcile_id")  # Movimientos de la cuenta ordenamos por fecha
             beginning_balance = self.env['eliterp.accounting.help']._get_beginning_balance(account, doc.start_date,
                                                                                            doc.end_date)
             balance = beginning_balance
             total_debit = 0.00
             total_credit = 0.00
             data_line = []  # Líneas de movimientos de la cuenta
+            if doc.not_canceled:
+                lines = lines.filtered(lambda a: not a.move_id == 'cancel' or a.move_id.reversed)
             for line in lines:
                 total_debit = total_debit + line.debit
                 total_credit = total_credit + line.credit
@@ -869,6 +871,7 @@ class GeneralLedgerReportPdf(models.AbstractModel):
                             amount = -1 * round(line.debit - line.credit, 2)
                 balance = balance + amount
                 data_line.append({'name': line.move_id.name,
+                                  'reconciled_number': line.full_reconcile_id.name if line.full_reconcile_id else ' ',
                                   'date': line.date,
                                   'detail': line.name,
                                   'debit': line.debit,
@@ -927,8 +930,9 @@ class GeneralLedgerReport(models.TransientModel):
 
     start_date = fields.Date('Fecha inicio', required=True)
     end_date = fields.Date('Fecha fin', required=True)
-    type = fields.Selection([('all', 'Todas'), ('one', 'Individual')], default='all', string='Tipo de reporte')
-    account_id = fields.Many2one('account.account', 'Cuenta', domain=[('account_type', '=', 'movement')])
+    type = fields.Selection([('all', 'Todas'), ('one', 'Seleccionar cuentas')], default='all', string='Tipo de reporte')
+    not_canceled = fields.Boolean('No colocar asientos anulados', default=False, help="Se filtra por asientos no validados y/o reversados.")
+    account_id = fields.Many2many('account.account', string='Cuentas contables', domain=[('account_type', '=', 'movement')])
 
 
 class Taxes103104ReportXlsx(models.AbstractModel):

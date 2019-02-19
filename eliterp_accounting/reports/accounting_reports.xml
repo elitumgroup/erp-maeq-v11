@@ -1238,6 +1238,7 @@
                                         <tr>
                                             <th class="text-center">Fecha</th>
                                             <th class="text-center">No. Compensación</th>
+                                            <th class="text-center">Conciliación</th>
                                             <th class="text-center">Detalle</th>
                                             <th class="text-right">Debe</th>
                                             <th class="text-right">Haber</th>
@@ -1261,6 +1262,9 @@
                                             </td>
                                             <td>
                                                 <span t-esc="line['name']"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="line['reconciled_number']"/>
                                             </td>
                                             <td>
                                                 <span t-esc="line['detail']"/>
