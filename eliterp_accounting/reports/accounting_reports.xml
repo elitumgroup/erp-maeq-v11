@@ -1219,7 +1219,7 @@
                                 </div>
                                 <div class="col-xs-4">
                                     <strong>Período:</strong>
-                                    <p t-field="doc.start_date" t-options='{"format": "yyyy"}'/>
+                                    <p t-field="doc.start_date" t-options="{&quot;format&quot;: &quot;yyyy&quot;}"/>
                                 </div>
                                 <div class="col-xs-4">
                                     <strong>Fecha de Corte:</strong>
@@ -1245,7 +1245,7 @@
                                             <th class="text-right">Saldo</th>
                                         </tr>
                                         <tr style="border-bottom: 1px solid gray;">
-                                            <td colspan="5" class="text-right">
+                                            <td colspan="6" class="text-right">
                                                 <span>SALDO INICIAL</span>
                                             </td>
                                             <td class="text-right">
@@ -1282,7 +1282,7 @@
                                     </tbody>
                                     <tfoot>
                                         <tr style="border-top: 3px solid black; font-size:15px;">
-                                            <td colspan="4" class="text-right">
+                                            <td colspan="5" class="text-right">
                                                 <span t-esc="'%.2f' % account['total_debit']"/>
                                             </td>
                                             <td class="text-right">
@@ -1307,7 +1307,7 @@
                 report_type="qweb-pdf"
                 name="eliterp_accounting.eliterp_report_general_ledger"
                 file="eliterp_accounting.eliterp_report_general_ledger"
-                print_report_name="'Libro mayor - %s' % (object.account_id.name or 'Todos')"
+                print_report_name="'Libro mayor'"
                 paperformat="eliterp_management.eliterp_paperformat_a4_landscape"
         />
         <!--Reporte de impuestos (103, 104)-->
