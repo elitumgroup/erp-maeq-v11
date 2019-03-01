@@ -397,7 +397,9 @@ class FinancialSituationReportPdf(models.AbstractModel):
                     for cuenta in cuentas:
                         if cuenta['code'] == '3.3':
                             cuenta['sub_cuenta'].append(movimientos_internos)
+                            cuenta['monto']  = cuenta['monto'] + movimientos_internos['monto']
                     TOTALES.append({'total_patrimonio': cuentas[0]['monto'] + monto})
+                    cuentas[0]['monto'] = cuentas[0]['monto'] + movimientos_internos['monto']
                     return cuentas
             # Si Estado de Resultados es igual a 0
             monto = self.estado_resultado(doc.start_date, doc.end_date)
