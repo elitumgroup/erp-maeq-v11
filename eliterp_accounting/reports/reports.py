@@ -875,7 +875,7 @@ class GeneralLedgerReportPdf(models.AbstractModel):
                 data_line.append({'name': line.move_id.name,
                                   'reconciled_number': line.full_reconcile_id.name if line.full_reconcile_id else ' ',
                                   'date': line.date,
-                                  'detail': line.name[:97] + '...',
+                                  'detail': line.name[:97] + '...' if line.name else '-',
                                   'debit': line.debit,
                                   'credit': line.credit,
                                   'balance': balance})
