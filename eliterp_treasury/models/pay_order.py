@@ -220,6 +220,10 @@ class AccountVoucher(models.Model):
             values['type_egress'] = record.type_egress if record.type_egress != 'payment_various' else 'cash'
             values['bank_id'] = record.bank_id.id if record.bank_id else False
             values['check_date'] = record.date if record.type_egress != 'payment_various' else False
+
+            if record.type_egress == 'bank':
+                sequence = record.bank_id.check_sequence_id.number_next_actual
+                values['check_number'] = str(sequence).zfill(record.bank_id.padding)
             amount = record.amount - sum(l.amount if l.voucher_id else 0.00 for l in record.lines_employee)
             values['amount_cancel'] = amount
             lines_account = []
@@ -323,6 +327,8 @@ class AccountVoucher(models.Model):
             values['amount_cancel'] = record.amount
             values['type_egress'] = record.pay_order_id.type_egress
             values['bank_id'] = record.pay_order_id.bank_id.id
+            sequence = record.pay_order_id.check_sequence_id.number_next_actual
+            values['check_number'] = str(sequence).zfill(record.pay_order_id.bank_id.padding)
             values['beneficiary'] = record.employee_id.name
             values['line_employee_id'] = record.id
             if record.pay_order_id.type == 'adq':
