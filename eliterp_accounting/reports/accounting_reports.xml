@@ -1233,19 +1233,19 @@
                                         <span t-esc="account['code']"/>[<span t-esc="account['account']"/>]
                                     </strong>
                                 </caption>
-                                <table class="table_general_ledger table table-condensed">
+                                <table class="table_general_ledger table table-sm">
                                     <thead>
                                         <tr>
-                                            <th class="text-center">Fecha</th>
-                                            <th class="text-center">No. Compensación</th>
-                                            <th class="text-center">Conciliación</th>
-                                            <th class="text-center">Detalle</th>
-                                            <th class="text-right">Debe</th>
-                                            <th class="text-right">Haber</th>
-                                            <th class="text-right">Saldo</th>
+                                            <th class="col-xs-1 text-center">Fecha</th>
+                                            <th class="col-xs-2 text-center">No. Compensación</th>
+                                            <!--<th class="text-center">Conciliación</th>-->
+                                            <th class="col-xs-6 text-center">Detalle</th>
+                                            <th class="col-xs-1 text-right">Debe</th>
+                                            <th class="col-xs-1 text-right">Haber</th>
+                                            <th class="col-xs-1 text-right">Saldo</th>
                                         </tr>
                                         <tr style="border-bottom: 1px solid gray;">
-                                            <td colspan="6" class="text-right">
+                                            <td colspan="5" class="text-right">
                                                 <span>SALDO INICIAL</span>
                                             </td>
                                             <td class="text-right">
@@ -1263,9 +1263,10 @@
                                             <td>
                                                 <span t-esc="line['name']"/>
                                             </td>
-                                            <td>
+                                            <!--<td>
                                                 <span t-esc="line['reconciled_number']"/>
                                             </td>
+                                            -->
                                             <td>
                                                 <span t-esc="line['detail']"/>
                                             </td>
@@ -1282,7 +1283,7 @@
                                     </tbody>
                                     <tfoot>
                                         <tr style="border-top: 3px solid black; font-size:15px;">
-                                            <td colspan="5" class="text-right">
+                                            <td colspan="4" class="text-right">
                                                 <span t-esc="'%.2f' % account['total_debit']"/>
                                             </td>
                                             <td class="text-right">
