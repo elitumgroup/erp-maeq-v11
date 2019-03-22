@@ -145,7 +145,6 @@
                     <field name="recipient" string="Beneficiario"/>
                     <separator/>
                     <filter name="delivered" string="Entregado" domain="[('state', '=', 'delivered')]"/>
-                    <filter name="charged" string="Debitado" domain="[('state', '=', 'charged')]"/>
                     <filter name="protested" string="Anulado" domain="[('state', '=', 'protested')]"/>
                     <separator/>
                     <filter name="reconcile" string="Conciliado" domain="[('reconcile', '=', True)]"/>

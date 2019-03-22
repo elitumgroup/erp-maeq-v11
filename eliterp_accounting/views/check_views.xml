@@ -71,9 +71,9 @@
                 <tree create="false"
                       decoration-info="state=='delivered'"
                       decoration-danger="state=='protested'"
-                      decoration-success="state=='charged'"
+                      decoration-success="reconcile"
                       default_order='check_date desc'
-                      decoration-bf="state=='charged'">
+                      decoration-bf="reconcile">
                     <field name="name"/>
                     <field name="bank_id"/>
                     <field name="recipient" string="Beneficiario"/>
@@ -81,7 +81,7 @@
                     <field name="check_date"/>
                     <field name="amount"/>
                     <field name="state"/>
-                    <field name="reconcile" attrs="{'invisible':[('state', '!=', 'charged')]}"/>
+                    <field name="reconcile"/>
                 </tree>
             </field>
         </record>
