@@ -138,7 +138,7 @@ class VoucherCancelReason(models.TransientModel):
         for line in move_id.line_ids:
             if line.full_reconcile_id:
                 line.remove_move_reconcile()
-        move_id.with_context(from_voucher=True, voucher_id=voucher.id).reverse_moves(voucher.check_date,
+        move_id.with_context(from_voucher=True, voucher_id=voucher.id).reverse_moves(voucher.date,
                                                                                      voucher.journal_id or False)
         if voucher.type_egress == 'bank':
             check = self.env['eliterp.checks'].search([('voucher_id', '=', voucher.id)])
