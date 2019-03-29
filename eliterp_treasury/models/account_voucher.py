@@ -142,7 +142,8 @@ class VoucherCancelReason(models.TransientModel):
                                                                                      voucher.journal_id or False)
         if voucher.type_egress == 'bank':
             check = self.env['eliterp.checks'].search([('voucher_id', '=', voucher.id)])
-            check.update({'state': 'protested'})
+            if check:
+                check.update({'state': 'protested'})
         pay = voucher.pay_order_id
         if voucher.line_employee_id:
             voucher.line_employee_id.update({'voucher_id': False, 'generated': False})
