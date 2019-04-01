@@ -145,7 +145,7 @@ class FinancialSituationReportPdf(models.AbstractModel):
     def get_saldo_resultado(self, cuenta, tipo, fecha_inicio, fecha_fin):
         '''Obtenemos el saldo del Estado de Resultados'''
         movimientos = self.env['account.move.line'].search([('account_id', '=', cuenta),
-                                                            ('date', '>=', fecha_inicio),
+                                                            ('date', '>=', fecha_inicio if fecha_inicio else '2000-01-01'),
                                                             ('date', '<=', fecha_fin)])
 
         credit = 0.00
@@ -270,7 +270,7 @@ class FinancialSituationReportPdf(models.AbstractModel):
         '''Obtenemos el saldo de la cuenta y verificamos su naturaleza'''
         # MARZ
         movimientos = self.env['account.move.line'].search([('account_id', '=', cuenta.id),
-                                                            ('date', '>=', doc.start_date),
+                                                            ('date', '>=', doc.start_date if doc.start_date else '2000-01-01'),
                                                             ('date', '<=', doc.end_date)])
         credit = 0.00
         debit = 0.00
@@ -295,10 +295,7 @@ class FinancialSituationReportPdf(models.AbstractModel):
             if debit > credit:
                 if monto > 0:
                     monto = -1 * round(debit - credit, 2)
-        # Saldo Inicial de la cuenta
-        if cuenta.code != '3.3.3':
-            monto = monto + self.env['eliterp.accounting.help']._get_beginning_balance(cuenta, doc.start_date,
-                                                                                       doc.end_date)
+
         return monto
 
     def buscar_padre(self, cuenta):
@@ -483,7 +480,7 @@ class FinancialSituationReport(models.TransientModel):
         self.ensure_one()
         return self.env.ref('eliterp_accounting.eliterp_action_report_financial_situation').report_action(self)
 
-    start_date = fields.Date('Fecha inicio', required=True)
+    start_date = fields.Date('Fecha inicio')
     end_date = fields.Date('Fecha fin', required=True)
 
 
@@ -685,11 +682,9 @@ class StatusResultsReportPdf(models.AbstractModel):
         return accounts[::-1]
 
     def _get_balance(self, account, type, doc):
-        beginning_balance = self.env['eliterp.accounting.help']._get_beginning_balance(account, doc.start_date,
-                                                                                       doc.end_date)
         args = [
             ('account_id', '=', account.id),
-            ('date', '>=', doc.start_date),
+            ('date', '>=', doc.start_date if doc.start_date else '2000-01-01'),
             ('date', '<=', doc.end_date)
         ]
         if doc.project_id:
@@ -714,7 +709,7 @@ class StatusResultsReportPdf(models.AbstractModel):
             if debit > credit:
                 if amount > 0:
                     amount = -1 * round(debit - credit, 2)
-        return round(amount + beginning_balance, 2)
+        return round(amount, 2)
 
     def _get_lines(self, doc, type):
         """
@@ -820,7 +815,7 @@ class StatusResultsReport(models.TransientModel):
         self.ensure_one()
         return self.env.ref('eliterp_accounting.eliterp_action_report_status_results').report_action(self)
 
-    start_date = fields.Date('Fecha inicio', required=True)
+    start_date = fields.Date('Fecha inicio')
     end_date = fields.Date('Fecha fin', required=True)
 
 
