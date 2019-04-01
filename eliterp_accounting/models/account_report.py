@@ -6,6 +6,8 @@
 from odoo import models, api
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, float_is_zero
 from datetime import datetime, timedelta
+from odoo.tools.safe_eval import safe_eval
+
 
 
 class ReportPartnerLedger(models.AbstractModel):
