@@ -128,40 +128,58 @@ class VoucherCancelReason(models.TransientModel):
 
     description = fields.Text('Descripción', required=True, default="Anulado")
 
+
+    def _remove_collection_line(self, voucher):
+        """
+        Reversamos movimietos contables de líneas de recaudo
+        :return:
+        """
+        for line in voucher.lines_payment:
+            move = line.move_id
+            move.reverse_moves(move.date, move.journal_id or False)
+            move.write({
+                'state': 'cancel',
+                'ref': self.description
+            })
+        return
+
     @api.multi
     def cancel_voucher(self):
         """
         Cancelamos el voucher
         """
         voucher = self.env['account.voucher'].browse(self._context['active_id'])
-        move_id = voucher.move_id
-        for line in move_id.line_ids:
-            if line.full_reconcile_id:
-                line.remove_move_reconcile()
-        move_id.with_context(from_voucher=True, voucher_id=voucher.id).reverse_moves(voucher.date,
-                                                                                     voucher.journal_id or False)
-        if voucher.type_egress == 'bank':
-            check = self.env['eliterp.checks'].search([('voucher_id', '=', voucher.id)])
-            if check:
-                check.update({'state': 'protested'})
-        pay = voucher.pay_order_id
-        if voucher.line_employee_id:
-            voucher.line_employee_id.update({'voucher_id': False, 'generated': False})
+        if voucher.voucher_type == 'purchase':
+            move_id = voucher.move_id
+            for line in move_id.line_ids:
+                if line.full_reconcile_id:
+                    line.remove_move_reconcile()
+            move_id.with_context(from_voucher=True, voucher_id=voucher.id).reverse_moves(voucher.date,
+                                                                                         voucher.journal_id or False)
+            if voucher.type_egress == 'bank':
+                check = self.env['eliterp.checks'].search([('voucher_id', '=', voucher.id)])
+                if check:
+                    check.update({'state': 'protested'})
+            pay = voucher.pay_order_id
+            if voucher.line_employee_id:
+                voucher.line_employee_id.update({'voucher_id': False, 'generated': False})
+            else:
+                pay.update({'state': 'cancel'})
+            if pay.type in ['adq', 'rc']:  # TODO: Soló para RC y ADQ, no sirve
+                if not voucher.line_employee_id:
+                    lines = []
+                    for l in pay.lines_employee:
+                        lines.append(l.employee_id.id)
+                    if pay.type == 'adq':
+                        lines = pay.advance_payment_id.lines_advance.filtered(lambda x: x.employee_id.id in lines)
+                    else:
+                        lines = pay.payslip_run_id.lines_payslip_run.filtered(lambda x: x.role_id.employee_id.id in lines)
+            else:
+                object_ = pay.invoice_id or pay.purchase_order_id or pay.payment_request_id
+                object_._get_customize_amount()
+            move_id.write({'state': 'cancel', 'ref': self.description + ": "  + move_id.ref})
         else:
-            pay.update({'state': 'cancel'})
-        if pay.type in ['adq', 'rc']:  # TODO: Soló para RC y ADQ, no sirve
-            if not voucher.line_employee_id:
-                lines = []
-                for l in pay.lines_employee:
-                    lines.append(l.employee_id.id)
-                if pay.type == 'adq':
-                    lines = pay.advance_payment_id.lines_advance.filtered(lambda x: x.employee_id.id in lines)
-                else:
-                    lines = pay.payslip_run_id.lines_payslip_run.filtered(lambda x: x.role_id.employee_id.id in lines)
-        else:
-            object_ = pay.invoice_id or pay.purchase_order_id or pay.payment_request_id
-            object_._get_customize_amount()
-        move_id.write({'state': 'cancel', 'ref': self.description + ": "  + move_id.ref})
+            self._remove_collection_line(voucher)
         voucher.write({'state': 'cancel', 'reason_cancel': self.description})
         return
 
