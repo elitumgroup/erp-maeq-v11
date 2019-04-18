@@ -849,7 +849,7 @@ class GeneralLedgerReportPdf(models.AbstractModel):
             total_credit = 0.00
             data_line = []  # Líneas de movimientos de la cuenta
             if doc.not_canceled:
-                lines = lines.filtered(lambda a: not a.move_id == 'cancel' or a.move_id.reversed)
+                lines = lines.filtered(lambda a: not a.move_id == 'cancel' or not a.move_id.reversed)
             for line in lines:
                 total_debit = total_debit + line.debit
                 total_credit = total_credit + line.credit
