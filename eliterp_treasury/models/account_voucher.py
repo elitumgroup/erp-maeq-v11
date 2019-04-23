@@ -128,7 +128,6 @@ class VoucherCancelReason(models.TransientModel):
 
     description = fields.Text('Descripción', required=True, default="Anulado")
 
-
     def _remove_collection_line(self, voucher):
         """
         Reversamos movimietos contables de líneas de recaudo
@@ -150,12 +149,16 @@ class VoucherCancelReason(models.TransientModel):
         """
         voucher = self.env['account.voucher'].browse(self._context['active_id'])
         if voucher.voucher_type == 'purchase':
+            if voucher.reconcile:
+                raise ValidationError(_("No se pueden anular egresos conciliados."))
+            
             move_id = voucher.move_id
             for line in move_id.line_ids:
                 if line.full_reconcile_id:
                     line.remove_move_reconcile()
             move_id.with_context(from_voucher=True, voucher_id=voucher.id).reverse_moves(voucher.date,
                                                                                          voucher.journal_id or False)
+
             if voucher.type_egress == 'bank':
                 check = self.env['eliterp.checks'].search([('voucher_id', '=', voucher.id)])
                 if check:
@@ -173,11 +176,12 @@ class VoucherCancelReason(models.TransientModel):
                     if pay.type == 'adq':
                         lines = pay.advance_payment_id.lines_advance.filtered(lambda x: x.employee_id.id in lines)
                     else:
-                        lines = pay.payslip_run_id.lines_payslip_run.filtered(lambda x: x.role_id.employee_id.id in lines)
+                        lines = pay.payslip_run_id.lines_payslip_run.filtered(
+                            lambda x: x.role_id.employee_id.id in lines)
             else:
                 object_ = pay.invoice_id or pay.purchase_order_id or pay.payment_request_id
                 object_._get_customize_amount()
-            move_id.write({'state': 'cancel', 'ref': self.description + ": "  + move_id.ref})
+            move_id.write({'state': 'cancel', 'ref': self.description + ": " + move_id.ref})
         else:
             self._remove_collection_line(voucher)
         voucher.write({'state': 'cancel', 'reason_cancel': self.description})
