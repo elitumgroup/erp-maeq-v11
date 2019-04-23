@@ -92,6 +92,19 @@ class PurchaseOrder(models.Model):
             'state': 'approve',
         })
 
+
+    @api.multi
+    def button_new_cancel(self):
+        for order in self:
+            for po in order.lines_pay_order:
+                if po.state_pay_order != 'generated':
+                    raise UserError(_("No se puede anular OCS con pagos realizados."))
+            for inv in order.invoice_ids:
+                if inv and inv.state not in ('cancel', 'draft'):
+                    raise UserError(_("No se puede anular OCS con facturas por pagar o pagadas."))
+
+        self.write({'state': 'cancel'})
+
     reference = fields.Char('Referencia', track_visibility='onchange')
     notes = fields.Text('Terms and Conditions', track_visibility='onchange')
     attach_order = fields.Binary('Adjuntar documento', attachment=True, track_visibility='onchange')

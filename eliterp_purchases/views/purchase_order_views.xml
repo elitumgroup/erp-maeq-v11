@@ -34,6 +34,10 @@
                             type="object"
                             groups="eliterp_purchases.eliterp_group_approve_purchase_orders"
                             class="oe_highlight"/>
+                    <button name="button_new_cancel"
+                            states="approve"
+                            string="Anular"
+                            type="object"/>
                 </xpath>
 
                 <xpath expr="//button[@name='button_confirm']" position="attributes"><!--Confirmar orden 1-->
