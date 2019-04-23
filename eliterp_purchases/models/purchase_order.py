@@ -96,9 +96,8 @@ class PurchaseOrder(models.Model):
     @api.multi
     def button_new_cancel(self):
         for order in self:
-            for po in order.lines_pay_order:
-                if po.state_pay_order != 'generated':
-                    raise UserError(_("No se puede anular OCS con pagos realizados."))
+            if order.state_pay_order != 'generated':
+                raise UserError(_("No se puede anular OCS con pagos realizados."))
             for inv in order.invoice_ids:
                 if inv and inv.state not in ('cancel', 'draft'):
                     raise UserError(_("No se puede anular OCS con facturas por pagar o pagadas."))

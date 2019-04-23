@@ -35,7 +35,7 @@
                             groups="eliterp_purchases.eliterp_group_approve_purchase_orders"
                             class="oe_highlight"/>
                     <button name="button_new_cancel"
-                            states="approve"
+                            states="purchase"
                             string="Anular"
                             type="object"/>
                 </xpath>
