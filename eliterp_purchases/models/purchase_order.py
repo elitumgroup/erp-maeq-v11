@@ -5,6 +5,7 @@
 from datetime import datetime
 from odoo import fields, api, models, SUPERUSER_ID
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
+from odoo.exceptions import UserError
 
 
 class PurchaseOrderLine(models.Model):
@@ -91,6 +92,18 @@ class PurchaseOrder(models.Model):
         self.update({
             'state': 'approve',
         })
+
+
+    @api.multi
+    def button_new_cancel(self):
+        for order in self:
+            if order.state_pay_order != 'generated':
+                raise UserError(_("No se puede anular OCS con pagos realizados."))
+            for inv in order.invoice_ids:
+                if inv and inv.state not in ('cancel', 'draft'):
+                    raise UserError(_("No se puede anular OCS con facturas por pagar o pagadas."))
+
+        self.write({'state': 'cancel'})
 
     reference = fields.Char('Referencia', track_visibility='onchange')
     notes = fields.Text('Terms and Conditions', track_visibility='onchange')
