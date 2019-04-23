@@ -3,7 +3,7 @@
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 
 from datetime import datetime
-from odoo import fields, api, models, SUPERUSER_ID
+from odoo import fields, api, models, SUPERUSER_ID, _
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 from odoo.exceptions import UserError
 
