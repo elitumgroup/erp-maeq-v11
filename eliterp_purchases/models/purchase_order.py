@@ -5,6 +5,7 @@
 from datetime import datetime
 from odoo import fields, api, models, SUPERUSER_ID
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
+from odoo.exceptions import UserError
 
 
 class PurchaseOrderLine(models.Model):
