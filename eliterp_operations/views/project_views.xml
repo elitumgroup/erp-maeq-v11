@@ -289,7 +289,7 @@
             <field name="inherit_id" ref="eliterp_accounting.eliterp_view_form_status_results_wizard"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='end_date']" position="after">
-                    <field name="project_id" required="1" options="{'no_create': True, 'no_open': True}"/>
+                    <field name="project_id" options="{'no_create': True, 'no_open': True}"/>
                     <field name="account_analytic_id" options="{'no_create': True, 'no_open': True}"/>
                 </xpath>
             </field>
