@@ -538,6 +538,8 @@ class AccountVoucher(models.Model):
             voucher = self
             balance = self.total_payments - self.total_invoices
             # Verificamos en líneas de cobro por tipo
+            if not self.lines_invoice_sales and not self.is_advance:
+                raise UserError("Debe marcar cómo anticipo si no tiene líneas de facturas.")
             for payment in self.lines_payment:
                 # Banco
                 if payment.type_payment == 'bank':
