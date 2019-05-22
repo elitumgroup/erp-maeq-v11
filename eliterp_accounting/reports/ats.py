@@ -286,7 +286,7 @@ class AtsXml(models.TransientModel):
                 'baseImpAir': '%.2f' % invoice.amount_untaxed,
                 'codRetAir': '332',
                 'porcentajeAir': 0,
-                'valRetAir': 0.00
+                'valRetAir': 0
             }
         ]
 
