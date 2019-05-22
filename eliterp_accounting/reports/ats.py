@@ -280,6 +280,16 @@ class AtsXml(models.TransientModel):
             data_air.append(v)
         return data_air
 
+    def _process_lines_332(self, invoice):
+        return [
+            {
+                'baseImpAir': '%.2f' % invoice.amount_untaxed,
+                'codRetAir': '332',
+                'porcentajeAir': 0,
+                'valRetAir': 0.00
+            }
+        ]
+
     def _get_retention_iva(self, invoice):
         """
         Obtenemos el monto por código de retención
@@ -358,7 +368,7 @@ class AtsXml(models.TransientModel):
                     'valorRetServicios': '%.2f' % valorRetServicios,
                     'valRetServ100': '%.2f' % valRetServ100,
                     'totbasesImpReemb': '0.00',
-                    'detalleAir': self._process_lines(line)
+                    'detalleAir': self._process_lines(line) if not line.viaticum else self._process_lines_332(line)
                 })
                 detallecompras.update({'pay': True})
                 detallecompras.update({'formaPago': line.way_pay_id.code})
