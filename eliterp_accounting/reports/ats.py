@@ -316,6 +316,19 @@ class AtsXml(models.TransientModel):
                         retServ100 += abs(tax.amount)
         return retBien10, retServ20, retBien, retServ, retServ100
 
+    def _get_lines_iva(self, i):
+        i1 = i2 = i3 = 0
+        for line in i.invoice_line_ids:
+            if len(line.invoice_line_tax_ids) == 0:
+                i3 += line.price_subtotal
+            else:
+                for tax in line.invoice_line_tax_ids:
+                    if tax.amount > 0:
+                        i1 += line.price_subtotal
+                    if tax.amount == 0:
+                        i2 += line.price_subtotal
+        return i1, i2, i3
+
     def _get_purchases(self, period, pay_limit):
         """
         Obtenemos las facturas de compras en período
@@ -343,6 +356,7 @@ class AtsXml(models.TransientModel):
                 detallecompras = {}
                 valRetBien10, valRetServ20, valorRetBienes, valorRetServicios, valRetServ100 = self._get_retention_iva(
                     line)
+                i1, i2, i3 = self._get_lines_iva(line)
                 detallecompras.update({
                     'codSustento': line.tax_support_id.code,
                     'tpIdProv': line.partner_id.type_documentation,
@@ -355,9 +369,9 @@ class AtsXml(models.TransientModel):
                     'secuencial': line.reference,
                     'fechaEmision': self._convert_date(line.date_invoice),
                     'autorizacion': line.authorization,
-                    'baseNoGraIva': '0.00',
-                    'baseImponible': '0.00',
-                    'baseImpGrav': '%.2f' % line.amount_untaxed,
+                    'baseNoGraIva': '%.2f' % i3,
+                    'baseImponible': '%.2f' % i2,
+                    'baseImpGrav': '%.2f' % i1,
                     'baseImpExe': '0.00',
                     'montoIce': '0.00',
                     'montoIva': '%.2f' % line.amount_tax,
