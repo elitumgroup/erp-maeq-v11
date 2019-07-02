@@ -169,6 +169,7 @@ class AtsXml(models.TransientModel):
         ]
         sales = []
         for inv in self.env['account.invoice'].search(domain):
+            i1, i2, i3 = self._get_lines_iva(inv)
             detalleventas = {
                 'tpIdCliente': inv.partner_id.type_documentation,
                 'idCliente': inv.partner_id.documentation_number,
@@ -176,9 +177,9 @@ class AtsXml(models.TransientModel):
                 'tipoComprobante': inv.sri_authorization_id.code,
                 'tipoEm': 'F',
                 'numeroComprobantes': 1,
-                'baseNoGraIva': 0.00,
-                'baseImponible': 0.00,
-                'baseImpGrav': inv.amount_untaxed,
+                'baseNoGraIva': i3,
+                'baseImponible': i2,
+                'baseImpGrav': i1,
                 'montoIva': inv.amount_tax,
                 'montoIce': '0.00',
                 'valorRetIva': self._get_iva(inv.withhold_id) if inv.withhold_id else 0.00,
