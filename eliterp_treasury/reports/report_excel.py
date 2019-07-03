@@ -263,4 +263,4 @@ class CheckVoucher(models.AbstractModel):
                 sheet.write(3, 1, record.beneficiary, bold)
                 sheet.write(3, 5, record.amount_cancel, money_format)
                 sheet.write(5, 1, self.get_amount_to_word(record.amount_cancel), bold)
-                sheet.write(7, 0, 'GUAYAQUIL, %s' % record.check_date, bold)
+                sheet.write(7, 1, 'GUAYAQUIL, %s' % record.check_date, bold)
