@@ -134,8 +134,7 @@ class PaymentRequest(models.Model):
     document = fields.Binary('Documento', attachment=True, copy=False)
     document_name = fields.Char('Nombre de documento', copy=False)
     lines_request = fields.One2many('eliterp.payment.request.lines', 'payment_request_id',
-                                    string='Líneas de solicitud', readonly=True,
-                                    states={'draft': [('readonly', False)]})
+                                    string='Líneas de solicitud')
     total = fields.Float(compute='_get_total', string="Total", store=True, track_visibility='onchange')
     approval_user = fields.Many2one('res.users', 'Aprobado por', readonly=True, states={'draft': [('readonly', False)]},
                                     copy=False)
