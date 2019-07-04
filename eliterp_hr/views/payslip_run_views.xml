@@ -145,9 +145,7 @@
                         <field name="payment_advance" readonly="1"/>
                         <field name="iess_personal" readonly="1" sum="Total"/>
                         <field name="iess_patronal" readonly="1"/>
-                        <!--TODO: VIEW
-                        <field name="loan_payment_advance"/>
-                        -->
+                        <field name="loan_payment_advance" readonly="1"/>
                         <field name="loan_unsecured" readonly="1"/>
                         <field name="loan_mortgage" readonly="1"/>
                         <field name="penalty" readonly="1"/>
