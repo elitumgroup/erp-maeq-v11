@@ -271,6 +271,13 @@ class AccountsReceivableReportExcel(models.AbstractModel):
 class AccountsToPayReportPDF(models.AbstractModel):
     _name = 'report.eliterp_treasury.eliterp_report_accounts_to_pay'
 
+    def _get_payments(self, invoice, start, end):
+        payments = invoice._get_payments_vals()
+        amount = 0.00
+        for payment in filter(lambda x: start <= x['date'] <= end, payments):
+            amount += payment['amount']
+        return amount
+
     def _get_lines(self, doc):
         """
         Obtenemos líneas de reporte
@@ -319,7 +326,7 @@ class AccountsToPayReportPDF(models.AbstractModel):
                 'amount': amount,
                 'amount_credit_note': nota_credito.amount_untaxed if len(nota_credito) > 0 else 0.00,
                 'amount_retention': factura.amount_retention if factura.have_withhold else 0.00,
-                'pays': sum(pm.debit for pm in factura.payment_move_line_ids),
+                'pays': self._get_payments(factura, doc['start_date'], doc['end_date']),
                 'outstanding_balance': factura.residual,
                 'broadcast_date': factura.date_invoice,
                 'expiration_date': factura.date_due,
