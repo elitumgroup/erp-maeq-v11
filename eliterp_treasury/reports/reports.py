@@ -321,6 +321,7 @@ class AccountsToPayReportPDF(models.AbstractModel):
             if expiration_date > fields.date.today():
                 delinquency = fields.date.today() - expiration_date
             amount_pays = self._get_payments(factura, doc['start_date'], doc['end_date'])
+            retention = factura.amount_retention if factura.have_withhold else 0.00
             data.append({
                 'provider': factura.partner_id.name,
                 'number': factura.invoice_number,
@@ -328,9 +329,9 @@ class AccountsToPayReportPDF(models.AbstractModel):
                 'iva': factura.amount_tax,
                 'amount': amount,
                 'amount_credit_note': nota_credito.amount_untaxed if len(nota_credito) > 0 else 0.00,
-                'amount_retention': factura.amount_retention if factura.have_withhold else 0.00,
+                'amount_retention': retention,
                 'pays': amount_pays,
-                'outstanding_balance': amount - amount_pays,
+                'outstanding_balance': amount - (amount_pays + retention),
                 'broadcast_date': factura.date_invoice,
                 'expiration_date': factura.date_due,
                 'delinquency': delinquency,
