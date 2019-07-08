@@ -129,13 +129,13 @@
             <field name="inherit_id" ref="account.invoice_supplier_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='date_due']" position="after"><!--Fecha vencimiento-->
-                    <field name="is_sale_note" invisible="1"/>
                     <field name="way_pay_id" required="1"/>
                     <field name="authorization" required="1"/>
                     <field name="tax_support_id" required="1"/>
                     <field name="period"/>
                 </xpath>
                 <xpath expr="//field[@name='reference']" position="replace"><!--Referencia de proveedor-->
+                    <field name="is_sale_note" attrs="{'invisible': [('type', '=', 'in_refund')], 'readonly': [('state', '!=', 'draft')]}"/>
                     <label for="reference" string="No. Factura"/>
                     <div>
                         <field name="establishment" required="1" style="width: 10%"/>

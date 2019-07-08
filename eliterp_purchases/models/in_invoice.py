@@ -28,7 +28,7 @@ class AccountInvoice(models.Model):
                 self.payment_term_id = False
                 self.date_due = self.date_invoice
 
-    @api.onchange('partner_id')
+    @api.onchange('partner_id', 'is_sale_note')
     def _onchange_partner_id(self):
         """
         Obtenemos Condiciones de pago de Proveedor si existen
