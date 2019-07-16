@@ -80,6 +80,10 @@
                     <field name="date" string="Fecha emisión"/>
                     <field name="check_date"/>
                     <field name="amount"/>
+                    <button string="Conciliado" name="action_reconcile_checks" type="object"
+                            icon="fa-check"
+                            attrs="{'invisible':[('reconcile', '==', True)]}"
+                    />
                     <field name="state"/>
                     <field name="reconcile"/>
                 </tree>

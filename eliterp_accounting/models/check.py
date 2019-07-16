@@ -39,6 +39,13 @@ class Checks(models.Model):
         text = text.replace('Cents', 'Centavos')
         self.amount_in_letters = text.upper()
 
+    @api.multi
+    def action_reconcile_checks(self):
+        self.ensure_one()
+        voucher_id = self.voucher_id
+        voucher_id.write({'reconcile': True})
+        return True
+
     recipient = fields.Char('Girador/Beneficiario')
     partner_id = fields.Many2one('res.partner', string='Cliente/Proveedor')
     bank_id = fields.Many2one('res.bank', 'Banco')
