@@ -90,10 +90,6 @@
                 <xpath expr="//field[@name='lang']" position="attributes"><!--Idioma-->
                     <attribute name="groups">base.group_erp_manager</attribute>
                 </xpath>
-                <xpath expr="//form/sheet/notebook/page[@name='sales_purchases']"
-                       position="attributes"><!--Paǵina, Ventas y Compras-->
-                    <attribute name="invisible">1</attribute>
-                </xpath>
             </field>
         </record>
         <record id='eliterp_view_form_res_partner_property' model='ir.ui.view'>
