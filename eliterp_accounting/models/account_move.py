@@ -149,6 +149,7 @@ class AccountMove(models.Model):
             'journal_id': journal_id.id if journal_id else self.journal_id.id,
             'ref': "Reversado desde: " + self.name
         }
+        name_reverse = ''
         # Cambiamos el nombre del reverso dependiendo del origen
         if 'from_invoice' in self._context:
             name_reverse = str(self.env['account.invoice'].browse(self._context['active_id']).number) + " - [Reverso]"
