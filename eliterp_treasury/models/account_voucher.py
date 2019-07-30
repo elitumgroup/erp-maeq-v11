@@ -519,7 +519,8 @@ class AccountVoucher(models.Model):
             move_id.write({'ref': move_name})
             # OC
             if self.type_pay == 'oc':
-                self.movement_voucher()  # Generamos Asiento diario por anticipo
+                pass
+                # self.movement_voucher()  Generamos Asiento diario por anticipo
             if not self.pay_order_id.type_egress == 'bank' or self.pay_order_id.general_check:
                 self.pay_order_id.update(
                     {'state': 'paid'})  # Cambiamos estado de la OP para todos menos para cheques de Nóminas
