@@ -729,10 +729,12 @@
                                     <strong>Empresa:</strong>
                                     <p t-field="user.company_id.name"/>
                                 </div>
+                                <!--
                                 <div class="col-xs-4">
                                     <strong>Fecha inicio:</strong>
                                     <p t-field="doc.start_date"/>
                                 </div>
+                                -->
                                 <div class="col-xs-">
                                     <strong>Fecha fin:</strong>
                                     <p t-field="doc.end_date"/>
@@ -758,6 +760,7 @@
                                                         </td>
                                                         <td class="text-right col-xs-3">
                                                             <b>
+                                                                <span style="float: left;">$</span>
                                                                 <span t-esc="'{0:,.2f}'.format(line['monto'])"/>
                                                             </b>
                                                         </td>
@@ -777,14 +780,14 @@
                                                         </td>
                                                         <td class="text-right col-xs-3">
                                                             <b>
+                                                                <span style="float: left;">$</span>
                                                                 <span t-esc="'{0:,.2f}'.format(line['monto'])"/>
                                                             </b>
                                                         </td>
                                                     </tr>
                                                 </t>
                                                 <t t-if="line['sub_cuenta'] != False">
-                                                    <t t-foreach="get_cuentas_orden(line['sub_cuenta'])"
-                                                       t-as="line_movimiento">
+                                                    <t t-foreach="get_cuentas_orden(line['sub_cuenta'])" t-as="line_movimiento">
                                                         <t t-if="abs(line_movimiento['monto'])!=0.00">
                                                             <tr>
                                                                 <td class="text-left col-xs-1">
@@ -794,6 +797,7 @@
                                                                     <span t-esc="line_movimiento['name']"/>
                                                                 </td>
                                                                 <td class="text-right col-xs-3">
+                                                                    <span style="float: left;">$</span>
                                                                     <span t-esc="'{0:,.2f}'.format(line_movimiento['monto'])"/>
                                                                 </td>
                                                             </tr>
@@ -817,7 +821,7 @@
                                         </tr>
                                         <tr style="font-size: 12pt;">
                                             <td class="text-left col-xs-1">
-                                                <span></span>
+                                                <span/>
                                             </td>
                                             <td class="text-left col-xs-8">
                                                 <b>
@@ -825,6 +829,7 @@
                                                 </b>
                                             </td>
                                             <td class="text-right col-xs-3">
+                                                <span style="float: left;">$</span>
                                                 <span t-esc="'{0:,.2f}'.format(get_total_activo())"/>
                                             </td>
                                         </tr>
@@ -848,6 +853,7 @@
                                                         </td>
                                                         <td class="text-right col-xs-3">
                                                             <b>
+                                                                <span style="float: left;">$</span>
                                                                 <span t-esc="'{0:,.2f}'.format(line['monto'])"/>
                                                             </b>
                                                         </td>
@@ -867,14 +873,14 @@
                                                         </td>
                                                         <td class="text-right col-xs-3">
                                                             <b>
+                                                                <span style="float: left;">$</span>
                                                                 <span t-esc="'{0:,.2f}'.format(line['monto'])"/>
                                                             </b>
                                                         </td>
                                                     </tr>
                                                 </t>
                                                 <t t-if="line['sub_cuenta'] != False">
-                                                    <t t-foreach="get_cuentas_orden(line['sub_cuenta'])"
-                                                       t-as="line_movimiento">
+                                                    <t t-foreach="get_cuentas_orden(line['sub_cuenta'])" t-as="line_movimiento">
                                                         <t t-if="abs(line_movimiento['monto'])!=0.00">
                                                             <tr>
                                                                 <td class="text-left col-xs-1">
@@ -884,6 +890,7 @@
                                                                     <span t-esc="line_movimiento['name']"/>
                                                                 </td>
                                                                 <td class="text-right col-xs-3">
+                                                                    <span style="float: left;">$</span>
                                                                     <span t-esc="'{0:,.2f}'.format(line_movimiento['monto'])"/>
                                                                 </td>
                                                             </tr>
@@ -907,7 +914,7 @@
                                         </tr>
                                         <tr style="font-size: 12pt;">
                                             <td class="text-left col-xs-1">
-                                                <span></span>
+                                                <span/>
                                             </td>
                                             <td class="text-left col-xs-8">
                                                 <b>
@@ -915,6 +922,7 @@
                                                 </b>
                                             </td>
                                             <td class="text-right col-xs-3">
+                                                <span style="float: left;">$</span>
                                                 <span t-esc="'{0:,.2f}'.format(get_total_pasivo())"/>
                                             </td>
                                         </tr>
@@ -943,6 +951,7 @@
                                                         </td>
                                                         <td class="text-right col-xs-3">
                                                             <b>
+                                                                <span style="float: left;">$</span>
                                                                 <span t-esc="'{0:,.2f}'.format(line['monto'])"/>
                                                             </b>
                                                         </td>
@@ -962,14 +971,14 @@
                                                         </td>
                                                         <td class="text-right col-xs-3">
                                                             <b>
+                                                                <span style="float: left;">$</span>
                                                                 <span t-esc="'{0:,.2f}'.format(line['monto'])"/>
                                                             </b>
                                                         </td>
                                                     </tr>
                                                 </t>
                                                 <t t-if="line['sub_cuenta'] != False">
-                                                    <t t-foreach="get_cuentas_orden(line['sub_cuenta'])"
-                                                       t-as="line_movimiento">
+                                                    <t t-foreach="get_cuentas_orden(line['sub_cuenta'])" t-as="line_movimiento">
                                                         <t t-if="abs(line_movimiento['monto'])!=0.00">
                                                             <tr>
                                                                 <td class="text-left col-xs-1">
@@ -979,6 +988,7 @@
                                                                     <span t-esc="line_movimiento['name']"/>
                                                                 </td>
                                                                 <td class="text-right col-xs-3">
+                                                                    <span style="float: left;">$</span>
                                                                     <span t-esc="'{0:,.2f}'.format(line_movimiento['monto'])"/>
                                                                 </td>
                                                             </tr>
@@ -1002,7 +1012,7 @@
                                         </tr>
                                         <tr style="font-size: 12pt;">
                                             <td class="text-left col-xs-1">
-                                                <span></span>
+                                                <span/>
                                             </td>
                                             <td class="text-left col-xs-8">
                                                 <b>
@@ -1010,6 +1020,7 @@
                                                 </b>
                                             </td>
                                             <td class="text-right col-xs-3">
+                                                <span style="float: left;">$</span>
                                                 <span t-esc="'{0:,.2f}'.format(get_total_ejercicio())"/>
                                             </td>
                                         </tr>
@@ -1054,7 +1065,7 @@
                                     <strong>Empresa:</strong>
                                     <p t-field="user.company_id.name"/>
                                 </div>
-                                <div class="col-xs-4">
+                                <div class="col-xs-4" t-if="doc.start_date">
                                     <strong>Período:</strong>
                                     <p t-field="doc.start_date" t-options="{&quot;format&quot;: &quot;yyyy&quot;}"/>
                                 </div>
@@ -1073,11 +1084,12 @@
                                                     <td style="border-right: none;" class="text-right col-xs-2">
                                                         <span t-esc="line['code']"/>
                                                     </td>
-                                                    <td style="border-right: none;" class="text-left col-xs-7">
+                                                    <td style="border-right: none;" class="text-left col-xs-8">
                                                         <span t-esc="line['name']"/>
                                                     </td>
-                                                    <td style="border-right: none;" class="text-right col-xs-3">
-                                                        <span t-esc='"%.2f" % line["amount"]'/>
+                                                    <td style="border-right: none;" class="text-right col-xs-2">
+                                                        <span style="float: left;">$</span>
+                                                        <span t-esc="&quot;%.2f&quot; % line[&quot;amount&quot;]"/>
                                                     </td>
                                                 </tr>
                                             </t>
@@ -1086,11 +1098,12 @@
                                                     <td style="border-right: none;" class="text-right col-xs-2">
                                                         <span t-esc="line['code']"/>
                                                     </td>
-                                                    <td style="border-right: none;" class="text-left col-xs-7">
+                                                    <td style="border-right: none;" class="text-left col-xs-8">
                                                         <span t-esc="line['name']"/>
                                                     </td>
-                                                    <td style="border-right: none;" class="text-right col-xs-3">
-                                                        <span t-esc='"%.2f" % line["amount"]'/>
+                                                    <td style="border-right: none;" class="text-right col-xs-2">
+                                                        <span style="float: left;">$</span>
+                                                        <span t-esc="&quot;%.2f&quot; % line[&quot;amount&quot;]"/>
                                                     </td>
                                                 </tr>
                                             </t>
@@ -1101,11 +1114,12 @@
                                                             <td style="border-right: none;" class="text-right col-xs-2">
                                                                 <span t-esc="line_move['code']"/>
                                                             </td>
-                                                            <td style="border-right: none;" class="text-left col-xs-7">
+                                                            <td style="border-right: none;" class="text-left col-xs-8">
                                                                 <span t-esc="line_move['name']"/>
                                                             </td>
-                                                            <td style="border-right: none;" class="text-right col-xs-3">
-                                                                <span t-esc='"%.2f" % line_move["amount"]'/>
+                                                            <td style="border-right: none;" class="text-right col-xs-2">
+                                                                <span style="float: left;">$</span>
+                                                                <span t-esc="&quot;%.2f&quot; % line_move[&quot;amount&quot;]"/>
                                                             </td>
                                                         </tr>
                                                     </t>
@@ -1125,11 +1139,12 @@
                                                     <td style="border-right: none;" class="text-right col-xs-2">
                                                         <span t-esc="line['code']"/>
                                                     </td>
-                                                    <td style="border-right: none;" class="text-left col-xs-7">
+                                                    <td style="border-right: none;" class="text-left col-xs-8">
                                                         <span t-esc="line['name']"/>
                                                     </td>
-                                                    <td style="border-right: none;" class="text-right col-xs-3">
-                                                        <span t-esc='"%.2f" % line["amount"]'/>
+                                                    <td style="border-right: none;" class="text-right col-xs-2">
+                                                        <span style="float: left;">$</span>
+                                                        <span t-esc="&quot;%.2f&quot; % line[&quot;amount&quot;]"/>
                                                     </td>
                                                 </tr>
                                             </t>
@@ -1138,11 +1153,12 @@
                                                     <td style="border-right: none;" class="text-right col-xs-2">
                                                         <span t-esc="line['code']"/>
                                                     </td>
-                                                    <td style="border-right: none;" class="text-left col-xs-7">
+                                                    <td style="border-right: none;" class="text-left col-xs-8">
                                                         <span t-esc="line['name']"/>
                                                     </td>
-                                                    <td style="border-right: none;" class="text-right col-xs-3">
-                                                        <span t-esc='"%.2f" % line["amount"]'/>
+                                                    <td style="border-right: none;" class="text-right col-xs-2"> 
+                                                      <span style="float: left;">$</span>
+                                                      <span t-esc="&quot;%.2f&quot; % line[&quot;amount&quot;]"/>
                                                     </td>
                                                 </tr>
                                             </t>
@@ -1153,11 +1169,12 @@
                                                             <td style="border-right: none;" class="text-right col-xs-2">
                                                                 <span t-esc="line_move['code']"/>
                                                             </td>
-                                                            <td style="border-right: none;" class="text-left col-xs-7">
+                                                            <td style="border-right: none;" class="text-left col-xs-8">
                                                                 <span t-esc="line_move['name']"/>
                                                             </td>
-                                                            <td style="border-right: none;" class="text-right col-xs-3">
-                                                                <span t-esc='"%.2f" % line_move["amount"]'/>
+                                                            <td style="border-right: none;" class="text-right col-xs-2">
+                                                                <span style="float: left;">$</span>
+                                                                <span t-esc="&quot;%.2f&quot; % line_move[&quot;amount&quot;]"/>
                                                             </td>
                                                         </tr>
                                                     </t>
@@ -1170,12 +1187,14 @@
 
                             <h4 t-if="get_result()==True" class="clearfix text-center">GANANCIA DEL EJERCICIO:&amp;nbsp;
                                 <strong>
-                                    <span t-esc='"%.2f" % get_total_exercise()'/>
+                                    <span>$</span>
+                                    <span t-esc="&quot;%.2f&quot; % get_total_exercise()"/>
                                 </strong>
                             </h4>
                             <h4 t-if="get_result()==False" class="clearfix text-center">PÉRDIDA DEL EJERCICIO:&amp;nbsp;
                                 <strong>
-                                    <span t-esc='"%.2f" % get_total_exercise()'/>
+                                    <span>$</span>
+                                    <span t-esc="&quot;%.2f&quot; % get_total_exercise()"/>
                                 </strong>
                             </h4>
 
