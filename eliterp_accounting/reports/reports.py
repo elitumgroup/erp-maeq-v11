@@ -1022,7 +1022,7 @@ class Taxes103104ReportXlsx(models.AbstractModel):
         arg.append(('date_invoice', '>=', context.start_date))
         arg.append(('date_invoice', '<=', context.end_date))
         arg.append(('state', 'not in', ('draft', 'cancel')))
-        arg.append(('type', '=', 'in_invoice'))
+        arg.append(('type', 'in', ('in_invoice', 'in_refund'))
         invoices = self.env['account.invoice'].search(arg)
         count = 0
         for invoice in invoices:
@@ -1030,16 +1030,23 @@ class Taxes103104ReportXlsx(models.AbstractModel):
             authorization = invoice.authorization
             establishment = invoice.establishment
             emission_point = invoice.emission_point
+            type = ""
+            if invoice.type == 'in_refund':
+                type = "NC"
+            elif invoice.type == 'in_invoice':
+                type = "F"
+            else:
+                type = "N"                
             for line in invoice.invoice_line_ids:
                 register = []
-                register.append("F" if invoice.type == 'in_invoice' else "N")  # Tipo
+                register.append(type)  # Tipo
                 register.append(establishment)  # Establecimiento
                 register.append(emission_point)  # P. Emisión
                 register.append(invoice.reference)  # Secuencial
                 register.append(datetime.strptime(invoice.date_invoice, "%Y-%m-%d"))  # Fecha
                 register.append(invoice.withhold_number if invoice.withhold_number else "-")  # No. Retención
                 register.append(line.name)  # Descripción
-                register.append(invoice.partner_id.name)  # Cliente
+                register.append(invoice.partner_id.name)  # Proveedor
                 register.append(invoice.partner_id.documentation_number)  # No. Documento
                 register.append(authorization)  # Autorización
                 register.append(invoice.tax_support_id.code if invoice.tax_support_id else "-")  # S. Tributario
@@ -1050,7 +1057,10 @@ class Taxes103104ReportXlsx(models.AbstractModel):
                 register.append("-")  # C. Renta
                 register.append("-")  # P. Renta
                 register.append(0.00)  # Monto renta
-                register.append(invoice.amount_tax if count_invoice == 0 else 0.00)  # R. Base I.
+                invoice_tax = 0
+                if count_invoice == 0:
+                    invoice_tax = -1 * invoice.amount_tax if invoice.type == 'in_refund' else invoice.amount_tax
+                register.append(invoice_tax)  # R. Base I.
                 register.append("-")  # C. Iva
                 register.append("-")  # P. Iva
                 register.append(0.00)  # Valor iva
@@ -1058,13 +1068,13 @@ class Taxes103104ReportXlsx(models.AbstractModel):
                 data.append(register)
                 count_invoice = 1
                 if len(line.invoice_line_tax_ids) == 0:
-                    data[-1][14] = line.price_subtotal
+                    data[-1][14] = -1 * line.price_subtotal if invoice.type == 'in_refund' else line.price_subtotal
                 else:
                     for tax in line.invoice_line_tax_ids:
                         if tax.amount > 0:
-                            data[-1][11] = line.price_subtotal
+                            data[-1][11] = -1 * line.price_subtotal if invoice.type == 'in_refund' else line.price_subtotal
                         if tax.amount == 0:
-                            data[-1][12] = line.price_subtotal
+                            data[-1][12] = -1 * line.price_subtotal if invoice.type == 'in_refund' else line.price_subtotal
             rent = []
             iva = []
             for line in invoice.withhold_id.lines_withhold:
@@ -1074,7 +1084,7 @@ class Taxes103104ReportXlsx(models.AbstractModel):
                     iva.append(line)
             if len(rent) == 2:
                 register = []
-                register.append("F" if invoice.type == 'in_invoice' else "N")  # Tipo
+                register.append(type)  # Tipo
                 register.append(establishment)  # Establecimiento
                 register.append(emission_point)  # P. Emisión
                 register.append(invoice.reference)  # Secuencial
@@ -1158,7 +1168,7 @@ class Taxes103104ReportXlsx(models.AbstractModel):
                             'amount': i.amount if invoice.state != 'cancel' else 0.00,
                             'type': "iva"
                         })
-            data[-1][22] = invoice.amount_total
+            data[-1][22] = -1 * invoice.amount_total if invoice.type == 'in_refund' else invoice.amount_total
         return data
 
     def _get_last(self, start_date):
