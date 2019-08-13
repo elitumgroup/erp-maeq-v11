@@ -1022,7 +1022,7 @@ class Taxes103104ReportXlsx(models.AbstractModel):
         arg.append(('date_invoice', '>=', context.start_date))
         arg.append(('date_invoice', '<=', context.end_date))
         arg.append(('state', 'not in', ('draft', 'cancel')))
-        arg.append(('type', 'in', ('in_invoice', 'in_refund'))
+        arg.append(('type', 'in', ('in_invoice', 'in_refund')))
         invoices = self.env['account.invoice'].search(arg)
         count = 0
         for invoice in invoices:
