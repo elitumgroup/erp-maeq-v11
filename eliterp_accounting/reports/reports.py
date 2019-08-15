@@ -145,7 +145,8 @@ class FinancialSituationReportPdf(models.AbstractModel):
     def get_saldo_resultado(self, cuenta, tipo, fecha_inicio, fecha_fin):
         '''Obtenemos el saldo del Estado de Resultados'''
         movimientos = self.env['account.move.line'].search([('account_id', '=', cuenta),
-                                                            ('date', '>=', fecha_inicio if fecha_inicio else '2000-01-01'),
+                                                            ('date', '>=',
+                                                             fecha_inicio if fecha_inicio else '2000-01-01'),
                                                             ('date', '<=', fecha_fin)])
 
         credit = 0.00
@@ -270,7 +271,8 @@ class FinancialSituationReportPdf(models.AbstractModel):
         '''Obtenemos el saldo de la cuenta y verificamos su naturaleza'''
         # MARZ
         movimientos = self.env['account.move.line'].search([('account_id', '=', cuenta.id),
-                                                            ('date', '>=', doc.start_date if doc.start_date else '2000-01-01'),
+                                                            ('date', '>=',
+                                                             doc.start_date if doc.start_date else '2000-01-01'),
                                                             ('date', '<=', doc.end_date)])
         credit = 0.00
         debit = 0.00
@@ -394,7 +396,7 @@ class FinancialSituationReportPdf(models.AbstractModel):
                     for cuenta in cuentas:
                         if cuenta['code'] == '3.3':
                             cuenta['sub_cuenta'].append(movimientos_internos)
-                            cuenta['monto']  = cuenta['monto'] + movimientos_internos['monto']
+                            cuenta['monto'] = cuenta['monto'] + movimientos_internos['monto']
                     TOTALES.append({'total_patrimonio': cuentas[0]['monto'] + monto})
                     cuentas[0]['monto'] = cuentas[0]['monto'] + movimientos_internos['monto']
                     return cuentas
@@ -489,7 +491,6 @@ class StatusResultsReportXlsx(models.AbstractModel):
 
     _inherit = 'report.report_xlsx.abstract'
 
-
     def _get_lines(self, doc, type):
 
         """
@@ -536,7 +537,6 @@ class StatusResultsReportXlsx(models.AbstractModel):
                     accounts[index]['amount'] = accounts[index]['amount'] + object._get_balance(account, type, doc)
         accounts = object._update_amount(accounts)
         return accounts
-
 
     def generate_xlsx_report(self, workbook, data, context):
         lines_4 = sorted(self._get_lines(context, '4'), key=lambda k: int(k['code'].replace('.', '')))
@@ -928,8 +928,10 @@ class GeneralLedgerReport(models.TransientModel):
     start_date = fields.Date('Fecha inicio', required=True)
     end_date = fields.Date('Fecha fin', required=True)
     type = fields.Selection([('all', 'Todas'), ('one', 'Seleccionar cuentas')], default='all', string='Tipo de reporte')
-    not_canceled = fields.Boolean('No colocar asientos anulados', default=False, help="Se filtra por asientos no validados y/o reversados.")
-    account_id = fields.Many2many('account.account', string='Cuentas contables', domain=[('account_type', '=', 'movement')])
+    not_canceled = fields.Boolean('No colocar asientos anulados', default=False,
+                                  help="Se filtra por asientos no validados y/o reversados.")
+    account_id = fields.Many2many('account.account', string='Cuentas contables',
+                                  domain=[('account_type', '=', 'movement')])
 
 
 class Taxes103104ReportXlsx(models.AbstractModel):
@@ -1036,7 +1038,7 @@ class Taxes103104ReportXlsx(models.AbstractModel):
             elif invoice.type == 'in_invoice':
                 type = "F"
             else:
-                type = "N"                
+                type = "N"
             for line in invoice.invoice_line_ids:
                 register = []
                 register.append(type)  # Tipo
@@ -1072,9 +1074,11 @@ class Taxes103104ReportXlsx(models.AbstractModel):
                 else:
                     for tax in line.invoice_line_tax_ids:
                         if tax.amount > 0:
-                            data[-1][11] = -1 * line.price_subtotal if invoice.type == 'in_refund' else line.price_subtotal
+                            data[-1][
+                                11] = -1 * line.price_subtotal if invoice.type == 'in_refund' else line.price_subtotal
                         if tax.amount == 0:
-                            data[-1][12] = -1 * line.price_subtotal if invoice.type == 'in_refund' else line.price_subtotal
+                            data[-1][
+                                12] = -1 * line.price_subtotal if invoice.type == 'in_refund' else line.price_subtotal
             rent = []
             iva = []
             for line in invoice.withhold_id.lines_withhold:
@@ -1426,6 +1430,14 @@ class BillsReportXlsx(models.AbstractModel):
                 sheet.write(row, col + 10, r['residual'], money_format)
                 sheet.write(row, col + 11, r['amount_payments'], money_format)
                 row += 1
+                for pay in r['pays']:
+                    sheet.write(row, col + 6, pay['name'])
+                    sheet.write(row, col + 7, pay['type'])
+                    sheet.write(row, col + 8, pay['check_date'], date_format)
+                    sheet.write(row, col + 9, pay['bank'])
+                    sheet.write(row, col + 10, pay['check'])
+                    sheet.write(row, col + 11, pay['amount_payable'], money_format)
+                row += 2
 
 
 class BillsReportPdf(models.AbstractModel):
@@ -1438,7 +1450,27 @@ class BillsReportPdf(models.AbstractModel):
         else:
             return 'Pagada'
 
-    def _get_payments(self, invoice):
+    def _get_vouchers(self, invoice):
+        model_lines = self.env['eliterp.lines.invoice']
+        vouchers = model_lines.search([
+            ('invoice_id', '=', invoice.id),
+            ('voucher_id.state', '=', 'posted')
+        ])
+        data = []
+        for voucher in vouchers:
+            voucher_id = voucher.voucher_id
+            data.append({
+                'name': 'COEG',
+                'type': dict(voucher_id._fields['type_egress'].selection)[voucher_id.type_egress],
+                'bank': voucher_id.bank_id.name if voucher_id.type_egress != 'cash' else '-',
+                'check_date': voucher_id.check_date if voucher_id.check_date else '-',
+                'check': voucher_id.check_number if voucher_id.type_egress == 'bank' else '-',
+                'amount_payable': voucher.amount_payable,
+            })
+        return data
+
+    @staticmethod
+    def _get_payments(invoice):
         pays = invoice._get_payments_vals()
         amount = 0.00
         for pay in filter(lambda x: not x['journal_name'] == 'Retención en venta', pays):
@@ -1452,7 +1484,7 @@ class BillsReportPdf(models.AbstractModel):
         :return: list
         """
         data = []
-        arg = []
+        arg = list()
         arg.append(('date_invoice', '>=', doc.start_date))
         arg.append(('date_invoice', '<=', doc.end_date))
         arg.append(('state', 'in', ['open', 'paid']))
@@ -1477,7 +1509,8 @@ class BillsReportPdf(models.AbstractModel):
                     'total': r.amount_total,
                     'residual': r.residual,
                     'amount_payments': self._get_payments(r),
-                    'state': self._get_state(r.state)
+                    'state': self._get_state(r.state),
+                    'pays': self._get_vouchers(r) if type == 'in_invoice' else []
                 })
             data.append({
                 'type': 'Ventas' if type == 'out_invoice' else 'Compras',
