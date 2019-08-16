@@ -1437,7 +1437,8 @@ class BillsReportXlsx(models.AbstractModel):
                     sheet.write(row, col + 9, pay['bank'])
                     sheet.write(row, col + 10, pay['check'])
                     sheet.write(row, col + 11, pay['amount_payable'], money_format)
-                row += 2
+                    row += 1
+                row += 1
 
 
 class BillsReportPdf(models.AbstractModel):
