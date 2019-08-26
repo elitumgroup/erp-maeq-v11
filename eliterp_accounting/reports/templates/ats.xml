@@ -43,8 +43,7 @@
             <formasDePago>
                 <formaPago>{{ detalle_compras['formaPago'] }}</formaPago>
             </formasDePago>{% endif %}
-            <air>
-                {% for detalle_air in detalle_compras['detalleAir'] %}
+            <air>{% for detalle_air in detalle_compras['detalleAir'] %}                
                 <detalleAir>
                     <codRetAir>{{ detalle_air['codRetAir'] }}</codRetAir>
                     <baseImpAir>{{ detalle_air['baseImpAir'] }}</baseImpAir>
