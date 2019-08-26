@@ -309,10 +309,10 @@ class AtsXml(models.TransientModel):
                     if tax.tax_id.code == '725':
                         # Retención 30%
                         retBien += abs(tax.amount)
-                    if tax.tax_id.code == '727':
+                    if tax.tax_id.code == '729':
                         # Retención 70%
                         retServ += abs(tax.amount)
-                    if tax.tax_id.code == '729':
+                    if tax.tax_id.code == '731':
                         # Retención 100%
                         retServ100 += abs(tax.amount)
         return retBien10, retServ20, retBien, retServ, retServ100
