@@ -72,6 +72,10 @@
                                options="{'no_create': True, 'no_open': True}"/>
                     </group>
                     <footer>
+                        <button name="print_report_xlsx"
+                                type="object"
+                                class="oe_highlight"
+                                string="Excel"/>
                         <button name="print_report_pdf"
                                 type="object"
                                 class="oe_highlight"

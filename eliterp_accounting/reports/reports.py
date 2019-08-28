@@ -912,6 +912,55 @@ class GeneralLedgerReportPdf(models.AbstractModel):
         }
 
 
+class GeneralLedgerReportXlsx(models.AbstractModel):
+    _name = 'report.eliterp_accounting.eliterp_report_general_ledger_xlsx'
+    _inherit = 'report.report_xlsx.abstract'
+
+    def generate_xlsx_report(self, workbook, data, context):
+        lines = self.env['report.eliterp_accounting.eliterp_report_general_ledger']._get_lines(context)
+        sheet = workbook.add_worksheet('Libro mayor')
+        # Formatos
+        bold = workbook.add_format({'bold': 1})
+        title = workbook.add_format({
+            'bold': True,
+            'align': 'center',
+            'border': 1
+        })
+        heading = workbook.add_format({
+            'bold': True,
+            'bg_color': '#D3D3D3',
+            'align': 'center',
+            'border': 1
+        })
+        # Formatos de celda
+        money_format = workbook.add_format({'num_format': '#,##0.00'})
+        date_format = workbook.add_format({'num_format': 'dd/mm/yy'})
+        sheet.write('A1', 'REPORTE DE LIBRO MAYOR', title)
+        sheet.write('A2', 'FECHA DE CORTE: ' + context['end_date'], heading)
+        row = 3
+        col = 0
+        columns = [
+            'CUENTA', 'FECHA', 'NO. COMPENSASIÓN', 'DETALLE', 'DEBE', 'HABER', 'SALDO'
+        ]
+        for column in columns:
+            sheet.write(row, col, column, bold)
+            col += 1
+        row += 1
+        for line in lines:
+            account = line['account'] + ' [' + line['code'] + ']'
+            for move in line['moves']:
+                # date, balance, reconciled_number, name, detail, credit, debit
+                sheet.write(row, 0, account)
+                sheet.write(row, 1, move['date'], date_format)
+                sheet.write(row, 2, move['reconciled_number'])
+                sheet.write(row, 3, move['detail'])
+                sheet.write(row, 4, move['debit'], money_format)
+                sheet.write(row, 5, move['credit'], money_format)
+                sheet.write(row, 6, move['balance'], money_format)
+                row += 1
+            row += 1
+
+
 class GeneralLedgerReport(models.TransientModel):
     _name = 'eliterp.general.ledger.report'
 
@@ -924,6 +973,14 @@ class GeneralLedgerReport(models.TransientModel):
         """
         self.ensure_one()
         return self.env.ref('eliterp_accounting.eliterp_action_report_general_ledger').report_action(self)
+
+    @api.multi
+    def print_report_xlsx(self):
+        """
+        Imprimimos reporte en xlsx
+        """
+        self.ensure_one()
+        return self.env.ref('eliterp_accounting.eliterp_action_report_general_ledger_xlsx').report_action(self)
 
     start_date = fields.Date('Fecha inicio', required=True)
     end_date = fields.Date('Fecha fin', required=True)

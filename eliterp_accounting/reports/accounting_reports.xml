@@ -1330,6 +1330,17 @@
                 print_report_name="'Libro mayor'"
                 paperformat="eliterp_management.eliterp_paperformat_a4_landscape"
         />
+
+        <report
+                id="eliterp_action_report_general_ledger_xlsx"
+                model="eliterp.general.ledger.report"
+                string="Libro mayor"
+                report_type="xlsx"
+                name="eliterp_accounting.eliterp_report_general_ledger_xlsx"
+                file="eliterp_accounting.eliterp_report_general_ledger_xlsx"
+                print_report_name="Libro mayor"
+                attachment_use="False"
+        />
         <!--Reporte de impuestos (103, 104)-->
         <report
                 id="eliterp_action_report_taxes_103_104_xlsx"
