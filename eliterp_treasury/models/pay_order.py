@@ -1315,8 +1315,8 @@ class PaymentRequest(models.Model):
 
     @api.multi
     def cancel(self):
-        if any(po.state != 'draft' for po in self.lines_pay_order):
-            raise UserError("No se puede cancelar, RPG si tiene ordenes cerradas o anuladas.")
+        if any(po.state == 'paid' for po in self.lines_pay_order):
+            raise UserError("No se puede cancelar, RPG si tiene ordenes pagadas.")
         self.write({'state': 'deny'})
 
     pay_orders_count = fields.Integer('No. OP', compute='_compute_pay_orders_count')
