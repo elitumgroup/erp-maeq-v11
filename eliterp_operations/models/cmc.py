@@ -292,9 +292,7 @@ class CMC(models.Model):
     prefix_id = fields.Many2one('eliterp.prefix.cmc', 'Prefijo CMC', required=True, readonly=True,
                                 states={'draft': [('readonly', False)]})
     name = fields.Char('Nº', size=3, required=True, track_visibility='onchange')
-    date = fields.Date('Fecha documento', default=fields.Date.context_today, required=True, readonly=True,
-                       states={'draft': [('readonly', False)]}, track_visibility='onchange'
-                       )
+    date = fields.Date('Fecha documento', default=fields.Date.context_today, required=True, track_visibility='onchange')
     project_id = fields.Many2one('eliterp.project', string='Proyecto', required=True,
                                  readonly=True, track_visibility='onchange',
                                  states={'draft': [('readonly', False)]})
@@ -342,14 +340,10 @@ class CMC(models.Model):
     piece_ids = fields.One2many('eliterp.parts.management', 'cmc_id', 'Administración de piezas', readonly=True,
                                 states={'draft': [('readonly', False)]})
 
-    check_in_am = fields.Datetime('Hora ingreso AM', readonly=True,
-                                  states={'draft': [('readonly', False)]})
-    check_out_am = fields.Datetime('Hora salida AM', readonly=True,
-                                   states={'draft': [('readonly', False)]})
-    check_in_pm = fields.Datetime('Hora ingreso PM', readonly=True,
-                                  states={'draft': [('readonly', False)]})
-    check_out_pm = fields.Datetime('Hora salida PM', readonly=True,
-                                   states={'draft': [('readonly', False)]})
+    check_in_am = fields.Datetime('Hora ingreso AM')
+    check_out_am = fields.Datetime('Hora salida AM')
+    check_in_pm = fields.Datetime('Hora ingreso PM')
+    check_out_pm = fields.Datetime('Hora salida PM')
 
     stop_time_1 = fields.Float('Paro MAEQ')
     stop_time_2 = fields.Float('Paro Cliente')
