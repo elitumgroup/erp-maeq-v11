@@ -292,9 +292,7 @@ class CMC(models.Model):
     prefix_id = fields.Many2one('eliterp.prefix.cmc', 'Prefijo CMC', required=True, readonly=True,
                                 states={'draft': [('readonly', False)]})
     name = fields.Char('Nº', size=3, required=True, track_visibility='onchange')
-    date = fields.Date('Fecha documento', default=fields.Date.context_today, required=True, readonly=True,
-                       states={'draft': [('readonly', False)]}, track_visibility='onchange'
-                       )
+    date = fields.Date('Fecha documento', default=fields.Date.context_today, required=True, track_visibility='onchange')
     project_id = fields.Many2one('eliterp.project', string='Proyecto', required=True,
                                  readonly=True, track_visibility='onchange',
                                  states={'draft': [('readonly', False)]})
