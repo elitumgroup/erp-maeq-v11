@@ -95,7 +95,7 @@ class LinesWithhold(models.Model):
         if self.retention_type == 'rent':
             self.base_taxable = self.withhold_id.base_taxable
 
-    @api.onchange('tax_id')
+    @api.onchange('base_taxable', 'tax_id')
     def _onchange_tax_id(self):
         """
         Calculamos el monto a cambiar de Impuesto
@@ -261,6 +261,26 @@ class Withhold(models.Model):
         self.base_taxable = self.invoice_id.amount_untaxed
         self.base_iva = self.invoice_id.amount_tax
 
+    def _create_invoice_tax(self, invoice, tax, amount, retention=None):
+        invoice_tax = self.env['account.invoice.tax'].create({
+            'retention_id': retention.id if retention else self.id,
+            'invoice_id': invoice.id,
+            'name': tax.name,
+            'tax_id': tax.id,
+            'account_id': tax.account_id.id,
+            'amount': -1 * amount
+        })
+        return invoice_tax
+
+    def _search_invoice_tax(self, tax_retention):
+        invoice_tax = self.env['account.invoice.tax'].search([
+            ('invoice_id', '=', self.invoice_id.id),
+            ('name', '=', tax_retention.name),
+            ('tax_id', '=', tax_retention.id),
+            ('account_id', '=', tax_retention.account_id.id)
+        ])
+        return invoice_tax
+
     @api.multi
     def write(self, values):
         # Si cambiamos la retención actualizamos el número
@@ -270,55 +290,49 @@ class Withhold(models.Model):
             values.update({'withhold_number': authorisation[0].sequence_id.prefix + values['reference']})
         if 'lines_withhold' in values:
             for line in values['lines_withhold']:
-                if line[0] == 0:
-                    retention = self.env['account.tax'].browse(line[2]['tax_id'])
+                # No existe línea, se crea impuesto en Factura
+                if line[2]:
                     amount = line[2]['amount'] if 'amount' in line[2] else 0.00
-                    self.env['account.invoice.tax'].create({
-                        'invoice_id': self.invoice_id.id,
-                        'name': retention.name,
-                        'tax_id': retention.id,
-                        'account_id': retention.account_id.id,
-                        'amount': -1 * amount
-                    })
+                if line[0] == 0:
+                    tax_retention = self.env['account.tax'].browse(line[2]['tax_id'])
+                    self._create_invoice_tax(self.invoice_id, tax_retention, amount)
+                # Se modifica la misma línea
                 if line[0] == 1:
-                    tax_id = self.env['account.tax'].browse(line[2]['tax_id'])
-                    if self.lines_withhold.tax_id:
-                        self.lines_withhold.tax_id.write({
-                            'name': tax_id.name,
-                            'tax_id': tax_id.id,
-                            'account_id': tax_id.account_id.id,
-                            'amount': line[2]['amount'] if 'amount' in line[2] else 0.00
-                        })
+                    line_retention = self.lines_withhold.filtered(lambda x: x.id == line[1])
+                    # Si se modifica soló el monto
+                    if not 'tax_id' in line[2]:
+                        invoice_tax = self._search_invoice_tax(line_retention.tax_id)
+                        invoice_tax.write({'amount': -1 * amount})
+                    # Si se modifica impuesto y monto
                     else:
-                        line_withhold = self.lines_withhold.browse(line[1])
-                        amount = line[2]['monto'] if 'monto' in line[2] else 0.00
-                        invoice_tax = self.env['account.invoice.tax'].search([('invoice_id', '=', self.invoice_id.id),
-                                                                              ('name', '=',
-                                                                               line_withhold.tax_id.name),
-                                                                              ('tax_id', '=',
-                                                                               line_withhold.tax_id.id),
-                                                                              ('account_id', '=',
-                                                                               line_withhold.tax_id.account_id.id)])[
-                            0]
-                        invoice_tax.write({
-                            'name': tax_id.name,
-                            'tax_id': tax_id.id,
-                            'account_id': tax_id.account_id.id,
-                            'amount': -1 * amount
-                        })
+                        tax_id = self.env['account.tax'].browse(line[2]['tax_id'])
+                        if line_retention.retention_tax_id:
+                            line_retention.retention_tax_id.write({
+                                'name': tax_id.name,
+                                'tax_id': tax_id.id,
+                                'account_id': tax_id.account_id.id,
+                                'amount': -1 * amount
+                            })
+                        else:
+                            invoice_tax = self._search_invoice_tax(line_retention.tax_id)
+                            if not invoice_tax:
+                                self._create_invoice_tax(self.invoice_id, tax_id, amount)
+                            invoice_tax.write({
+                                'name': tax_id.name,
+                                'tax_id': tax_id.id,
+                                'account_id': tax_id.account_id.id,
+                                'amount': -1 * amount
+                            })
+                # Si se elimina la línea
                 if line[0] == 2:
                     if not self.modified_bill:
-                        if self.lines_withhold.tax_id:
-                            self.lines_withhold.tax_id.unlink()
+                        line_retention = self.lines_withhold.filtered(lambda x: x.id == line[1])
+                        if line_retention.retention_tax_id:
+                            line_retention.retention_tax_id.unlink()
                         else:
-                            line_withhold = self.lines_withhold.browse(line[1])
-                            invoice_tax = \
-                                self.env['account.invoice.tax'].search([('invoice_id', '=', self.invoice_id.id),
-                                                                        ('name', '=', line_withhold.tax_id.name),
-                                                                        ('tax_id', '=', line_withhold.tax_id.id),
-                                                                        ('account_id', '=',
-                                                                         line_withhold.tax_id.account_id.id)])[0]
-                            invoice_tax.unlink()
+                            invoice_tax = self._search_invoice_tax(line_retention.tax_id)
+                            if invoice_tax:
+                                invoice_tax.unlink()
                     else:
                         values.update({'modified_bill': False})
             self.invoice_id._compute_amount()
