@@ -141,7 +141,7 @@
                                        required="1"/>
                                 <field name="bank_id"
                                        domain="[('type_use', '=', 'charges')]"
-                                       attrs="{'readonly': [('type_payment', '!=', 'bank')], 'required': [('type_payment', '==', 'bank')]}"/>
+                                       attrs="{'readonly': [('type_payment', 'not in', ('bank', 'transfer'))], 'required': [('type_payment', 'in', ('bank', 'transfer'))]}"/>
                                 <field name="account_number"
                                        attrs="{'readonly': [('type_payment', '!=', 'bank')], 'required': [('type_payment', '==', 'bank')]}"/>
                                 <field name="check_number"
