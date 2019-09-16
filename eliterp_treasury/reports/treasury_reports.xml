@@ -34,6 +34,7 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center">DOCUMENTO</th>
+                                        <th class="text-center">BANCO</th>
                                         <th class="text-center">REFERENCIA</th>
                                         <th class="text-center">FECHA COBRO</th>
                                         <th class="text-right">MONTO</th>
@@ -45,11 +46,14 @@
                                             <span t-field="line.type_payment"/>
                                         </td>
                                         <td>
+                                            <span t-if="line.type_payment in ('bank', 'transfer')"
+                                                  t-esc="line.bank_id.name"/>
+                                            <span t-else="">N.A</span>
+                                        </td>
+                                        <td>
                                             <span t-if="line.type_payment == 'bank'"
-                                                  t-esc="'%s - %s' % (line.bank_id.name, line.check_number)"/>
-                                            <span t-if="line.type_payment == 'cash'">/</span>
-                                            <span t-if="line.type_payment == 'transfer'"
-                                                  t-esc="'%s' % line.bank_id.name"/>
+                                                  t-esc="'Cheque # %s' % (line.check_number)"/>
+                                            <span t-else="">N.A</span>
                                         </td>
                                         <td>
                                             <span t-field="line.date_due"/>
