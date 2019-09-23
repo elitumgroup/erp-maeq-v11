@@ -123,10 +123,6 @@
                     <field name="retention_type"
                            attrs="{'invisible': [('tax_type','=','iva')], 'required': [('tax_type','=','retention')]}"/>
                 </field>
-                <xpath expr="//field[@name='refund_account_id']"
-                       position="attributes"><!--Cuenta de impuestos en rectificativas-->
-                    <attribute name="invisible">1</attribute>
-                </xpath>
             </field>
         </record>
     </data>

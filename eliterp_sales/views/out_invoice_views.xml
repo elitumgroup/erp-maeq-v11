@@ -9,13 +9,11 @@
             <field name="arch" type="xml">
                 <data>
                     <xpath expr="//button[@name='invoice_print']" position="replace"><!--Imprimir factura-->
-                        <!--TODO: Para cuando empresa genere documento del SRI
-                        <button name="add_note_credit"
+                        <button name="add_credit_note"
                                 type="object"
-                                attrs="{'invisible': [('type', '=', 'out_refund')]}"
+                                attrs="{'invisible': ['|', ('type', '=', 'out_refund'), ('state', '!=', 'open')]}"
                                 class="oe_highlight"
                                 string="Añadir nota de crédito"/>
-                        -->
                         <button name="print_invoice"
                                 type="object"
                                 class="oe_highlight"
@@ -38,8 +36,8 @@
                         <attribute name="invisible">1</attribute>
                     </xpath>
                     <xpath expr="//field[@name='payment_term_id']" position="after"><!--Plazos de pago-->
-                        <label for="have_discount" groups="sale.group_discount_per_so_line"/>
-                        <div class="o_row" groups="sale.group_discount_per_so_line">
+                        <label for="have_discount" groups="sale.group_discount_per_so_line" attrs="{'invisible':[('type', '=', 'out_refund')]}"/>
+                        <div class="o_row" groups="sale.group_discount_per_so_line" attrs="{'invisible':[('type', '=', 'out_refund')]}">
                             <field name="have_discount"/>
                             <field name="discount_rate"
                                    attrs="{'invisible':[('have_discount', '=', False)]}"/>
@@ -50,10 +48,11 @@
                                     class="oe_highlight"
                                     string="Aplicar"/>
                         </div>
+                        <field name="concept" string="Motivo de n/c" attrs="{'invisible':[('type', '=', 'out_invoice')], 'required':[('type', '=', 'out_refund')]}"/>
                         <field name="attach_invoice" filename="attached_name"
-                               widget="binary" string="Planilla"/>
+                               widget="binary" string="Planilla" attrs="{'invisible':[('type', '=', 'out_refund')]}"/>
                         <field name="attached_name" invisible="1"/>
-                        <field name="attach_invoice_" filename="attached_name_"/>
+                        <field name="attach_invoice_" filename="attached_name_" attrs="{'invisible':[('type', '=', 'out_refund')]}"/>
                         <field name="attached_name_" invisible="1"/>
                     </xpath>
                     <xpath expr="//field[@name='partner_id']" position="attributes">
