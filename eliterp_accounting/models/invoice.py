@@ -217,17 +217,17 @@ class AccountInvoice(models.Model):
         Cambiamos el nombre del registro para mostrar
         """
         types = {
-            'out_invoice': _('Invoice'),
-            'in_invoice': _('Vendor Bill'),
-            'out_refund': _('Refund'),
-            'in_refund': 'Nota de crédito',
+            'out_invoice': 'Factura de cliente',
+            'in_invoice': 'Factura de proveedor',
+            'out_refund': 'Nota de crédito cliente',
+            'in_refund': 'Nota de crédito proveedor'
         }
         result = []
         for invoice in self:
             if not invoice.is_sale_note:
-                result.append((invoice.id, "%s [%s]" % (types[invoice.type], invoice.reference or '/')))
+                result.append((invoice.id, "%s [%s]" % (types[invoice.type], invoice.invoice_number or '/')))
             else:
-                result.append((invoice.id, "Nota de venta [%s]" % invoice.reference or '/'))
+                result.append((invoice.id, "Nota de venta [%s]" % invoice.invoice_number or '/'))
         return result
 
     @api.multi
@@ -253,26 +253,19 @@ class AccountInvoice(models.Model):
         MM: Validamos la factura
         :return: object
         """
+        # Facturas de cliente y notas de crédito
+        if self.type in ['out_invoice', 'out_refund']:
+            self.action_number()
         # Notas de crédito
         if self.type in ('in_refund', 'out_refund'):
             notes_credit = self.env['account.invoice'].search(
                 [('invoice_reference', '=', self.invoice_reference.id), ('state', '=', 'open')])
             amount_notes = self.invoice_reference.amount_untaxed - sum(note.amount_total for note in notes_credit)
             if self.amount_untaxed > amount_notes:
-                raise UserError("Excede de la base imponible de la referencia [%s]." % self.invoice_reference.reference)
+                raise UserError("Excede de la base imponible de la referencia [%s]." %
+                                self.invoice_reference.invoice_number)
             res = super(AccountInvoice, self).action_invoice_open()
-            # TODO: Venta
-            if self.type == 'out_refund':
-                self.write({
-                    'state_notes': 'posted',
-                    'invoice_number': self.invoice_number
-                })
-            # Compra
-            else:
-                self.write({
-                    'state_notes': 'posted',
-                    'invoice_number': self.invoice_number
-                })
+            self.write({'state_notes': 'posted'})
             return res
         # Facturas de proveedor
         if self.type == 'in_invoice':
@@ -290,8 +283,8 @@ class AccountInvoice(models.Model):
                 self.partner_id._validate_rise(self.amount_total)
         else:
             res = super(AccountInvoice, self).action_invoice_open()
-        # Facturas de cliente
-        if self.type == 'out_invoice':
+        # Facturas de cliente y notas de crédito
+        if self.type in ['out_invoice', 'out_refund']:
             self.action_number()
         return super(AccountInvoice, self).action_invoice_open()
 
@@ -327,7 +320,7 @@ class AccountInvoice(models.Model):
             else:
                 amount_retention += line.amount
         self.amount_tax = round_curr(total_tax)
-        self.amount_retention = round_curr(-1 * (amount_retention))
+        self.amount_retention = round_curr(-1 * amount_retention)
         self.amount_total = self.amount_untaxed + self.amount_tax
         amount_total_company_signed = self.amount_total
         amount_untaxed_signed = self.amount_untaxed
@@ -457,7 +450,9 @@ class AccountInvoice(models.Model):
     journal_id = fields.Many2one('account.journal', string='Journal',
                                  required=True, readonly=True, states={'draft': [('readonly', False)]},
                                  default=_default_journal,
-                                 domain="[('type', 'in', {'out_invoice': ['sale'], 'out_refund': ['sale'], 'in_refund': ['purchase'], 'in_invoice': ['purchase']}.get(type, [])), ('company_id', '=', company_id)]")
+                                 domain="[('type', 'in', {'out_invoice': ['sale'], 'out_refund': ['sale'], "
+                                        "'in_refund': ['purchase'], 'in_invoice': ['purchase']}.get(type, [])), "
+                                        "('company_id', '=', company_id)]")
     # Campos cambiados por trazabilidad
     type = fields.Selection([
         ('out_invoice', 'Customer Invoice'),

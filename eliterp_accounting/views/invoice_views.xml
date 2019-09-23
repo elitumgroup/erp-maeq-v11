@@ -72,8 +72,8 @@
                            options="{'no_open': True, 'no_create': True}"
                            required="1"/>
                     <field name="authorization" invisible="1"/>
-                    <field name="reference" string="No. Factura" invisible="1"/>
-                    <field name="invoice_number" attrs="{'invisible':[('sri_authorization_id', '=', False)]}"/>
+                    <field name="reference" string="Secuencial" required="1" attrs="{'invisible':['|', ('sri_authorization_id', '=', False), ('state', '!=', 'draft')]}"/>
+                    <field name="invoice_number" attrs="{'invisible':[('state', '=', 'draft')]}"/>
                     <field name="period"/>
                 </xpath>
                 <xpath expr="//field[@name='amount_untaxed']" position="before"><!--Base imponible-->
@@ -84,7 +84,7 @@
                     <attribute name="string">Subtotal</attribute>
                 </xpath>
                 <xpath expr="//field[@name='outstanding_credits_debits_widget']" position="attributes">
-                    <attribute name="invisible">1</attribute>
+                    <attribute name="attrs">{'invisible':[('type', '!=', 'out_refund')]}</attribute>
                 </xpath>
             </field>
         </record>

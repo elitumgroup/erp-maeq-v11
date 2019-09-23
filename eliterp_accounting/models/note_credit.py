@@ -20,8 +20,7 @@ class AccountInvoice(models.Model):
             list_view_id = imd.xmlid_to_res_id('account.invoice_supplier_tree')
             form_view_id = imd.xmlid_to_res_id('account.invoice_supplier_form')
         else:
-            # TODO
-            action = imd.xmlid_to_object('eliterp_accounting.eliterp_action_credit_note_purchase')
+            action = imd.xmlid_to_object('eliterp_accounting.eliterp_action_credit_note_customer')
             list_view_id = imd.xmlid_to_res_id('account.invoice_tree')
             form_view_id = imd.xmlid_to_res_id('account.invoice_form')
         result = {
@@ -47,23 +46,32 @@ class AccountInvoice(models.Model):
         """
         Añadimos nota de crédito en factura
         """
-        date = self.date_invoice
+        if self.type == 'out_invoice':
+            journal_credit = self.env['account.journal'].search([
+                ('name', '=', 'Nota de crédito a cliente')], limit=1)[0]
+        else:
+            journal_credit = self.env['account.journal'].search([('name', '=', 'Nota de crédito')], limit=1)[0]
+        date = fields.Date.today() or self.date_invoice
         description = ""
         credit_note = self.with_context(credit_note=True).refund(
             date,
             date,
             description,
-            self.env['account.journal'].search([('name', '=', 'Nota de crédito')], limit=1)[0].id
+            journal_credit.id
         )
-        credit_note.tax_line_ids.filtered(lambda x: x.tax_id.tax_type == 'retention').unlink() # Borramos impuestos de retención
+        credit_note.tax_line_ids.filtered(lambda x: x.tax_id.tax_type == 'retention').unlink()  # Borramos impuestos
+        # de retención
         credit_note.write({
             'invoice_reference': self.id,
             'origin': self.invoice_number
         })
+        if self.type == 'out_invoice':
+            credit_note._onchange_journal_id()
         imd = self.env['ir.model.data']
         if self.type == 'out_invoice':
-            # TODO
-            pass
+            action = imd.xmlid_to_object('eliterp_accounting.eliterp_action_credit_note_customer')
+            list_view_id = imd.xmlid_to_res_id('account.invoice_tree')
+            form_view_id = imd.xmlid_to_res_id('account.invoice_form')
         else:
             action = imd.xmlid_to_object('eliterp_accounting.eliterp_action_credit_note_purchase')
             list_view_id = imd.xmlid_to_res_id('account.invoice_supplier_tree')

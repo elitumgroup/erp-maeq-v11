@@ -137,7 +137,7 @@
                                     <field name="start" attrs="{'required':[('type_use', '==', 'payments')]}"/>
                                     <field name="check_next_number" readonly="1"/>
                                     <field name="check_sequence_id" groups="base.group_erp_manager"/>
-                                    <field name="transfer_sequence_id" groups="base.group_erp_manager" required="1"/>
+                                    <field name="transfer_sequence_id" groups="base.group_erp_manager" attrs="{'required':[('type_use', '==', 'payments')]}"/>
                                 </group>
                                 <group string="Dirección">
                                     <label for="street" string="Dirección"/>
@@ -157,7 +157,7 @@
                                     <field name="phone"/>
                                     <field name="email" widget="email"/>
                                     <field name="active"/>
-                                    <field name="exit_code" required="1"/>
+                                    <field name="exit_code" attrs="{'required':[('type_use', '==', 'payments')], 'invisible':[('type_use', '!=', 'payments')]}"/>
                                 </group>
                             </group>
                         </sheet>

@@ -70,9 +70,16 @@
                             class="oe_stat_button"
                             attrs="{'invisible': [('have_withhold', '=', False)]}"
                             icon="fa-chain"/>
+                    <button name="open_credit_note"
+                                string="Notas de crédito"
+                                type="object"
+                                class="oe_stat_button"
+                                attrs="{'invisible': [('have_credit_note', '=', False)]}"
+                                icon="fa-archive"/>
                 </xpath>
                 <xpath expr="//field[@name='amount_total']" position="after"><!--Total-->
                     <field name="have_withhold" invisible="1"/>
+                    <field name="have_credit_note" invisible="1"/>
                     <field name="amount_retention" attrs="{'invisible': [('have_withhold', '=', False)]}"
                            widget="monetary"/>
                 </xpath>
