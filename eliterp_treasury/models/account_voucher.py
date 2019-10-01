@@ -375,23 +375,6 @@ class AccountVoucher(models.Model):
                     raise ValidationError("Debe eliminar las líneas con monto menor a 0")
             if not self.line_employee_id:
                 self._check_pay_order_id()
-            if self.type_egress == 'bank':  # Soló con cheques y generamos el consecutivo
-                if self.bank_id.check_sequence_id:
-                    self.bank_id.check_sequence_id.next_by_id()
-                self._check_check_number()  # Verificamos cheque
-                self.env['eliterp.checks'].create({
-                    'partner_id': self.partner_id.id if self.partner_id else False,
-                    'name': self.check_number,
-                    'recipient': self.beneficiary,
-                    'type': 'issued',
-                    'date': self.date,
-                    'check_date': self.check_date,
-                    'bank_id': self.bank_id.id,
-                    'check_type': 'current',
-                    'state': 'issued',
-                    'amount': self.amount_cancel,
-                    'voucher_id': self.id
-                })
             move_id = self.env['account.move'].create({
                 'journal_id': self.journal_id.id,
                 'date': self.date
@@ -528,6 +511,23 @@ class AccountVoucher(models.Model):
                 self.pay_order_id.update({'voucher_id': self.id})
             else:
                 self.line_employee_id.update({'voucher_id': self.id})
+            if self.type_egress == 'bank':  # Soló con cheques y generamos el consecutivo
+                if self.bank_id.check_sequence_id:
+                    self.bank_id.check_sequence_id.next_by_id()
+                self._check_check_number()  # Verificamos cheque
+                self.env['eliterp.checks'].create({
+                    'partner_id': self.partner_id.id if self.partner_id else False,
+                    'name': self.check_number,
+                    'recipient': self.beneficiary,
+                    'type': 'issued',
+                    'date': self.date,
+                    'check_date': self.check_date,
+                    'bank_id': self.bank_id.id,
+                    'check_type': 'current',
+                    'state': 'issued',
+                    'amount': self.amount_cancel,
+                    'voucher_id': self.id
+                })
             return self.write({
                 'state': 'posted',
                 'name': new_name,
