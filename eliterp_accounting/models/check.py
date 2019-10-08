@@ -62,6 +62,7 @@ class Checks(models.Model):
         ('deposited', 'Depositado'),
         ('issued', 'Emitido'),
         ('delivered', 'Entregado'),
+        ('charged', 'Cobrado'),
         ('protested', 'Anulado')
     ], string='Estado', track_visibility='onchange')
 

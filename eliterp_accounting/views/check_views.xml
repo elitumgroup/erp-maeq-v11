@@ -71,7 +71,7 @@
                 <tree create="false"
                       decoration-info="state=='delivered'"
                       decoration-danger="state=='protested'"
-                      decoration-success="reconcile"
+                      decoration-success="state=='charged'"
                       default_order='check_date desc'
                       decoration-bf="reconcile">
                     <field name="name"/>
