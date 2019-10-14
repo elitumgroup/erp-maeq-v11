@@ -180,7 +180,7 @@ class BankConciliation(models.Model):
         :return:
         """
         data = []
-        for line in self.lines_banks_move:
+        for line in self.lines_banks_move.filtered(lambda x: x.check):
             aggregate = any(d['journal'] == line.journal for d in data)
             if not aggregate:
                 data.append({

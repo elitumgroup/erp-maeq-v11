@@ -148,7 +148,7 @@
                                             <span>TOTAL</span>
                                         </td>
                                         <td class="text-right col-xs-1">
-                                            <span t-esc='"%.2f" % doc.amount_account'/>
+                                            <span t-esc="&quot;%.2f&quot; % sum(line.amount for line in doc.lines_banks_move.filtered(lambda x: x.check))"/>
                                         </td>
                                     </tr>
                                 </tfoot>
