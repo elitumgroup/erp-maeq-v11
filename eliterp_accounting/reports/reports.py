@@ -1294,7 +1294,7 @@ class Taxes103104ReportXlsx(models.AbstractModel):
         columns = [
             'TIPO', 'EST.', 'P. EMI.', 'SEC.', 'FECHA', '# RET.', 'DESCRIPCIÓN', 'RAZÓN SOCIAL',
             '# DOCUMENTO', 'AUTORIZACIÓN', 'S. TRI.', 'B. IVA', 'B. CERO', 'ICE', 'B. NO IVA',
-            'C. RENTA', 'P. RENTA', 'MONTO R.', 'R. BASE IVA', 'C. IVA', 'P. IVA', 'MONTO I.', 'TOTAL'
+            'C. RENTA', 'P. RENTA', 'MONTO R.', 'B. IVA', 'C. IVA', 'P. IVA', 'MONTO I.', 'TOTAL'
         ]
         row = 4
         col = 0
