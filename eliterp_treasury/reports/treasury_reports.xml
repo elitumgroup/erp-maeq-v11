@@ -21,7 +21,7 @@
                                 </div>
                                 <div class="col-xs-4">
                                     <strong>Monto:</strong>
-                                    <p t-esc='"%.2f" % sum(line.amount for line in doc.lines_payment)'/>
+                                    <p t-esc="&quot;%.2f&quot; % sum(line.amount for line in doc.lines_payment)"/>
                                 </div>
                             </div>
                             <div class="row">
@@ -30,10 +30,34 @@
                                     <p t-field="doc.concept"/>
                                 </div>
                             </div>
-                            <table class="table table-condensed">
+                            <h4 t-if="not doc.is_advance" class="text-center">FACTURAS</h4>
+                            <table t-if="not doc.is_advance" class="table table-condensed table-sm">
                                 <thead>
                                     <tr>
-                                        <th class="text-center">DOCUMENTO</th>
+                                        <th class="text-center"># FACTURA</th>
+                                        <th class="text-right">MONTO ADEUDADO</th>
+                                        <th class="text-right">MONTO COBRADO</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="doc.lines_invoice_sales" t-as="invoice">
+                                        <td>
+                                            <span t-field="invoice.name"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-field="invoice.amount_total"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-field="invoice.amount_payable"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <h4 class="text-center">COBROS</h4>
+                            <table class="table table-condensed table-sm">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">TIPO</th>
                                         <th class="text-center">BANCO</th>
                                         <th class="text-center">REFERENCIA</th>
                                         <th class="text-center">FECHA COBRO</th>
@@ -46,13 +70,11 @@
                                             <span t-field="line.type_payment"/>
                                         </td>
                                         <td>
-                                            <span t-if="line.type_payment in ('bank', 'transfer')"
-                                                  t-esc="line.bank_id.name"/>
+                                            <span t-if="line.type_payment in ('bank', 'transfer')" t-esc="line.bank_id.name"/>
                                             <span t-else="">N.A</span>
                                         </td>
                                         <td>
-                                            <span t-if="line.type_payment == 'bank'"
-                                                  t-esc="'Cheque # %s' % (line.check_number)"/>
+                                            <span t-if="line.type_payment == 'bank'" t-esc="'Cheque # %s' % (line.check_number)"/>
                                             <span t-else="">N.A</span>
                                         </td>
                                         <td>
