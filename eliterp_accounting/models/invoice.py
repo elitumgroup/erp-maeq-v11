@@ -253,9 +253,6 @@ class AccountInvoice(models.Model):
         MM: Validamos la factura
         :return: object
         """
-        # Facturas de cliente y notas de crédito
-        if self.type in ['out_invoice', 'out_refund']:
-            self.action_number()
         # Notas de crédito
         if self.type in ('in_refund', 'out_refund'):
             notes_credit = self.env['account.invoice'].search(
