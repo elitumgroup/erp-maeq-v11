@@ -87,6 +87,10 @@ class AdvancePayment(models.Model):
         self.ensure_one()
         return self.env.ref('eliterp_hr.eliterp_action_report_advance_payment').report_action(self)
 
+    @api.multi
+    def button_cancel(self):
+        self.write({'state': 'cancel'})
+
     def _get_antiquity(self, employee):
         """
         Obtener días de antiguedad con fecha de documento
@@ -259,7 +263,8 @@ class AdvancePayment(models.Model):
         ('reviewed', 'Revisado'),
         ('approve', 'Aprobado'),
         ('posted', 'Contabilizado'),
-        ('deny', 'Negado')], string="Estado", default='draft', track_visibility='onchange')
+        ('deny', 'Negado'),
+        ('cancel', 'Anulado')], string="Estado", default='draft', track_visibility='onchange')
     approval_user = fields.Many2one('res.users', string='Aprobado por')
     reviewed_user = fields.Many2one('res.users', string='Revisado por')
     reason_deny = fields.Text('Negado por')
