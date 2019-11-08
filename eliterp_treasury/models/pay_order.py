@@ -836,6 +836,13 @@ class AdvancePayment(models.Model):
         return super(AdvancePayment, self).posted_advance()
 
     @api.multi
+    def button_cancel(self):
+        for r in self:
+            if self.filtered(lambda x: x.state_pay_order != 'generated'):
+                raise UserError("No se puede cancelar anticipos de quincena con pagos.")
+        return super(AdvancePayment, self).button_cancel()
+
+    @api.multi
     def generate_request(self):
         """
         Abrimos ventana para añadir pago

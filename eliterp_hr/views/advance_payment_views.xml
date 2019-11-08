@@ -22,9 +22,9 @@
         <field name="model">eliterp.advance.payment</field>
         <field name="arch" type="xml">
             <tree decoration-info="state=='draft'"
-                  decoration-muted="state=='deny'"
+                  decoration-muted="state in ['deny', 'cancel']"
                   decoration-success="state == 'posted'"
-                  decoration-bf="state == 'posted'"
+                  decoration-bf="state in ['posted', 'cancel']"
                   default_order='date desc'
             >
                 <field name="name"/>
@@ -74,6 +74,11 @@
                             type="object"
                             string="Contabilizar"
                             class="oe_highlight"/>
+                    <button name="button_cancel"
+                            states="reviewed,approve,posted"
+                            type="object"
+                            groups="eliterp_hr.eliterp_group_deny_advance"
+                            string="Anular"/>
                 </header>
                 <sheet>
                     <div class="oe_title" attrs="{'invisible': [('state','=', 'draft')]}">
