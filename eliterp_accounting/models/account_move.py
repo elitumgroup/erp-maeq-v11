@@ -62,6 +62,8 @@ class AnalyticAccount(models.Model):
 class AccountMove(models.Model):
     _inherit = 'account.move'
 
+    line_ids = fields.One2many('account.move.line', states={})
+
     @api.multi
     def print_move(self):
         """
