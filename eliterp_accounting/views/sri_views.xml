@@ -1,6 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
+        <record id="view_form_point_printing" model="ir.ui.view">
+            <field name="name">view_form_point_printing</field>
+            <field name="model">sri.point.printing</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <!--Futuras implementaciones de factura electrónica-->
+                    </header>
+                    <sheet>
+                        <group col="4">
+                            <field name="name"/>
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                        <notebook>
+                            <!--Futuras implementaciones de factura electrónica-->
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
         <!--Vistas del menú Autorización de comprobante-->
         <record id="eliterp_view_tree_sri_authorization" model="ir.ui.view">
             <field name="name">eliterp_view_tree_sri_authorization</field>
@@ -9,9 +29,12 @@
                 <tree decoration-muted="(not active)">
                     <field name="company_id"/>
                     <field name="type_document"/>
+                    <field name="point_printing_id"/>
                     <field name="authorization"/>
+                    <!--
                     <field name="establishment"/>
                     <field name="emission_point"/>
+                    -->
                     <field name="active"/>
                 </tree>
             </field>
@@ -33,12 +56,16 @@
                             <field name="company_id"/>
                             <field name="type_document"/>
                             <field name="authorization"/>
+                            <field name="point_printing_id"/>
+                            <!--
                             <field name="establishment"/>
                             <field name="emission_point"/>
+                            -->
                             <field name="expiration_date"/>
                             <field name="initial_number"/>
                             <field name="final_number"/>
                             <field name="active"/>
+                            <field name="is_electronic" invisible="1"/>
                         </group>
                     </sheet>
                 </form>

@@ -5,6 +5,7 @@
 from odoo import api, fields, models, _
 from datetime import date, datetime
 from odoo.exceptions import UserError, ValidationError
+import re
 
 
 class TypeDocument(models.Model):
@@ -52,6 +53,49 @@ class TaxSupport(models.Model):
     ]
 
 
+class SriPointPrinting(models.Model):
+    _name = 'sri.point.printing'
+    _description = _("Punto de impresión SRI")
+
+    @api.one
+    def _get_authorization(self, type_voucher=None):
+        """
+        Verificamos si tiene autorización del SRI y seleccionamos la primer qué encuentre
+        esste método sirve para asegurarnos de qué exista al menos una (físicas).
+        :param type_voucher:
+        :return:
+        """
+        sri_authorization = self.env['eliterp.sri.authorization'].search([
+            ('point_printing_id', '=', self.id),
+            ('type_document.code', '=', type_voucher),
+            ('is_valid', '=', True)
+        ], limit=1)
+        if not sri_authorization:
+            raise UserError(_(
+                'No ha configurado la autorización del SRI para este punto de impresión (%s). O la misma puede estar '
+                'vencida.' %
+                self.name))
+        else:
+            return sri_authorization
+
+    @api.constrains('name')
+    def _check_name(self):
+        """
+        Verificamos qué número de serie de proveedores sea correcto
+        :return:
+        """
+        if not re.match("\d{3,}-\d{3,}", self.name):
+            raise ValidationError("Nº de punto de impresión debe tener formato 001-001.")
+
+    name = fields.Char('Punto de impresión', size=7, default='001-001', required=True)
+    company_id = fields.Many2one('res.company', string='Compañía', default=lambda self: self.env.user.company_id)
+
+    _sql_constraints = [
+        ('name_unique', 'unique(name, company_id)',
+         "El punto de impresión debe ser único por compañía!")
+    ]
+
+
 class SriAuthorization(models.Model):
     _name = 'eliterp.sri.authorization'
     _description = 'Autorizaciones del SRI'
@@ -67,22 +111,23 @@ class SriAuthorization(models.Model):
     def name_get(self):
         res = []
         for data in self:
-            res.append((data.id, "Documento %s [%s]" % (data.type_document.code, data.authorization)))
+            res.append((data.id, "Comprobante %s [%s]" % (data.type_document.code, data.authorization)))
         return res
 
     @api.model
     @api.returns('self', lambda value: value.id)
     def create(self, values):
+        if values['is_electronic']:
+            return super(SriAuthorization, self).create(values)
         result = self.search([
             ('company_id', '=', values['company_id']),
             ('type_document', '=', values['type_document']),
-            ('establishment', '=', values['establishment']),
-            ('emission_point', '=', values['emission_point']),
+            ('point_printing_id', '=', values['point_printing_id']),
+            ('is_electronic', '=', False),
             ('active', '=', True)
         ])
         if result:
-            MESSAGE = 'Ya existe una Autorización activa para %s-%s.' % (
-                values['establishment'], values['emission_point'])
+            MESSAGE = 'Ya existe una Autorización activa parámetros ingresados.'
             raise UserError(_(MESSAGE))
         partner_id = self.env.user.company_id.partner_id.id
         if values['company_id'] == partner_id:
@@ -92,7 +137,7 @@ class SriAuthorization(models.Model):
                 'name': "Secuencia de autorización " + authorization,
                 'number_next': number_next,
                 'code': authorization,
-                'prefix': values['establishment'] + "-" + values['emission_point'] + "-",
+                'prefix': values['point_printing_id'],
                 'padding': 9
             })
             values.update({'sequence_id': new_sequence.id})
@@ -105,7 +150,7 @@ class SriAuthorization(models.Model):
         Confirmamos si la Autorización del SRI está vencida
         :return: self
         """
-        if not self.expiration_date:
+        if not self.expiration_date and not self.is_electronic:
             return
         self.active = date.today() < datetime.strptime(self.expiration_date, '%Y-%m-%d').date()
 
@@ -115,9 +160,10 @@ class SriAuthorization(models.Model):
         Al borrar Autorización verificar no existan documentos asociados
         """
         invoices = self.env['account.invoice']
-        res = invoices.search([('sri_authorization_id', '=', self.id)])
-        if res:
-            raise ValidationError("Está Autorización está relacionada a un documento.")
+        for record in self:
+            result = invoices.search([('sri_authorization_id', '=', record.id)])
+            if result:
+                raise ValidationError("Está autorización %s está relacionada a un documento." % record.authorization)
         return super(SriAuthorization, self).unlink()
 
     def _get_company(self):
@@ -145,7 +191,9 @@ class SriAuthorization(models.Model):
     active = fields.Boolean('Activo?', compute='_get_status', store=True)
     company_id = fields.Many2one('res.company', string='Compañía', required=True, default=_get_company)
     sequence_id = fields.Many2one('ir.sequence', 'Secuencia')
-    is_electronic = fields.Boolean('Es electrónica?', default=False)  # TODO
+    point_printing_id = fields.Many2one('sri.point.printing', string='Punto de impresión', required=True)
+    is_electronic = fields.Boolean('Electrónica', default=False,
+                                   help="Técnico: Campo determina si es autorización electrónica.")
 
     _sql_constraints = [(
         'sri_authorization_unique',

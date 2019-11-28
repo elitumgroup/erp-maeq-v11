@@ -85,7 +85,12 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
-
+        <record id="action_point_printing" model="ir.actions.act_window">
+            <field name="name">Punto de impresión SRI</field>
+            <field name="res_model">sri.point.printing</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
         <record id="action_autorizacion_comprobante_eliterp" model="ir.actions.act_window">
             <field name="name">Autorización de comprobante</field>
             <field name="res_model">eliterp.sri.authorization</field>
@@ -496,6 +501,8 @@
                   parent="account.account_account_menu"
                   groups="account.group_account_user,account.group_account_manager"
                   sequence="15"/>
+        <menuitem action="action_point_printing" id="menu_point_printing" parent="eliterp_menu_accounting_sri"
+                  sequence="0"/>
         <menuitem id="menu_config_autorizacion_comprobante"
                   name="Autorización de comprobante"
                   action="action_autorizacion_comprobante_eliterp"
