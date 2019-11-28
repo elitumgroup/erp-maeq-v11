@@ -181,6 +181,7 @@ class PayslipRun(models.Model):
             'move_id': move.id,
             'debit': amount,
             'credit': 0.00,
+            'project_id': self.project_id.id,
             'date': self.date_end
         })
         _logger.info(rule.name + ': ' + str(amount))

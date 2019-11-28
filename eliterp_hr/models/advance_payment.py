@@ -117,7 +117,8 @@ class AdvancePayment(models.Model):
             ('contract_id', '!=', False),
             ('project_id', '=', self.project_id.id)
         ]):
-            amount_advance = 0.0  # Para MAEQ se trabajará así por el momento la variable está configurada en Ajustes RRHH
+            amount_advance = 0.0  # Para MAEQ se trabajará así por el momento la variable está configurada en Ajustes
+            # RRHH
             antiquity = self._get_antiquity(employee)
             if antiquity >= self.advance_days:
                 amount_advance = round(float((employee.wage * 40) / 100), 2)
@@ -209,6 +210,7 @@ class AdvancePayment(models.Model):
             'journal_id': self.journal_id.id,
             'account_id': account_debit,
             'move_id': move_id.id,
+            'project_id': self.project_id.id,
             'debit': self.total,
             'credit': 0.0,
             'date': self.date
