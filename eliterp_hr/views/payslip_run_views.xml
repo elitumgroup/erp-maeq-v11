@@ -24,8 +24,8 @@
             <tree default_order='date_start desc'
                   decoration-info="state == 'draft'"
                   decoration-success="state == 'closed'"
-                  decoration-bf="state == 'closed'"
-                  decoration-muted="state == 'deny'">
+                  decoration-bf="state in ['closed', 'cancel']"
+                  decoration-muted="state in ['deny', 'cancel']">
                 <field name="name"/>
                 <field name="date_start"/>
                 <field name="date_end"/>
@@ -86,6 +86,11 @@
                         type="object"
                         states="approve"
                         class="oe_highlight"/>
+                <button name="button_cancel"
+                            states="reviewed,approve,closed"
+                            type="object"
+                            groups="eliterp_hr.eliterp_group_deny_payroll"
+                            string="Anular"/>
             </button>
             <xpath expr="//label" position="replace">
             </xpath>

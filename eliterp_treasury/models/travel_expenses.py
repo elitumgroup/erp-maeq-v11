@@ -461,7 +461,8 @@ class LiquidationSettlement(models.Model):
                 'debit': register['amount'],
                 'invoice_id': register['invoice'],
                 'credit': 0.00,
-                'date': self.application_date
+                'project_id': self.project_id.id if self.project_id else False,
+                'date': self.date
             })
         moves_credit = []
         for account, group in groupby(list_accounts, key=itemgetter('account_credit')):
@@ -483,7 +484,8 @@ class LiquidationSettlement(models.Model):
                      'move_id': move_id.id,
                      'credit': line['amount'],
                      'debit': 0.00,
-                     'date': self.application_date})
+                     'project_id': self.project_id.id if self.project_id else False,
+                     'date': self.date})
             else:
                 self.env['account.move.line'].with_context(check_move_validity=False).create(
                     {'name': line['account'].name,
@@ -492,7 +494,8 @@ class LiquidationSettlement(models.Model):
                      'move_id': move_id.id,
                      'credit': line['amount'],
                      'debit': 0.00,
-                     'date': self.application_date})
+                     'project_id': self.project_id.id if self.project_id else False,
+                     'date': self.date})
         move_id.with_context(eliterp_moves=True, move_name=self.name).post()
         move_id.write({'ref': 'LV por motivo de %s' % self.reason})
         # Liquidamos con factura

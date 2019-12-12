@@ -1018,6 +1018,13 @@ class PayslipRun(models.Model):
     _inherit = 'hr.payslip.run'
 
     @api.multi
+    def button_cancel(self):
+        for r in self:
+            if self.filtered(lambda x: x.state_pay_order != 'generated'):
+                raise UserError("No se puede cancelar roles con pagos.")
+        return super(PayslipRun, self).button_cancel()
+
+    @api.multi
     def confirm_payslip_run(self):
         """
         Acualizamos el monto a pagar
