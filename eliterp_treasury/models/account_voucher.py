@@ -350,17 +350,18 @@ class AccountVoucher(models.Model):
             move_name = string + code + "-" + year + "-" + self.bank_id.transfer_sequence_id.next_by_id()
         return move_name
 
-    def _get_names(self, type, move):
+    @staticmethod
+    def _get_names(type_pay, move):
         """
         COMPRAS: Obtenemos el nombre del asiento y del registro
         :param type:
-        :param data:
+        :param move:
         """
-        if type == 'bank':
+        if type_pay == 'bank':
             move_name = 'Egreso/Cheque No. ' + move
-        elif type == 'cash':
+        elif type_pay == 'cash':
             move_name = 'Egreso/Efectivo No. ' + move
-        elif type == 'credit_card':
+        elif type_pay == 'credit_card':
             move_name = 'Egreso/T. Crédito No. ' + move
         else:
             move_name = 'Egreso/Transferencia No. ' + move
@@ -541,6 +542,8 @@ class AccountVoucher(models.Model):
             # Verificamos en líneas de cobro por tipo
             if not self.lines_invoice_sales and not self.is_advance:
                 raise UserError("Debe marcar cómo anticipo si no tiene líneas de facturas.")
+            if len(self.lines_payment) > 1 and not self.is_advance:
+                raise UserError("No puede tener dos líneas de recaudación para cobro de facturas.")
             for payment in self.lines_payment:
                 # Banco
                 if payment.type_payment == 'bank':
@@ -708,7 +711,8 @@ class AccountVoucher(models.Model):
             if self.voucher_type == 'sale':
                 self.lines_invoice_sales.unlink()  # Limpiamos líneas anteriores
                 invoices_list = self.env['account.invoice'].search([
-                    ('partner_id', '=', self.partner_id.id), ('state', '=', 'open')
+                    ('partner_id', '=', self.partner_id.id), ('state', '=', 'open'),
+                    ('type', '=', 'out_invoice')
                 ])
             else:
                 # Cargamos factura de proveedor
