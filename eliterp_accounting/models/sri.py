@@ -332,12 +332,39 @@ class AccountInvoice(models.Model):
         """
         Obtenemos sustento tributario por defecto
         """
-        type = self._context.get('type')
-        if type in ['in_invoice', 'in_refund']:
+        dtype = self._context.get('type')
+        if dtype in ['in_invoice', 'in_refund']:
             return self.env['eliterp.tax.support'].search([])[0].id
+
+    @api.model
+    def _default_authorized_voucher(self):
+        context = dict(self._context or {})
+        object_voucher = self.env['eliterp.type.document']
+        voucher = False
+        if context.get('type') and not context.get('default_authorized_voucher'):
+            DocumentType = context.get('type')
+            if DocumentType == 'in_invoice':
+                code = '01'
+            elif DocumentType == 'out_invoice':
+                code = '18'
+            elif DocumentType == 'in_refund':
+                code = '04'
+            else:
+                code = '04'
+            voucher = object_voucher.search([('code', '=', code)])
+        elif context.get('default_authorized_voucher'):
+            voucher = object_voucher.search([
+                ('code', '=', context.get('default_authorized_voucher'))
+            ])
+        return voucher.id if voucher else False
 
     way_pay_id = fields.Many2one('eliterp.way.pay', string='Forma de pago',
                                  default=lambda self: self._default_way_pay())
+    authorized_voucher_id = fields.Many2one('eliterp.type.document', 'Tipo de comprobante',
+                                            readonly=True, states={'draft': [('readonly', False)]},
+                                            default=_default_authorized_voucher)
+    point_printing_id = fields.Many2one('sri.point.printing', string='Punto de impresión', readonly=True,
+                                        states={'draft': [('readonly', False)]})
     sri_authorization_id = fields.Many2one('eliterp.sri.authorization', string='Autorización del SRI', copy=False,
                                            readonly=True,
                                            states={'draft': [('readonly', False)]})
