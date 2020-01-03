@@ -464,15 +464,20 @@ class Withhold(models.Model):
     ], string='Estado', default='draft')
     lines_withhold = fields.One2many('eliterp.lines.withhold', 'withhold_id', string='Líneas de retención')
     total = fields.Float(compute='_get_total_lines', string='Total')
-    is_sequential = fields.Boolean('Es secuencial?', readonly=True,
+    is_sequential = fields.Boolean('Es secuencial', readonly=True,
                                    states={'draft': [('readonly', False)]},
-                                   help="Si se marca, a la hora de validar la factura creará un consecutivo con Autorización del SRI")
+                                   help="Si se marca, a la hora de validar la "
+                                        "factura creará un consecutivo con Autorización del SRI.")
     journal_id = fields.Many2one('account.journal', string='Diario', default=_default_journal, readonly=True)
     move_id = fields.Many2one('account.move', string='Asiento contable')
     modified_bill = fields.Boolean('Factura modificada?', default='False')
     reference = fields.Char('Secuencial de retención', readonly=True,
                             states={'draft': [('readonly', False)]})
-
+    point_printing_id = fields.Many2one('sri.point.printing', string='Punto de impresión', readonly=True,
+                                        states={'draft': [('readonly', False)]})
+    sri_authorization_id = fields.Many2one('sri.authorization', string='Autorización del SRI', readonly=True,
+                                           copy=False,
+                                           states={'draft': [('readonly', False)]})
     _sql_constraints = [
         ('withhold_number_unique', 'unique (withhold_number)',
          "El No. Retención ya está registrado.")

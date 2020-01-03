@@ -60,18 +60,20 @@
                             <field name="base_taxable" invisible="1"/>
                             <field name="base_iva" invisible="1"/>
                         </group>
-                        <group string="Líneas de retención">
-                            <field name="lines_withhold" nolabel="1">
-                                <tree editable="top/bottom">
-                                    <field name="retention_type"/>
-                                    <field name="tax_id"
-                                           domain="[('type_tax_use', '=', 'purchase'),  ('tax_type', '=', 'retention'), ('retention_type', '=', retention_type)]"
-                                           options="{'no_create': True}"/>
-                                    <field name="base_taxable"/>
-                                    <field name="amount" sum="Total"/>
-                                </tree>
-                            </field>
-                        </group>
+                        <notebook>
+                            <page string="Líneas de retención" name="lines_withhold_wizard">
+                                <field name="lines_withhold" nolabel="1">
+                                    <tree editable="top/bottom">
+                                        <field name="retention_type"/>
+                                        <field name="tax_id"
+                                               domain="[('type_tax_use','=','purchase'), ('tax_type', '=', 'retention'), ('retention_type', '=', retention_type)]"
+                                               options="{'no_create': True}"/>
+                                        <field name="base_taxable"/>
+                                        <field name="amount" sum="Total"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
                     </sheet>
                     <footer>
                         <button string="Guardar" special="save" class="oe_highlight"/>
@@ -124,18 +126,20 @@
                             <field name="base_taxable" invisible="1"/>
                             <field name="base_iva" invisible="1"/>
                         </group>
-                        <group string="Líneas de retención">
-                            <field name="lines_withhold" nolabel="1" attrs="{'readonly': [('state', '!=', 'draft')]}">
-                                <tree editable="top/bottom">
-                                    <field name="retention_type"/>
-                                    <field name="tax_id"
-                                           domain="[('type_tax_use','=','purchase'), ('tax_type', '=', 'retention'), ('retention_type', '=', retention_type)]"
-                                           options="{'no_create': True}"/>
-                                    <field name="base_taxable"/>
-                                    <field name="amount" sum="Total"/>
-                                </tree>
-                            </field>
-                        </group>
+                        <notebook>
+                            <page string="Líneas de retención" name="lines_withhold">
+                                <field name="lines_withhold" nolabel="1">
+                                    <tree editable="top/bottom">
+                                        <field name="retention_type"/>
+                                        <field name="tax_id"
+                                               domain="[('type_tax_use','=','purchase'), ('tax_type', '=', 'retention'), ('retention_type', '=', retention_type)]"
+                                               options="{'no_create': True}"/>
+                                        <field name="base_taxable"/>
+                                        <field name="amount" sum="Total"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>
