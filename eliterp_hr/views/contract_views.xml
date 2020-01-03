@@ -180,7 +180,7 @@
                                     <group col="4">
                                         <field name="date"/>
                                         <field name="renumbering" required="1"/>
-                                        <field name="number_hectares" required="1"/>
+                                        <field name="number_hectares" attrs="{'required':[('is_piece_contract', '=', True)]}"/>
                                     </group>
                                     <group string="Texto libre">
                                         <field name="comment" nolabel="1"/>
