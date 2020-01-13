@@ -59,7 +59,15 @@
                         <group col="4" string="Información general">
                             <field name="date"/>
                             <field name="machine_id"/>
-                            <field name="operator" options="{'no_create': True, 'no_open': True}"/>
+                            <label for="third_party_operator" string="Operador de Terceros"/>
+                            <div>
+                                <field name="third_party_operator" class="oe_inline"/>
+                                <field name="name_third_party_operator" class="oe_inline"
+                                       attrs="{'invisible':[('third_party_operator','!=', True)], 'required': [('third_party_operator','==', True)]}"/>
+
+                            </div>
+                            <field name="operator" options="{'no_create': True, 'no_open': True}"
+                                   attrs="{'invisible':[('third_party_operator','==', True)], 'required': [('third_party_operator','!=', True)]}"/>
                             <field name="assistant" options="{'no_create': True, 'no_open': True}"/>
                             <field name="project_id"/>
                             <field name="customer" readonly="1"/>
@@ -121,26 +129,6 @@
                                 </tree>
                             </field>
                         </group>
-
-                        <!--TODO: Por el momento no se usa
-                        <group string="Piezas">
-                            <field name="piece_ids" nolabel="1">
-                                <tree editable="bottom">
-                                    <field name="date"/>
-                                    <field name="technical_report" invisible="1"/>
-                                    <field name="movement_type"/>
-                                    <field name="detail"/>
-                                    <field name="reference"
-                                           options="{'no_create': True, 'no_open': True}"
-                                           domain="[('id', '!=', parent.machine_id)]"/>
-                                    <field name="horometro"/>
-                                    <field name="responsable"
-                                           options="{'no_create': True, 'no_open': True}"/>
-                                </tree>
-                            </field>
-                        </group>
-                        -->
-
                         <group string="Notas y comentarios">
                             <field name="comment" nolabel="1"/>
                         </group>

@@ -66,15 +66,27 @@
                     <field name="way_pay_id" attrs="{'readonly': [('state', 'not in', ('draft'))]}" required="1"/>
                 </xpath>
                 <xpath expr="//field[@name='date_due']" position="after"><!--Fecha vencimiento-->
+                    <label for="reference" string="Nº Documento (SRI)"/>
+                    <div>
+                        <field name="point_printing_id"
+                               domain="[('company_id', '=', company_id)]"
+                               required="1"
+                               class="oe_inline"
+                               options="{'no_open': True, 'no_create': True}"/>
+                        -
+                        <field name="reference" string="Secuencial" class="oe_inline"
+                               attrs="{'invisible':['|', ('sri_authorization_id', '=', False)]}"
+                               required="1"/>
+                    </div>
                     <field name="sri_authorization_id"
                            domain="[('active', '=', True), ('code', '=', '18')]"
                            attrs="{'readonly': [('state', 'not in', ('draft'))]}"
                            options="{'no_open': True, 'no_create': True}"
                            required="1"/>
-                    <field name="authorization" invisible="1"/>
-                    <field name="reference" string="Secuencial" required="1" attrs="{'invisible':['|', ('sri_authorization_id', '=', False), ('state', '!=', 'draft')]}"/>
-                    <field name="invoice_number" attrs="{'invisible':[('state', '=', 'draft')]}"/>
                     <field name="period"/>
+                    <field name="invoice_number" invisible="1"/>
+                    <field name="authorization" invisible="1"/>
+                    <field name="authorized_voucher_id" invisible="1"/>
                 </xpath>
                 <xpath expr="//field[@name='amount_untaxed']" position="before"><!--Base imponible-->
                     <field name="base_zero_iva" widget="monetary"/>
@@ -133,6 +145,7 @@
                     <field name="authorization" required="1"/>
                     <field name="tax_support_id" required="1"/>
                     <field name="period"/>
+                    <field name="authorized_voucher_id" invisible="1"/>
                 </xpath>
                 <xpath expr="//field[@name='reference']" position="replace"><!--Referencia de proveedor-->
                     <field name="is_sale_note" attrs="{'invisible': [('type', '=', 'in_refund')], 'readonly': [('state', '!=', 'draft')]}"/>

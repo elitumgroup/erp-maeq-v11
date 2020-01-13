@@ -183,8 +183,8 @@ class CMC(models.Model):
                     'description': line.detail,
                     'machine_id': self.machine_id.id
                 })
-        # Creamos líneas de horas extras
-        if self.extra_hours > 0:
+        # Creamos líneas de horas extras solo si es operador (empleado)
+        if self.extra_hours > 0 and not self.third_party_operator:
             self._create_record_overtime(self.operator)
             self._create_record_overtime(self.assistant)
         if self.picking_type_id:
@@ -245,8 +245,9 @@ class CMC(models.Model):
     def _onchange_operator(self):
         """
         Obtenemos si existe la cuadrilla por defecto asignada al empleado
+        si es operador de la emrpesa.
         """
-        if self.operator:
+        if self.operator and not self.name_third_party_operator:
             gang = self.env['eliterp.lines.employee'].search([
                 ('employee_id', '=', self.operator.id)
             ], limit=1)
@@ -281,12 +282,12 @@ class CMC(models.Model):
             self.extra_hours = worked_hours - 8
         self.worked_hours = worked_hours
 
-    @api.onchange('prefix_id')
+    @api.onchange('prefix_id', 'third_party_operator')
     def _onchange_prefix_id(self):
         """
         Operador asignado a prefijo
         """
-        if self.prefix_id:
+        if self.prefix_id and not self.third_party_operator:
             self.operator = self.prefix_id.responsable
 
     prefix_id = fields.Many2one('eliterp.prefix.cmc', 'Prefijo CMC', required=True, readonly=True,
@@ -301,8 +302,9 @@ class CMC(models.Model):
                                  track_visibility='onchange',
                                  domain=[('state', 'in', [ 'operative', 'operative_failures'])],
                                  states={'draft': [('readonly', False)]})
-    operator = fields.Many2one('hr.employee', string='Operador', readonly=True,
-                               required=True, track_visibility='onchange',
+    third_party_operator = fields.Boolean('Operador de Terceros', default=False)
+    name_third_party_operator = fields.Char('Nombre de Operador de Terceros')
+    operator = fields.Many2one('hr.employee', string='Operador', readonly=True, track_visibility='onchange',
                                states={'draft': [('readonly', False)]})
     assistant = fields.Many2one('hr.employee', string='Ayudante', readonly=True,
                                 states={'draft': [('readonly', False)]})
