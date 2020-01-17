@@ -254,28 +254,14 @@ class AccountInvoice(models.Model):
 
     ISSUANCE_DOCUMENTS = ['out_invoice', 'out_refund']  # Factura de venta, Nota de crédito en venta...
 
-    @api.onchange('journal_id', 'sri_authorization_id')
-    def _onchange_journal_id(self):
-        """
-        Obtener la el número de la secuencia del documento
-        :return: self
-        """
-        super(AccountInvoice, self)._onchange_journal_id()
-        if self.journal_id and self.type in self.ISSUANCE_DOCUMENTS:
-            authorisation = self.env.user.company_id._get_authorisation(self.type)
-            if authorisation:
-                if self.type == 'out_invoice':
-                    self.sri_authorization_id = authorisation.id
-                elif self.type == 'out_refund':
-                    self.sri_authorization_id = authorisation.id
-                self.authorization = not self.sri_authorization_id.is_electronic and self.sri_authorization_id.authorization
-                number = '{0}'.format(str(self.sri_authorization_id.sequence_id.number_next_actual).zfill(9))
-                self.reference = number
-        else:
-            self.sri_authorization_id = False
+    @api.onchange('sri_authorization_id')
+    def _onchange_sri_authorization_id(self):
+        if self.sri_authorization_id and self.type in self.ISSUANCE_DOCUMENTS and not self.is_electronic:
+            number = '{0}'.format(str(self.sri_authorization_id.sequence_id.number_next_actual).zfill(9))
+            self.reference = number
 
     @api.one
-    @api.depends('sri_authorization_id', 'reference')
+    @api.depends('type', 'point_printing_id', 'reference')
     def _compute_invoice_number(self):
         """
         Calcular el número de documento
@@ -283,8 +269,8 @@ class AccountInvoice(models.Model):
         """
         if self.reference:
             self.invoice_number = '{0}-{1}-{2}'.format(
-                self.sri_authorization_id.establishment if self.sri_authorization_id else self.establishment,
-                self.sri_authorization_id.emission_point if self.sri_authorization_id else self.emission_point,
+                self.point_printing_id.name[:3] if self.point_printing_id else self.establishment,
+                self.point_printing_id.name[4:] if self.point_printing_id else self.emission_point,
                 self.reference
             )
         else:
@@ -297,7 +283,7 @@ class AccountInvoice(models.Model):
         """
         if self.reference:
             self.reference = self.reference.zfill(9)
-            if not self.sri_authorization_id.is_valid_number(
+            if not self.is_electronic and self.sri_authorization_id and not self.sri_authorization_id.is_valid_number(
                     int(self.reference)) and self.type in self.ISSUANCE_DOCUMENTS:
                 return {
                     'value': {
@@ -305,7 +291,7 @@ class AccountInvoice(models.Model):
                     },
                     'warning': {
                         'title': 'Error',
-                        'message': 'Número no coincide con la autorización ingresada.'
+                        'message': 'Número no coincide con la autorización ingresada!'
                     }
                 }
 
@@ -317,7 +303,7 @@ class AccountInvoice(models.Model):
         35: Documento electrónico, online
         49: Documento electrónico, offline
         """
-        if self.type not in ['in_invoice']:
+        if self.type not in ['in_invoice'] or self.is_electronic:
             return
         if self.authorization and len(self.authorization) not in [10, 35, 49]:
             raise ValidationError('Debe ingresar 10, 35 o 49 dígitos según el documento.')
@@ -363,8 +349,15 @@ class AccountInvoice(models.Model):
     authorized_voucher_id = fields.Many2one('eliterp.type.document', 'Tipo de comprobante',
                                             readonly=True, states={'draft': [('readonly', False)]},
                                             default=_default_authorized_voucher)
+
+    @api.model
+    def _default_point_printing_id(self):
+        company = self.env.user.company_id.id
+        point_printing_ids = self.env['sri.point.printing'].search([('company_id', '=', company)], limit=1)
+        return point_printing_ids
+
     point_printing_id = fields.Many2one('sri.point.printing', string='Punto de impresión', readonly=True,
-                                        states={'draft': [('readonly', False)]})
+                                        states={'draft': [('readonly', False)]}, default=_default_point_printing_id)
     sri_authorization_id = fields.Many2one('eliterp.sri.authorization', string='Autorización del SRI', copy=False,
                                            readonly=True,
                                            states={'draft': [('readonly', False)]})
@@ -379,6 +372,17 @@ class AccountInvoice(models.Model):
                                 states={'draft': [('readonly', False)]})
     emission_point = fields.Char('Punto emisión', size=3, default='001', readonly=True,
                                  states={'draft': [('readonly', False)]})
+
+    @api.one
+    @api.depends('type', 'authorized_voucher_id', 'point_printing_id')
+    def _compute_is_electronic(self):
+        """
+        Dejar para futuras implementaciones de F.E. (Lo colocamos en Falso)
+        :return:
+        """
+        self.is_electronic = False
+
+    is_electronic = fields.Boolean(string='Es electrónica', store=True, compute='_compute_is_electronic')
 
     _sql_constraints = [(
         'invoice_unique', 'CHECK(1=1)',

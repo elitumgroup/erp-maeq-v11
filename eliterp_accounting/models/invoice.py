@@ -281,7 +281,7 @@ class AccountInvoice(models.Model):
         else:
             res = super(AccountInvoice, self).action_invoice_open()
         # Facturas de cliente y notas de crédito
-        if self.type in ['out_invoice', 'out_refund']:
+        if self.type in ['out_invoice', 'out_refund'] and not self.is_electronic:
             self.action_number()
         return super(AccountInvoice, self).action_invoice_open()
 
@@ -333,13 +333,17 @@ class AccountInvoice(models.Model):
         total_base_taxed = 0.00
         total_base_zero_iva = 0.00
         for line in self.invoice_line_ids:
+            if not line.invoice_line_tax_ids:  # NO IMPUESTOS BASE 0
+                total_base_zero_iva += line.price_subtotal
+                continue
             for tax in line.invoice_line_tax_ids:
                 if tax.amount > 0:
                     total_base_taxed += line.price_subtotal
                 else:
                     total_base_zero_iva += line.price_subtotal
         self.base_zero_iva = total_base_zero_iva
-        self.taxed = total_base_taxed
+        self.base_taxed = total_base_taxed
+        self.amount_without_discount = round_curr(self.amount_untaxed + self.amount_discount)
 
     @api.one
     @api.depends(
@@ -439,10 +443,29 @@ class AccountInvoice(models.Model):
     period = fields.Many2one('eliterp.lines.account.period', string='Período', store=True, readonly=True,
                              compute='_get_accounting_period')
 
+    @api.one
+    @api.depends('invoice_line_ids.price_subtotal')
+    def _compute_amount_discount(self):
+        if not self.invoice_line_ids:
+            return 0.00
+        else:
+            total = 0.00
+            for line in self.invoice_line_ids:
+                subtotal = round(line.price_unit * line.quantity * (line.discount / 100), 3)
+                total += subtotal
+            self.amount_discount = total
+
+    amount_without_discount = fields.Float('Subtotal sin Descuento', currency_field='currency_id',
+                                           compute='_compute_amount',
+                                           store=True)
+    amount_discount = fields.Float('Descuento', currency_field='currency_id', compute='_compute_amount_discount',
+                                   store=True)
     amount_retention = fields.Monetary('Total a retener', store=True,
                                        currency_field='currency_id', readonly=True, compute='_compute_amount')
-    base_zero_iva = fields.Float('Base cero IVA', readonly=True)
-    base_taxed = fields.Float('Base gravada', readonly=True)
+    base_zero_iva = fields.Float('Subotal Base cero', currency_field='currency_id', compute='_compute_amount',
+                                 store=True)
+    base_taxed = fields.Float('Subtotal IVA', currency_field='currency_id', compute='_compute_amount',
+                              store=True)
     is_sale_note = fields.Boolean('Es nota de venta?', default=False)
     journal_id = fields.Many2one('account.journal', string='Journal',
                                  required=True, readonly=True, states={'draft': [('readonly', False)]},
