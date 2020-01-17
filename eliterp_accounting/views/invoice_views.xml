@@ -74,26 +74,25 @@
                                class="oe_inline"
                                options="{'no_open': True, 'no_create': True}"/>
                         -
-                        <field name="reference" string="Secuencial" class="oe_inline"
-                               attrs="{'invisible':['|', ('sri_authorization_id', '=', False)]}"
-                               required="1"/>
+                        <field name="reference" string="Secuencial" class="oe_inline" required="1"/>
                     </div>
                     <field name="sri_authorization_id"
-                           domain="[('active', '=', True), ('code', '=', '18')]"
-                           attrs="{'readonly': [('state', 'not in', ('draft'))]}"
-                           options="{'no_open': True, 'no_create': True}"
-                           required="1"/>
+                           domain="[('point_printing_id', '=', point_printing_id), ('type_document', '=', authorized_voucher_id)]"
+                           attrs="{'invisible':[('is_electronic', '=', True)], 'required':[('is_electronic', '=', False)]}"
+                           options="{'no_open': True, 'no_create': True}"/>
                     <field name="period"/>
                     <field name="invoice_number" invisible="1"/>
                     <field name="authorization" invisible="1"/>
                     <field name="authorized_voucher_id" invisible="1"/>
+                    <field name="is_electronic" invisible="1"/>
                 </xpath>
-                <xpath expr="//field[@name='amount_untaxed']" position="before"><!--Base imponible-->
-                    <field name="base_zero_iva" widget="monetary"/>
-                    <field name="base_taxed" widget="monetary"/>
-                </xpath>
-                <xpath expr="//field[@name='amount_untaxed']" position="attributes">
-                    <attribute name="string">Subtotal</attribute>
+                <field name="amount_untaxed" position="replace"/>
+                <xpath expr="//field[@name='amount_tax']" position="before"><!--Impuesto-->
+                    <field name="amount_without_discount" widget="monetary"/>
+                    <field name="amount_discount" widget="monetary"/>
+                    <field string="Subtotal" name="amount_untaxed" widget="monetary" class="oe_subtotal_footer_separator"/>
+                    <field string="Subtotal 0" name="base_zero_iva" widget="monetary"/>
+                    <field string="Subtotal IVA" name="base_taxed" widget="monetary"/>
                 </xpath>
                 <xpath expr="//field[@name='outstanding_credits_debits_widget']" position="attributes">
                     <attribute name="attrs">{'invisible':[('type', '!=', 'out_refund')]}</attribute>
