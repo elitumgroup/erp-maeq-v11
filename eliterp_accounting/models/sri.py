@@ -329,14 +329,12 @@ class AccountInvoice(models.Model):
         voucher = False
         if context.get('type') and not context.get('default_authorized_voucher'):
             DocumentType = context.get('type')
-            if DocumentType == 'in_invoice':
+            if context.get('credit_note', False):
+                code = '04'
+            elif DocumentType == 'in_invoice':
                 code = '01'
-            elif DocumentType == 'out_invoice':
-                code = '18'
-            elif DocumentType == 'in_refund':
-                code = '04'
             else:
-                code = '04'
+                code = '18'
             voucher = object_voucher.search([('code', '=', code)])
         elif context.get('default_authorized_voucher'):
             voucher = object_voucher.search([

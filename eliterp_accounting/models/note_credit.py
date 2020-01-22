@@ -3,6 +3,7 @@
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 
 from odoo import api, fields, models, _
+from odoo.exceptions import UserError
 
 
 class AccountInvoice(models.Model):
@@ -47,17 +48,19 @@ class AccountInvoice(models.Model):
         Añadimos nota de crédito en factura
         """
         if self.type == 'out_invoice':
-            journal_credit = self.env['account.journal'].search([
-                ('name', '=', 'Nota de crédito a cliente')], limit=1)[0]
+            journal_name = 'Nota de crédito a cliente'
         else:
-            journal_credit = self.env['account.journal'].search([('name', '=', 'Nota de crédito')], limit=1)[0]
+            journal_name = 'Nota de crédito'
+        journal_credit = self.env['account.journal'].search([('name', '=', journal_name)], limit=1)
+        if not journal_credit:
+            raise UserError("No existe diario (%s) para crear nota de crédito." % journal_name)
         date = fields.Date.today() or self.date_invoice
         description = ""
         credit_note = self.with_context(credit_note=True).refund(
             date,
             date,
             description,
-            journal_credit.id
+            journal_credit[0].id if journal_credit else False
         )
         credit_note.tax_line_ids.filtered(lambda x: x.tax_id.tax_type == 'retention').unlink()  # Borramos impuestos
         # de retención
