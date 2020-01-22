@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="view_form_point_printing_sri_electronic" model="ir.ui.view">
+            <field name="name">view_form_point_printing_sri_electronic</field>
+            <field name="model">sri.point.printing</field>
+            <field name="inherit_id" ref="eliterp_accounting.view_form_point_printing"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <button string="Actualizar secuencias"
+                            name="button_update_sequence" type="object"
+                            confirm="Desea actualizar nuevas secuencias de punto de impresión?"
+                            groups="eliterp_sri_electronic_voucher.electronic_voucher_management_sequence"
+                            class="oe_highlight"/>
+                </xpath>
+                <xpath expr="//notebook" position="inside">
+                    <page string="Autorización electrónica" name="authorized_electronic">
+                        <group>
+                            <group string="Comprobantes">
+                                <field name="allow_electronic_invoice"/>
+                                <field name="allow_electronic_credit_note"/>
+                                <field name="allow_electronic_retention"/>
+                                <!--TODO: Ocultos, no necesarios
+                                <field name="allow_electronic_debit_note"/>
+                                <field name="allow_electronic_waybill"/>
+                                -->
+                            </group>
+                            <group string="Secuencias" groups="eliterp_sri_electronic_voucher.electronic_voucher_management_sequence">
+                                <field name="sequence_electronic_invoice"
+                                       groups="base.group_system"
+                                       attrs="{'invisible': [ ('allow_electronic_invoice','=', False)]}"/>
+                                <label for="new_sequence_electronic_invoice" string="Gestión de secuencia factura"/>
+                                <div attrs="{'invisible': [ ('allow_electronic_invoice','=', False)]}" groups="eliterp_sri_electronic_voucher.electronic_voucher_management_sequence">
+                                    <field name="current_sequence_electronic_invoice" class="oe_inline"/>
+                                    <span class="oe_inline"> actualizar a ==> </span>
+                                    <field name="new_sequence_electronic_invoice" class="oe_inline"/>
+                                </div>
+
+                                <field name="sequence_electronic_credit_note"
+                                       groups="base.group_system"
+                                       attrs="{'invisible': [ ('allow_electronic_credit_note','=', False)]}"/>
+                                <label for="new_sequence_electronic_credit_note" string="Gestión de secuencia n/c"/>
+                                <div attrs="{'invisible': [ ('allow_electronic_credit_note','=', False)]}" groups="eliterp_sri_electronic_voucher.electronic_voucher_management_sequence">
+                                    <field name="current_sequence_electronic_credit_note" class="oe_inline"/>
+                                    <span class="oe_inline"> actualizar a ==> </span>
+                                    <field name="new_sequence_electronic_credit_note" class="oe_inline"/>
+                                </div>
+
+                                <field name="sequence_electronic_retention"
+                                       groups="base.group_system"
+                                       attrs="{'invisible': [ ('allow_electronic_retention','=', False)]}"/>
+                                <label for="new_sequence_electronic_retention" string="Gestión de secuencia retención"/>
+                                <div attrs="{'invisible': [ ('allow_electronic_retention','=', False)]}" groups="eliterp_sri_electronic_voucher.electronic_voucher_management_sequence">
+                                    <field name="current_sequence_electronic_retention" class="oe_inline"/>
+                                    <span class="oe_inline"> actualizar a ==> </span>
+                                    <field name="new_sequence_electronic_retention" class="oe_inline"/>
+                                </div>
+
+                                <!--TODO
+                                <field name="sequence_electronic_debit_note"
+                                       groups="base.group_system"
+                                       attrs="{'invisible': [ ('allow_electronic_debit_note','=', False)]}"/>
+                                <field name="sequence_electronic_waybill"
+                                       groups="base.group_system"
+                                       attrs="{'invisible': [ ('allow_electronic_waybill','=', False)]}"/>
+                                 -->
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

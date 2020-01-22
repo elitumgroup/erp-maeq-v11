@@ -1,0 +1,93 @@
+<?xml version="1.0" ?>
+<openerp>
+    <data noupdate="1">
+        <!--Schedulers-->
+        <record forcecreate="True" id="cron_service_sri" model="ir.cron">
+            <field name="name">Envío masivo de CE al SRI: ejecutar el programador</field>
+            <field name="model_id" ref="model_sri_electronic_voucher"/>
+            <field name="state">code</field>
+            <field name="code">
+                model._cron_generated()
+            </field>
+            <field name="active" eval="True"/>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">5</field>
+            <field name="interval_type">minutes</field>
+            <field name="numbercall">-1</field>
+            <field eval="False" name="doall"/>
+        </record>
+
+        <record forcecreate="True" id="cron_service_mail_partner" model="ir.cron">
+            <field name="name">Envío de correos de CE a empresas: ejecutar el programador</field>
+            <field name="model_id" ref="model_sri_electronic_voucher"/>
+            <field name="state">code</field>
+            <field name="code">
+                model.run_scheduler_email()
+            </field>
+            <field name="active" eval="True"/>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">5</field>
+            <field name="interval_type">minutes</field>
+            <field name="numbercall">-1</field>
+            <field eval="False" name="doall"/>
+        </record>
+
+        <!--Invoice, Refund-->
+        <record id="mail_template_electronic_invoice" model="mail.template">
+            <field name="name">Correo para factura electrónica</field>
+            <field name="email_from">
+                ${object.user_id.company_id.email_voucher_electronic or object.user_id.company_id.email|safe}
+            </field>
+            <field name="subject">Factura/Nota de crédito electrónica de ${object.company_id.name}</field>
+            <field name="partner_to">${object.partner_id.id}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="model_id" ref="account.model_account_invoice"/>
+            <field name="report_name">Documento No. ${(object.reference or '').replace('/','_')}</field>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="body_html">
+                <![CDATA[
+                    Estimad@ ${ object.partner_id.name }, adjunto encontrará su documento electrónico con número
+                    ${ object.reference }, con fecha de emisión ${ object.date_invoice } por un total de
+                    ${ object.amount_total }.
+                ]]>
+            </field>
+        </record>
+        <!--Retention-->
+        <record id="mail_template_electronic_retention" model="mail.template">
+            <field name="name">Correo para retención electrónica</field>
+            <field name="email_from">
+                ${object.invoice_id.user_id.company_id.email_voucher_electronic or object.invoice_id.user_id.company_id.email|safe}
+            </field>
+            <field name="subject">Retención electrónica de ${object.company_id.name}</field>
+            <field name="partner_to">${object.partner_id.id}</field>
+            <field name="model_id" ref="eliterp_treasury.model_eliterp_withhold"/>
+            <field name="auto_delete" eval="True"/>
+            <field name="report_name">Documento No. ${(object.retention_number or '').replace('/','_')}</field>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="body_html">
+                <![CDATA[
+                    Estimad@ ${ object.partner_id.name }, adjunto encontrará su retención electrónica con número
+                    ${ object.retention_number }, con fecha de emisión ${ object.date_retention } por un total de
+                    ${ object.total }.
+                ]]>
+            </field>
+        </record>
+    </data>
+    <data>
+        <record model="ir.sequence" id="sequence_electronic_invoice">
+            <field name="name">Secuencia factura electrónica para 001</field>
+            <field name="implementation">no_gap</field>
+            <field name="number_increment">1</field>
+        </record>
+        <record model="ir.sequence" id="sequence_electronic_credit_note">
+            <field name="name">Secuencia n/c electrónica para 001</field>
+            <field name="implementation">no_gap</field>
+            <field name="number_increment">1</field>
+        </record>
+        <record model="ir.sequence" id="sequence_electronic_retention">
+            <field name="name">Secuencia retención electrónica para 001</field>
+            <field name="implementation">no_gap</field>
+            <field name="number_increment">1</field>
+        </record>
+    </data>
+</openerp>

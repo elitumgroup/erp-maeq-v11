@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="view_form_config_settings_electronic_voucher" model="ir.ui.view">
+            <field name="name">view_form_config_settings_electronic_voucher</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@id='invoicing_settings']" position="after">
+                    <h2>Facturación electrónica (EC)</h2>
+                    <div class="row mt16 o_settings_container" id="authorized_electronic_voucher">
+                        <div class="col-12 col-lg-6 o_setting_box"
+                             title="Estos parámetros son configurados para módulo de Facturación electrónica.">
+                            <div class="o_setting_left_pane"/>
+                            <div class="o_setting_right_pane">
+                                <span class="o_form_label">Parámetros de F.E. Ecuador</span>
+                                <span class="fa fa-lg fa-building-o" groups="base.group_erp_manager"/>
+                                <div class="text-muted">
+                                    Url del API
+                                </div>
+                                <div class="content-group mt16">
+                                    <field name="url_api" widget="url" class="text-center oe_inline"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

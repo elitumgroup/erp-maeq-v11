@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!--Searchs-->
+        <record id="view_search_electronic_voucher" model="ir.ui.view">
+            <field name="name">view_search_electronic_voucher</field>
+            <field name="model">sri.electronic.voucher</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" filter_domain="['|', ('name','ilike',self), ('document_number','ilike',self)]"/>
+                    <field name="authorization_date"/>
+                    <filter string="Ambiente de producción" name="filter_production"
+                            domain="[('environment', '=', '2')]"/>
+                    <filter string="Ambiente de pruebas" name="filter_test" domain="[('environment', '=', '1')]"/>
+                    <separator/>
+                    <filter string="Pendientes de procesar" name="filter_state_pending"
+                            domain="[('state', 'not in', ['draft', 'authorized_sri', 'not_authorized'])]"/>
+                    <filter string="Autorizados"
+                            name="filter_state_authorized"
+                            domain="[('state', '=', 'authorized_sri')]"/>
+                    <separator/>
+                    <filter string="Últimos 30 días" name="last_thirty_days"
+                            domain="[('create_date', '&gt;',  (context_today() - datetime.timedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                    <group expand="0" string="Agrupar por">
+                        <filter string="Tipo de comprobante"
+                                name="groupby_authorized_voucher_id" domain="[]"
+                                context="{'group_by':'authorized_voucher_id'}"/>
+                        <filter string="Estado de autorización"
+                                name="groupby_state" domain="[]"
+                                context="{'group_by':'state'}"/>
+                        <separator/>
+                        <filter string="Fecha autorización"
+                                name="groupby_authorization_date" domain="[]"
+                                context="{'group_by':'authorization_date'}"/>
+                        <filter string="Fecha de creación"
+                                name="groupby_create_date" domain="[]"
+                                context="{'group_by':'create_date'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!--Actions-->
+        <record id="action_electronic_voucher_dashboard" model="ir.actions.client">
+            <field name="name">Resumen general</field>
+            <field name="tag">electronic_voucher_dashboard.main</field>
+        </record>
+
+        <record id="action_electronic_voucher_authorized" model="ir.actions.act_window">
+            <field name="name">Autorizados</field>
+            <field name="res_model">sri.electronic.voucher</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[('state','=','authorized_sri')]</field>
+            <field name="context">{'search_default_groupby_authorized_voucher_id': True}
+            </field>
+            <field name="search_view_id" ref="view_search_electronic_voucher"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Comprobantes electrónicos autorizados de la compañía.
+                </p>
+            </field>
+        </record>
+        <record id="action_electronic_voucher_not_authorized" model="ir.actions.act_window">
+            <field name="name">No autorizados</field>
+            <field name="res_model">sri.electronic.voucher</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[('state','=','not_authorized_sri')]</field>
+            <field name="search_view_id" ref="view_search_electronic_voucher"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Comprobantes electrónicos no autorizados de la compañía.
+                </p>
+            </field>
+        </record>
+        <record id="action_electronic_voucher_others" model="ir.actions.act_window">
+            <field name="name">Pendientes de procesar</field>
+            <field name="res_model">sri.electronic.voucher</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[('state','not in',['authorized_sri', 'not_authorized_sri'])]</field>
+            <field name="context">{'search_default_groupby_state': True}</field>
+            <field name="search_view_id" ref="view_search_electronic_voucher"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Comprobantes electrónicos pendientes de procesar de la compañía.
+                </p>
+                <p>
+                    Por ejemplo documentos no firmados, XMl mal formados o inválidos, rechazados
+                    por el webservice del SRI por algún motivo, no procesados por sistema, etc.
+                </p>
+            </field>
+        </record>
+
+        <record id="action_digital_certificate" model="ir.actions.act_window">
+            <field name="name">Certificados digitales</field>
+            <field name="res_model">sri.digital.certificate</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Clic para añadir un nuevo certificado digital.
+                </p>
+            </field>
+        </record>
+
+        <!--Menus-->
+        <menuitem name="Electrónicos"
+                  id="menu_electronic_voucher"
+                  web_icon="eliterp_sri_electronic_voucher,static/description/icon.png"
+                  groups="eliterp_sri_electronic_voucher.electronic_voucher_manager,eliterp_sri_electronic_voucher.electronic_voucher_user"
+                  sequence="100"/>
+
+        <menuitem name="Resumen general" id="menu_electronic_voucher_dashboard"
+                  action="action_electronic_voucher_dashboard"
+                  parent="menu_electronic_voucher" sequence="-1"
+                  groups="eliterp_sri_electronic_voucher.electronic_voucher_manager"/>
+
+
+        <menuitem id="menu_parent_electronic_voucher"
+                  name="Comprobantes electrónicos"
+                  parent="menu_electronic_voucher"
+                  sequence="5"/>
+
+        <menuitem id="menu_action_electronic_voucher_authorized"
+                  action="action_electronic_voucher_authorized"
+                  parent="menu_parent_electronic_voucher"
+                  sequence="5"/>
+        <menuitem id="menu_action_electronic_voucher_not_authorized"
+                  action="action_electronic_voucher_not_authorized"
+                  parent="menu_parent_electronic_voucher"
+                  sequence="10"/>
+        <menuitem id="menu_action_electronic_voucher_others"
+                  action="action_electronic_voucher_others"
+                  parent="menu_parent_electronic_voucher"
+                  sequence="15"/>
+
+        <menuitem id="menu_config_electronic_voucher"
+                  name="Configuración"
+                  parent="menu_electronic_voucher"
+                  sequence="100"/>
+        <menuitem id="menu_digital_certificate"
+                  action="action_digital_certificate"
+                  parent="menu_config_electronic_voucher"
+                  sequence="1"/>
+
+        <!--Views-->
+        <record id="view_tree_digital_certificate" model="ir.ui.view">
+            <field name="name">view_tree_digital_certificate</field>
+            <field name="model">sri.digital.certificate</field>
+            <field name="arch" type="xml">
+                <tree decoration-danger="state=='expired'"
+                      decoration-success="state == 'validate'"
+                      decoration-bf="state == 'validate'"
+                >
+                    <field name="name"/>
+                    <field name="expiration_date"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_form_digital_certificate" model="ir.ui.view">
+            <field name="name">view_form_digital_certificate</field>
+            <field name="model">sri.digital.certificate</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="button_validate"
+                                type="object"
+                                confirm="Desea realizar la validación del certificado digital?"
+                                class="oe_highlight" states="draft" string="Validar"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,validate"
+                               modifiers="{'readonly': true}"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="p.e Nombre de referencia"/>
+                            </h1>
+                        </div>
+                        <group col="4">
+                            <field name="digital_signature" filename="digital_signature_name"
+                                   widget="binary"/>
+                            <field name="digital_electronic_signature" password="True"/>
+                            <field name="expiration_date"/>
+                            <field name="digital_signature_name" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company" options="{'no_create':True}"/>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!--Electronic voucher-->
+        <record id="view_kanban_electronic_voucher" model="ir.ui.view">
+            <field name="name">view_kanban_electronic_voucher</field>
+            <field name="model">sri.electronic.voucher</field>
+            <field name="arch" type="xml">
+                <kanban create="false" class="o_kanban_mobile">
+                    <field name="document_id"/>
+                    <field name="name"/>
+                    <field name="authorization_date"/>
+                    <field name="state"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <span style="font-size: 10px;">
+                                                <t t-esc="record.document_id.value"/>
+                                            </span>
+                                        </strong>
+                                    </div>
+                                    <span class="pull-right text-right">
+                                        <field name="state" widget="label_selection"
+                                               options="{'classes': {'draft': 'new', 'not_authorized_sr': 'danger', 'authorized_sri': 'success'}}"/>
+                                    </span>
+                                </div>
+                                <div class="text-muted">
+                                    <strong style="font-size: 9px;">
+                                        <t t-esc="record.name.value"/>
+                                    </strong>
+                                </div>
+                                <div t-if="record.authorization_date.raw_value">
+                                    <span class="o_stat_text">Autorizado:</span>
+                                    <t t-esc="record.authorization_date.value"/>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="view_tree_electronic_voucher" model="ir.ui.view">
+            <field name="name">view_tree_electronic_voucher</field>
+            <field name="model">sri.electronic.voucher</field>
+            <field name="arch" type="xml">
+                <tree create="false" decoration-success="state == 'authorized_sri'"
+                      decoration-bf="state == 'authorized_sri'"
+                      decoration-danger="state == 'not_authorized_sri'"
+                >
+                    <field name="create_date" string="Creado el"/>
+                    <field name="document_id"/>
+                    <field name="name"/>
+                    <field name="authorization_date"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_form_electronic_voucher" model="ir.ui.view">
+            <field name="name">view_form_electronic_voucher</field>
+            <field name="model">sri.electronic.voucher</field>
+            <field name="arch" type="xml">
+                <form create="false" duplicate="false">
+                    <header>
+                        <field name="is_sent" invisible="1"/>
+                        <field name="state" widget="statusbar" statusbar_visible="new,authorized_sri,not_authorized_sri"
+                               modifiers="{'readonly': true}"/>
+                        <button type="object" name="button_generated" string="Volver a procesar"
+                                states="not_authorized_sri"/>
+                        <button type="object" name="button_generated" class="oe_highlight" string="Procesar"
+                                states="new"/>
+                        <button type="object" name="button_new_generated"
+                                groups="eliterp_sri_electronic_voucher.electronic_voucher_manager"
+                                string="Generar nuevamente" states="rejected_sri"/>
+                        <button type="object" name="button_process" class="oe_highlight" string="Procesar"
+                                states="sign_xml"/>
+                        <button type="object" name="button_authorize" class="oe_highlight"
+                                string="Solicitar autorización" states="authorized_offline"/>
+                        <button type="object"
+                                attrs="{'invisible':['|', ('state', '!=', 'authorized_sri'), ('is_sent', '!=', True)]}"
+                                name="send_document" string="Enviar email al cliente" class="oe_highlight"/>
+                        <button type="object" name="button_cancel"
+                                string="Anular"
+                                states="authorized_sri"
+                                groups="eliterp_sri_electronic_voucher.electronic_voucher_manager"
+                                confirm="Desea anular comprobante electrónico?"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="document_id"/>
+                            </h1>
+                            <h2>
+                                <field name="name"/>
+                            </h2>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="create_date" string="Creado el"/>
+                                <field name="authorized_voucher_id"/>
+                                <field name="sri_authorization_id"
+                                       attrs="{'invisible': [('state', '!=', 'authorized_sri')]}"/>
+                                <field name="authorization_date"
+                                       attrs="{'invisible': [('authorization_date', '=', False)]}"/>
+                            </group>
+                            <group>
+                                <field name="type_service" groups="base.group_erp_manager"/>
+                                <field name="environment"/>
+                                <field name="type_emission"/>
+                            </group>
+                        </group>
+                        <group string="Mensaje informativo" attrs="{'invisible': [('comment', '=', False)]}">
+                            <field name="comment" nolabel="1"/>
+                        </group>
+                        <group string="Documentos autorizados"
+                               attrs="{'invisible': [('state', '!=', 'authorized_sri')]}">
+                            <field name="xml_filename" invisible="1"/>
+                            <field name="xml_file" filename="xml_filename" readonly="1"/>
+                            <field name="ride_filename" invisible="1"/>
+                            <field name="ride_file" filename="ride_filename" readonly="1"/>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>
