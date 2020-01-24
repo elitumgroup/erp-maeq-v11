@@ -184,7 +184,7 @@ class Withhold(models.Model):
         self.invoice_id._compute_residual()
         self.write({
             'state': 'cancel',
-            'withhold_number': "Cancelado [%s]" % (self.withhold_number)
+            'withhold_number': "Cancelado [%s]" % self.withhold_number
         })
         return True
 
@@ -203,7 +203,7 @@ class Withhold(models.Model):
 
         move_id = self.env['account.move'].create({
             'journal_id': self.journal_id.id,
-            'ref': "Retención de factura [%s]" % (self.invoice_id.invoice_number),
+            'ref': "Retención de factura [%s]" % self.invoice_id.invoice_number,
             'date': self.date_withhold
         })
         line_move_withhold = self.env['account.move.line'].with_context(check_move_validity=False).create({
@@ -342,7 +342,8 @@ class Withhold(models.Model):
     @api.model
     def create(self, values):
         self.env['eliterp.global.functions'].valid_period(values[
-                                                              'date_withhold'])  # Verificamos Período contable sea correcto
+                                                              'date_withhold'])  # Verificamos Período contable sea
+        # correcto
         if values['type'] == 'purchase':
             if values['is_sequential']:
                 authorisation = self.env.user.company_id._get_authorisation(
@@ -475,9 +476,16 @@ class Withhold(models.Model):
                             states={'draft': [('readonly', False)]})
     point_printing_id = fields.Many2one('sri.point.printing', string='Punto de impresión', readonly=True,
                                         states={'draft': [('readonly', False)]})
-    sri_authorization_id = fields.Many2one('sri.authorization', string='Autorización del SRI', readonly=True,
+    sri_authorization_id = fields.Many2one('eliterp.sri.authorization', string='Autorización del SRI', readonly=True,
                                            copy=False,
                                            states={'draft': [('readonly', False)]})
+
+    @api.one
+    @api.depends('is_sequential', 'point_printing_id')
+    def _compute_is_electronic(self):
+        self.is_electronic = False
+
+    is_electronic = fields.Boolean(string='Es electrónica', store=True, compute='_compute_is_electronic')
     _sql_constraints = [
         ('withhold_number_unique', 'unique (withhold_number)',
          "El No. Retención ya está registrado.")
