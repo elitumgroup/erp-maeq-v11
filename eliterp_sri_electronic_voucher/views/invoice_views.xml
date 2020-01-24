@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <!--Invoice-->
+        <record id="view_form_invoice_sri_electronic" model="ir.ui.view">
+            <field name="name">view_form_invoice_sri_electronic</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+                <!--Nueva página-->
+                <xpath expr="//page[@name='other_info']" position="after">
+                    <page string="Autorización electrónica"
+                          groups="eliterp_sri_electronic_voucher.electronic_voucher_user"
+                          name="authorization_electronic"
+                          attrs="{'invisible':['|', ('is_electronic', '=', False), ('state', '=', 'draft')]}">
+                        <group>
+                            <group>
+                                <field name="electronic_voucher_id"/>
+                                <field name="sri_authorization_id"/>
+                                <field name="authorization_date"/>
+                            </group>
+                            <group>
+                                <field name="authorization_status"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_filter_invoice_sri_electronic" model="ir.ui.view">
+            <field name="name">view_filter_invoice_sri_electronic</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='unpaid']" position="after">
+                    <filter string="Hoy"
+                      name="invoices_today"
+                            help="Facturas creadas hoy en estado Por pagar y Pagado."
+                      domain="[('state', 'in', ['open', 'paid']), ('date_invoice', '=', context_today().strftime('%Y-%m-%d'))]"
+                    />
+                    <filter name="authorized_invoice" string="Comprobantes electrónicos autorizados"
+                            domain="[('authorization_status', '=', 'authorized_sri')]"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>

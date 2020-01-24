@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!--Resources-->
+        <template id="assets_backend" name="Recursos de C. Electrónicos" inherit_id="web.assets_backend"
+                  priority="17">
+            <xpath expr="." position="inside">
+                <!--
+                <link rel="stylesheet" type="text/scss" href="/web_settings_dashboard/static/src/scss/dashboard.scss"/>
+                -->
+                <script type="text/javascript" src="/eliterp_sri_electronic_voucher/static/src/js/dashboard.js"></script>
+            </xpath>
+        </template>
+    </data>
+</odoo>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <!--Retention-->
+        <record id="view_form_retention_sri_electronic" model="ir.ui.view">
+            <field name="name">view_form_retention_sri_electronic</field>
+            <field name="model">eliterp.withhold</field>
+            <field name="inherit_id" ref="eliterp_treasury.eliterp_view_form_withhold_purchase"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='lines_withhold']" position="after">
+                    <page string="Autorización electrónica"
+                          groups="eliterp_sri_electronic_voucher.electronic_voucher_user"
+                          attrs="{'invisible':['|', '|', ('state', '=', 'draft'), ('is_electronic', '=', False), ('is_sequential', '=', False)]}">
+                        <group>
+                            <group>
+                                <field name="electronic_voucher_id"/>
+                                <field name="sri_authorization_id"/>
+                                <field name="authorization_date"/>
+                            </group>
+                            <group>
+                                <field name="authorization_status"/>
+                                <field name="is_electronic" invisible="1"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

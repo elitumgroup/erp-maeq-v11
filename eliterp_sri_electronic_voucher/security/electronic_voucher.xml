@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record model="ir.module.category" id="module_category_electronic_voucher">
+            <field name="name">Comprobantes electrónicos</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <!--Groups-->
+        <record id="electronic_voucher_user" model="res.groups">
+            <field name="name">Usuario</field>
+            <field name="category_id" ref="module_category_electronic_voucher"/>
+            <field name="comment">Utilizar el proceso de comprobantes electrónicos</field>
+        </record>
+
+        <record id="electronic_voucher_manager" model="res.groups">
+            <field name="name">Administrador</field>
+            <field name="users" eval="[(4, ref('base.user_root'))]"/>
+            <field name="category_id" ref="module_category_electronic_voucher"/>
+            <field name="implied_ids" eval="[(4, ref('electronic_voucher_user'))]"/>
+            <field name="comment">El administrador gestiona todo el proceso de comprobantes electrónicos</field>
+        </record>
+
+        <record id="electronic_voucher_management_sequence" model="res.groups">
+            <field name="name">Gestión de secuenciales (Comprobantes Electrónicos)</field>
+            <field name="users" eval="[(4, ref('base.user_root'))]"/>
+            <field name="category_id" ref="base.module_category_usability"/>
+            <field name="comment">Permite gestionar secuenciales de comprobantes electrónicos en Puntos de impresión del
+                SRI.
+            </field>
+        </record>
+
+        <!--Rules-->
+        <record model="ir.rule" id="digital_certificate_rule">
+            <field name="name">Digital Certificate rule</field>
+            <field name="model_id" ref="model_sri_digital_certificate"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]
+            </field>
+        </record>
+
+        <record model="ir.rule" id="electronic_voucher_rule">
+            <field name="name">Electronic Voucher rule</field>
+            <field name="model_id" ref="model_sri_electronic_voucher"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_digital_certificate_manager,sri.digital.certificate,model_sri_digital_certificate,electronic_voucher_manager,1,1,1,1
+
+access_electronic_voucher_manager,sri.electronic.voucher,model_sri_electronic_voucher,electronic_voucher_manager,1,1,1,1
+access_electronic_voucher_user,sri.electronic.voucher user,model_sri_electronic_voucher,electronic_voucher_user,1,1,1,0

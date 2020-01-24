@@ -51,14 +51,24 @@
                                    options="{'no_create': True}"
                                    domain="[('type', '=', 'out_invoice'), ('partner_id', '=', partner_id)]"/>
                             <field name="is_sequential"/>
-                            <field name="reference"
-                                   attrs="{'required': [('is_sequential', '=', True)], 'invisible': ['|', ('is_sequential', '=', False), ('state', '=', 'confirm')]}"/>
+                            <label for="reference" string="Nº Documento (SRI)"
+                                   attrs="{'invisible': ['|', ('is_sequential', '=', False), ('state', '=', 'confirm')]}"/>
+                            <div attrs="{'invisible': ['|', ('is_sequential', '=', False), ('state', '=', 'confirm')]}">
+                                <field name="point_printing_id"
+                                       attrs="{'required': [('is_sequential', '=', True)]}"
+                                       class="oe_inline"
+                                       options="{'no_open': True, 'no_create': True}"/>
+                                -
+                                <field name="reference" string="Secuencial" class="oe_inline"
+                                       attrs="{'required': [('is_sequential', '=', True)]}"/>
+                            </div>
                             <field name="withhold_number"
                                    attrs="{'invisible': [('withhold_number', '=', False)]}"
                                    readonly="1"/>
                             <field name="journal_id" invisible="1"/>
                             <field name="base_taxable" invisible="1"/>
                             <field name="base_iva" invisible="1"/>
+                            <field name="is_electronic" invisible="1"/>
                         </group>
                         <notebook>
                             <page string="Líneas de retención" name="lines_withhold_wizard">

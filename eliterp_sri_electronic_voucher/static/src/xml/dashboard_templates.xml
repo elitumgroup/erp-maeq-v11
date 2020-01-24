@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates xml:space="preserve">
+    <t t-name="DashboardElectronicVoucherMain">
+        <div class="container-fluid py-2 o_web_settings_dashboard">
+            <div class="form-row">
+               <div class="col-12 col-lg-4 o_web_settings_dashboard_col">
+                    <div class="o_sri_electronic_voucher_dashboard_summary"></div>
+                </div>
+                <div class="col-12 col-lg-4 o_web_settings_dashboard_col">
+                    <div class="o_sri_electronic_voucher_dashboard_certificate"></div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="DashboardElectronicVoucherSummary">
+        <div class="text-center o_sri_electronic_voucher_dashboard_summary">
+            <i class="fa fa-list fa-4x text-muted" role="img" aria-label="Comprobantes electrónicos" title="Comprobantes electrónicos"></i>
+            <div>
+                <small class="text-muted text-center">
+                    Resumen de los comprobates electrónicos generados
+                    por la compañía en curso en los últimos 30 días.
+                </small>
+            </div>
+            <t t-set="vouchers_authorized" t-value="widget.data.vouchers_authorized"/>
+            <t t-set="vouchers_not_authorized" t-value="widget.data.vouchers_not_authorized"/>
+            <t t-set="vouchers_others" t-value="widget.data.vouchers_others"/>
+            <div class="row mt16">
+                <div class="col-6 user-heading">
+                    <h3>
+                        [<t t-esc="vouchers_authorized"/>]
+                        Comprobantes autorizados
+                    </h3>
+                </div>
+                <div class="col-6">
+                    <a href="#" class="btn btn-primary btn-block o_vouchers_authorized" role="button"><strong>Ver</strong></a>
+                </div>
+            </div>
+            <div class="row mt16">
+                <div class="col-6 user-heading">
+                    <h3>
+                        [<t t-esc="vouchers_not_authorized"/>]
+                        Comprobantes no autorizados
+                    </h3>
+                </div>
+                <div class="col-6">
+                    <a href="#" class="btn btn-danger btn-block o_vouchers_not_authorized" role="button"><strong>Ver</strong></a>
+                </div>
+            </div>
+            <div class="row mt16">
+                <div class="col-6 user-heading">
+                    <h3>
+                        [<t t-esc="vouchers_others"/>]
+                        Comprobantes pendientes de procesar
+                    </h3>
+                </div>
+                <div class="col-6">
+                    <a href="#" class="btn btn-block o_vouchers_others" role="button"><strong>Ver</strong></a>
+                </div>
+            </div>
+            <div class="clearfix"/>
+        </div>
+    </t>
+
+    <t t-name="DashboardElectronicVoucherCertificate">
+        <div class="text-center o_sri_electronic_voucher_dashboard_certificate">
+            <i class="fa fa-lock fa-4x text-muted" role="img" aria-label="Certificado digital" title="Certificado digital"></i>
+            <div>
+                <small class="text-muted text-center">
+                    Certificado digital sirve para firmar comprobantes electrónicos antes
+                    de enviar al SRI para su respectivo proceso.
+                </small>
+            </div>
+            <t t-set="certificate_status" t-value="widget.data.certificate_status"/>
+            <div class="row mt16">
+                <div class="col-12">
+                    <div t-if="certificate_status == 'not exist'" class="alert alert-danger" role="alert">
+                        Compañía no tiene certificado digital ingresado en el sistema o no
+                        está validado de clic en "CREAR" para ingresar uno nuevo o validar.
+                    </div>
+                    <div t-if="certificate_status == 'expired'" class="alert alert-warning" role="alert">
+                        Compañía tiene certificado digital expirado de clic en "CREAR"
+                        para ingresar uno nuevo.
+                    </div>
+                    <div t-if="certificate_status == 'ok'" class="alert alert-success" role="alert">
+                        Compañía tiene certificado digital ingresado en el sistema
+                        correctamente.
+                    </div>
+                </div>
+                <div t-if="certificate_status != 'ok'" class="col-12">
+                    <a href="#" class="btn btn-primary btn-block o_vouchers_new_certificate" role="button"><strong>Crear</strong></a>
+                </div>
+            </div>
+            <div class="clearfix"/>
+        </div>
+    </t>
+</templates>
