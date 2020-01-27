@@ -1,12 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import os
-import time
-import logging
-import itertools
-from jinja2 import Environment, FileSystemLoader
 from odoo import api, models, fields
-from odoo.exceptions import UserError
 from . import utils
 from datetime import datetime
 
@@ -15,15 +9,24 @@ class Retention(models.Model):
     _inherit = 'eliterp.withhold'
 
     @api.multi
-    def confirm(self):
+    def confirm_purchase(self):
+        res = super(Retention, self).confirm_purchase()
         for retention in self.filtered(lambda x: x.is_electronic):
             retention.action_electronic_voucher()
             retention.point_printing_id.next("retention")
-        return super(Retention, self).confirm()
+        return res
 
-    def fix_date(self, date):
-        d = date.strftime('%d/%m/%Y')
-        return d
+    @staticmethod
+    def fix_date(date_document):
+        d = date_document.split('-')
+        date = datetime(int(d[0]), int(d[1]), int(d[2]))
+        return date.strftime('%d/%m/%Y')
+
+    @staticmethod
+    def fix_date_other(date_document):
+        d = date_document.split('-')
+        date = datetime(int(d[0]), int(d[1]), int(d[2]))
+        return date.strftime('%m/%Y')
 
     def _get_electronic_voucher(self):
         """
@@ -32,16 +35,15 @@ class Retention(models.Model):
         :return:
         """
         company = self.company_id
-        object = self.env['sri.electronic.voucher']
-        access_key = False
+        ObjectVoucher = self.env['sri.electronic.voucher']
         authorized_voucher = self.env['eliterp.type.document'].search([('code', '=', '07')])[0]
         access_key = False
         if company.type_service == 'own':
-            access_key = object._get_access_key(
+            access_key = ObjectVoucher._get_access_key(
                 company,
                 [
                     self.point_printing_id,
-                    self.date_retention,
+                    self.date_withhold,
                     authorized_voucher.code,
                     self.reference
                 ]
@@ -52,11 +54,11 @@ class Retention(models.Model):
             'type_emission': company.type_emission,
             'environment': company.environment,
             'authorized_voucher_id': authorized_voucher.id,
-            'document_date': self.date_retention,
-            'document_number': self.retention_number,
+            'document_date': self.date_withhold,
+            'document_number': self.withhold_number,
             'company_id': company.id
         }
-        new_object = object.sudo().create(vals)
+        new_object = ObjectVoucher.sudo().create(vals)
         return new_object
 
     def _get_vals_information(self):
@@ -68,20 +70,25 @@ class Retention(models.Model):
         company = self.company_id
         partner = self.partner_id
         informationRetention = {
-            'fechaEmision': self.fix_date(self.date_retention),
+            'fechaEmision': self.fix_date(self.date_withhold),
             'dirEstablecimiento': company.street,
             'obligadoContabilidad': 'SI',
-            'tipoIdentificacionSujetoRetenido': utils.table6[partner.type_documentation],
+            'tipoIdentificacionSujetoRetenido': partner.type_documentation,
             'razonSocialSujetoRetenido': partner.name,
             'identificacionSujetoRetenido': partner.documentation_number,
-            'periodoFiscal': self.date_retention.strftime("%m/%Y")
+            'periodoFiscal': self.fix_date_other(self.date_withhold)
         }
-
-        """
-        if company.special_contributor:
-            informationRetention.update({'contribuyenteEspecial': company.code_special_contributor})
-        """
         return informationRetention
+
+    @staticmethod
+    def _get_code_purchase(code):
+        if code == '04':
+            code_purchase = '01'
+        elif code == '05':
+            code_purchase = '02'
+        else:
+            code_purchase = '06'
+        return code_purchase
 
     def _get_vals_taxes(self):
         """
@@ -90,17 +97,16 @@ class Retention(models.Model):
         """
         taxes = []
         invoice = self.invoice_id
-        for line in self.retention_lines:
-            type = line.retention_type
+        for line in self.lines_withhold:
             tax = line.tax_id
             detail = {
-                'codigo': utils.table19[type],
-                'codigoRetencion': tax.ats_code if type == 't5' else utils.table20[tax.amount],
+                'codigo': utils.table19[line.retention_type],
+                'codigoRetencion': tax.ats_code if line.retention_type == 'renta' else utils.table20[tax.amount],
                 'baseImponible': '{:.2f}'.format(line.base_taxable),
                 'porcentajeRetener': int(tax.amount),
                 'valorRetenido': '{:.2f}'.format(line.amount),
                 'codDocSustento': invoice.authorized_voucher_id.code,
-                'numDocSustento': invoice.reference.replace('-', ''),
+                'numDocSustento': invoice.invoice_number.replace('-', ''),
                 'fechaEmisionDocSustento': self.fix_date(invoice.date_invoice)
             }
             taxes.append(detail)
@@ -110,7 +116,6 @@ class Retention(models.Model):
     def action_electronic_voucher(self):
         self.ensure_one()
         electronic_voucher = self._get_electronic_voucher()
-        # electronic_voucher.button_generated_api()
         self.write({
             'electronic_voucher_id': electronic_voucher.id
         })
@@ -122,4 +127,9 @@ class Retention(models.Model):
         related='electronic_voucher_id.authorization_date', store=True
     )
     authorization_status = fields.Selection(utils.STATES, related='electronic_voucher_id.state', store=True)
-    is_electronic = fields.Boolean(string='Es electrónica?', store=True, compute='_compute_is_electronic')
+
+    @api.one
+    @api.depends('is_sequential', 'point_printing_id')
+    def _compute_is_electronic(self):
+        self.is_electronic = self.is_sequential and self.point_printing_id.allow_electronic_retention
+

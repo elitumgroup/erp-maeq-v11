@@ -271,10 +271,7 @@ class AccountInvoice(models.Model):
                     raise UserError("Debe ingresar la retención correspondiente a la factura.")
                 else:
                     res = super(AccountInvoice, self).action_invoice_open()
-                    self.withhold_id.write({
-                        'state': 'confirm',
-                        'name': self.withhold_id.journal_id.sequence_id.next_by_id()
-                    })
+                    self.withhold_id.confirm_purchase()
             # Validamos RISE
             if self.is_sale_note:
                 self.partner_id._validate_rise(self.amount_total)

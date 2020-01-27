@@ -196,6 +196,15 @@ class Withhold(models.Model):
         self.ensure_one()
 
     @api.multi
+    def confirm_purchase(self):
+        for r in self:
+            r.write({
+                'state': 'confirm',
+                'name': r.journal_id.sequence_id.next_by_id()
+            })
+        return True
+
+    @api.multi
     def confirm_withhold(self):
         """
         Confirmamos la retención
@@ -347,7 +356,7 @@ class Withhold(models.Model):
         if values['type'] == 'purchase':
             if values['is_sequential']:
                 authorisation = self.env.user.company_id._get_authorisation(
-                    'retention_in_invoice')  # TODO revisar si es la mejor opción
+                    'retention_in_invoice')
                 if not authorisation:
                     raise UserError("No hay Autorización del SRI para Retención en compra.")
                 else:
@@ -387,9 +396,7 @@ class Withhold(models.Model):
         return res
 
     def _default_journal(self):
-        """
-        Definimos el diario por defecto
-        """
+        """Definimos el diario por defecto."""
         if self._context['default_type'] == 'sale':
             return self.env['account.journal'].search([('name', '=', 'Retención en venta')])[0].id
         else:
@@ -436,10 +443,7 @@ class Withhold(models.Model):
 
     @api.constrains('date_withhold')
     def _check_date_withhold(self):
-        """
-        Verificamos retención no sea mayor a 5 días
-        :return:
-        """
+        """Verificamos retención no sea mayor a 5 días."""
         if self.type == 'sale':
             return
         d1 = datetime.strptime(self.invoice_id.date_invoice, "%Y-%m-%d").date()
@@ -468,10 +472,10 @@ class Withhold(models.Model):
     is_sequential = fields.Boolean('Es secuencial', readonly=True,
                                    states={'draft': [('readonly', False)]},
                                    help="Si se marca, a la hora de validar la "
-                                        "factura creará un consecutivo con Autorización del SRI.")
+                                        "factura creará un consecutivo con Autorización del SRI.", default=True)
     journal_id = fields.Many2one('account.journal', string='Diario', default=_default_journal, readonly=True)
     move_id = fields.Many2one('account.move', string='Asiento contable')
-    modified_bill = fields.Boolean('Factura modificada?', default='False')
+    modified_bill = fields.Boolean('Factura modificada', default='False')
     reference = fields.Char('Secuencial de retención', readonly=True,
                             states={'draft': [('readonly', False)]})
     point_printing_id = fields.Many2one('sri.point.printing', string='Punto de impresión', readonly=True,
@@ -479,6 +483,7 @@ class Withhold(models.Model):
     sri_authorization_id = fields.Many2one('eliterp.sri.authorization', string='Autorización del SRI', readonly=True,
                                            copy=False,
                                            states={'draft': [('readonly', False)]})
+    company_id = fields.Many2one('res.company', 'Compañía', related='invoice_id.company_id', readonly=True, store=True)
 
     @api.one
     @api.depends('is_sequential', 'point_printing_id')
