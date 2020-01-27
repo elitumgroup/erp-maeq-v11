@@ -350,6 +350,8 @@ class AccountInvoice(models.Model):
 
     @api.model
     def _default_point_printing_id(self):
+        if self.env.user.my_point_printing:
+            return self.env.user.my_point_printing
         company = self.env.user.company_id.id
         point_printing_ids = self.env['sri.point.printing'].search([('company_id', '=', company)], limit=1)
         return point_printing_ids
