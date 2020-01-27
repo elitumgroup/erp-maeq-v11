@@ -30,13 +30,9 @@ class PointPrinting(models.Model):
 
     @api.one
     def _create_new_sequence(self, type_document):
-        """
-        Creamos secuencia de cada documento
-        al crear punto de impresión.
-        :return:
-        """
+        """Creamos secuencia de cada documento  al crear punto de impresión."""
         sequence = self.env['ir.sequence'].sudo().create({
-            'name': _("Secuencia %s electrónica para %s") % (type, self.name),
+            'name': _("Secuencia %s electrónica para %s") % (type_document, self.name),
             'implementation': 'no_gap',
             'number_increment': 1
         })
@@ -56,14 +52,14 @@ class PointPrinting(models.Model):
         :param vals:
         :return:
         """
-        rec = super(PointPrinting, self).create(vals)
-        if rec.allow_electronic_invoice and not rec.sequence_electronic_invoice:
-            rec._create_new_sequence("factura")
-        if rec.allow_electronic_credit_note and not rec.sequence_electronic_credit_note:
-            rec._create_new_sequence("n/c")
-        if rec.allow_electronic_retention and not rec.sequence_electronic_retention:
-            rec._create_new_sequence("retención")
-        return rec
+        record = super(PointPrinting, self).create(vals)
+        if record.allow_electronic_invoice and not record.sequence_electronic_invoice:
+            record._create_new_sequence("factura")
+        if record.allow_electronic_credit_note and not record.sequence_electronic_credit_note:
+            record._create_new_sequence("n/c")
+        if record.allow_electronic_retention and not record.sequence_electronic_retention:
+            record._create_new_sequence("retención")
+        return record
 
     def _get_electronic_sequence(self, type_document='out_invoice'):
         """

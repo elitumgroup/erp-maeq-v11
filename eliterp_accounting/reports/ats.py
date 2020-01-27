@@ -330,6 +330,16 @@ class AtsXml(models.TransientModel):
                         i2 += line.price_subtotal
         return i1, i2, i3
 
+    @staticmethod
+    def _get_code_purchase(code):
+        if code == '04':
+            code_purchase = '01'
+        elif code == '05':
+            code_purchase = '02'
+        else:
+            code_purchase = '06'
+        return code_purchase
+
     def _get_purchases(self, period, pay_limit):
         """
         Obtenemos las facturas de compras en período
@@ -360,7 +370,7 @@ class AtsXml(models.TransientModel):
                 i1, i2, i3 = self._get_lines_iva(line)
                 detallecompras.update({
                     'codSustento': line.tax_support_id.code,
-                    'tpIdProv': line.partner_id.type_documentation,
+                    'tpIdProv': self._get_code_purchase(line.partner_id.type_documentation),
                     'idProv': line.partner_id.documentation_number,
                     'tipoComprobante': code,
                     'parteRel': 'NO',
