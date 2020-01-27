@@ -39,7 +39,7 @@ table6 = {
 # table16
 
 table19 = {
-    'renta': '1',
+    'rent': '1',
     'iva': '2'
 }
 
