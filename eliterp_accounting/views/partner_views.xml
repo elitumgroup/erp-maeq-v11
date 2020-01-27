@@ -47,6 +47,9 @@
                 <xpath expr="//field[@name='street']" position="attributes">
                     <attribute name="required">1</attribute>
                 </xpath>
+                <xpath expr="//field[@name='email']" position="attributes">
+                    <attribute name="required">1</attribute>
+                </xpath>
                 <xpath expr="//field[@name='function']" position="after"><!--Puesto de trabajo-->
                     <field name="sex" attrs="{'invisible': [('company_type', '==', 'company')]}"/>
                     <field name="civil_status" attrs="{'invisible': [('company_type', '=', 'company')]}"/>

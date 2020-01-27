@@ -74,7 +74,8 @@
                                class="oe_inline"
                                options="{'no_open': True, 'no_create': True}"/>
                         -
-                        <field name="reference" string="Secuencial" class="oe_inline" required="1"/>
+                        <field name="reference" string="Secuencial" class="oe_inline" required="1"
+                               readonly="1" force_save="1"/>
                     </div>
                     <field name="sri_authorization_id"
                            domain="[('point_printing_id', '=', point_printing_id), ('type_document', '=', authorized_voucher_id)]"
@@ -90,7 +91,8 @@
                 <xpath expr="//field[@name='amount_tax']" position="before"><!--Impuesto-->
                     <field name="amount_without_discount" widget="monetary"/>
                     <field name="amount_discount" widget="monetary"/>
-                    <field string="Subtotal" name="amount_untaxed" widget="monetary" class="oe_subtotal_footer_separator"/>
+                    <field string="Subtotal" name="amount_untaxed" widget="monetary"
+                           class="oe_subtotal_footer_separator"/>
                     <field string="Subtotal 0" name="base_zero_iva" widget="monetary"/>
                     <field string="Subtotal IVA" name="base_taxed" widget="monetary"/>
                 </xpath>
@@ -147,7 +149,8 @@
                     <field name="authorized_voucher_id" invisible="1"/>
                 </xpath>
                 <xpath expr="//field[@name='reference']" position="replace"><!--Referencia de proveedor-->
-                    <field name="is_sale_note" attrs="{'invisible': [('type', '=', 'in_refund')], 'readonly': [('state', '!=', 'draft')]}"/>
+                    <field name="is_sale_note"
+                           attrs="{'invisible': [('type', '=', 'in_refund')], 'readonly': [('state', '!=', 'draft')]}"/>
                     <label for="reference" string="No. Factura"/>
                     <div>
                         <field name="establishment" required="1" style="width: 10%"/>

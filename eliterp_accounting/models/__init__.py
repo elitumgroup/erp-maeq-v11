@@ -16,3 +16,4 @@ from . import payments
 from . import credit_debit_notes
 from . import bank_conciliation
 from . import account_report
+from . import users
