@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <openerp>
-    <data noupdate="1">
+    <data>
         <!--Schedulers-->
         <record forcecreate="True" id="cron_service_sri" model="ir.cron">
             <field name="name">Envío masivo de CE al SRI: ejecutar el programador</field>
@@ -62,12 +62,12 @@
             <field name="partner_to">${object.partner_id.id}</field>
             <field name="model_id" ref="eliterp_treasury.model_eliterp_withhold"/>
             <field name="auto_delete" eval="True"/>
-            <field name="report_name">Documento No. ${(object.retention_number or '').replace('/','_')}</field>
+            <field name="report_name">Documento No. ${(object.withhold_number or '').replace('/','_')}</field>
             <field name="lang">${object.partner_id.lang}</field>
             <field name="body_html">
                 <![CDATA[
                     Estimad@ ${ object.partner_id.name }, adjunto encontrará su retención electrónica con número
-                    ${ object.retention_number }, con fecha de emisión ${ object.date_retention } por un total de
+                    ${ object.withhold_number }, con fecha de emisión ${ object.date_withhold } por un total de
                     ${ object.total }.
                 ]]>
             </field>

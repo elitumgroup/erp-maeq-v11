@@ -367,7 +367,7 @@ class ElectronicVoucher(models.Model):
                 'logo': logo.decode('utf-8'),
                 'email': partner.email or 'N.A',
                 'celular': partner.mobile if partner.mobile else 'N.A',
-                'detail': self.document_id.origin or self.document_id.name or 'N.A',
+                'detail': 'N.A',
                 'obligado': "SI",
                 'especialn': "-",
                 'p12': certificate.digital_signature.decode('utf-8'),

@@ -135,6 +135,7 @@
                             <field name="journal_id" invisible="1"/>
                             <field name="base_taxable" invisible="1"/>
                             <field name="base_iva" invisible="1"/>
+                            <field name="is_electronic" invisible="1"/>
                         </group>
                         <notebook>
                             <page string="Líneas de retención" name="lines_withhold">
