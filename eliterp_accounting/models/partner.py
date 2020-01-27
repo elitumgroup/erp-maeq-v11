@@ -5,6 +5,12 @@
 from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
+list_type_documentation = [
+    ('04', 'RUC'),
+    ('05', 'Cédula'),
+    ('06', 'Pasaporte'),
+]
+
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
@@ -42,25 +48,6 @@ class ResPartner(models.Model):
         res = {'value': {'vat': vat}}
         return res
 
-    def _get_list_type_documentation(self):
-        """
-        Obtenemos Tipo de identificación (ATS)
-        :return: list
-        """
-        if self._context.get('default_supplier', False):
-            list = [
-                ('01', 'RUC'),
-                ('02', 'Cédula'),
-                ('03', 'Pasaporte'),
-            ]
-        else:
-            list = [
-                ('04', 'RUC'),
-                ('05', 'Cédula'),
-                ('06', 'Pasaporte'),
-            ]
-        return list
-
     @api.constrains('documentation_number')
     def _check_documentation_number(self):
         """
@@ -89,7 +76,7 @@ class ResPartner(models.Model):
                 raise ValidationError("Ya existe No. Identificación en registros.")
         return super(ResPartner, self).create(vals)
 
-    type_documentation = fields.Selection(_get_list_type_documentation, string='Tipo de identificación')
+    type_documentation = fields.Selection(list_type_documentation, string='Tipo de identificación')
     documentation_number = fields.Char('No. Identificación')
     canton = fields.Many2one('eliterp.canton', string='Cantón')
 
