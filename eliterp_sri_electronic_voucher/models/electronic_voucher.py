@@ -178,7 +178,7 @@ class ElectronicVoucher(models.Model):
         ])
         for document in documents:
             document.send_document()
-        return True
+        documents.write({'is_sent': True})
 
     def _get_template(self):
         template = False
@@ -227,11 +227,14 @@ class ElectronicVoucher(models.Model):
         self.ensure_one()
         mail_template = self._get_template()
         attachments = self._get_attachments()[0]
-        mail_template.send_mail(
+        local_context = self.env.context.copy()
+        local_context.update({
+            'email_cc': self.document_id.partner_id.email_optional or ''
+        })
+        mail_template.with_context(local_context).send_mail(
             self.document_id.id,
             email_values={'attachment_ids': [a.id for a in attachments]}
         )
-        self.write({'is_sent': True})
         return True
 
     @api.multi
@@ -307,7 +310,7 @@ class ElectronicVoucher(models.Model):
         ride = data['ride']
         new_authorization = self._get_new_authorization(name)
         date_authorization = datetime.strptime(authorization['fechaAutorizacion'], DEFAULT_SERVER_DATETIME_FORMAT) + \
-                                timedelta(hours=5)
+                             timedelta(hours=5)
         self.document_id.update({'sri_authorization_id': new_authorization.id})
         return {
             'name': data['claveAccesoConsultada'],
@@ -367,7 +370,7 @@ class ElectronicVoucher(models.Model):
                 'logo': logo.decode('utf-8'),
                 'email': partner.email or 'N.A',
                 'celular': partner.mobile if partner.mobile else 'N.A',
-                'detail': 'N.A',
+                'detail':  self.document_id.comment or 'N.A' if self.document_id._name == 'account.invoice' else 'N.A',
                 'obligado': "SI",
                 'especialn': "-",
                 'p12': certificate.digital_signature.decode('utf-8'),
