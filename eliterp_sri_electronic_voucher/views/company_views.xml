@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
+        <!--Partner-->
+        <record id="view_form_partner_sri_electronic" model="ir.ui.view">
+            <field name="name">view_form_partner_sri_electronic</field>
+            <field name='model'>res.partner</field>
+            <field name='inherit_id' ref='eliterp_accounting.eliterp_view_form_res_partner'/>
+            <field name='arch' type='xml'>
+                <xpath expr="//field[@name='website']" position="before">
+                    <field name="email_optional" placeholder="admin@example"/>
+                </xpath>
+            </field>
+        </record>
+
         <!--Company-->
         <record id="view_form_company_sri_electronic" model="ir.ui.view">
             <field name="name">view_form_company_sri_electronic</field>
