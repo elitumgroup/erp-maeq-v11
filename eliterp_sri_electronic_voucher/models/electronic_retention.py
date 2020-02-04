@@ -8,6 +8,13 @@ from datetime import datetime
 class Retention(models.Model):
     _inherit = 'eliterp.withhold'
 
+    @api.model
+    def create(self, values):
+        res = super(Retention, self).create(values)
+        if res.type == 'purchase' and res.is_electronic and not res.withhold_number:
+            res.withhold_number = res.point_printing_id.name + '-' + res.reference
+        return res
+
     @api.multi
     def confirm_purchase(self):
         res = super(Retention, self).confirm_purchase()
@@ -132,4 +139,3 @@ class Retention(models.Model):
     @api.depends('is_sequential', 'point_printing_id')
     def _compute_is_electronic(self):
         self.is_electronic = self.is_sequential and self.point_printing_id.allow_electronic_retention
-
