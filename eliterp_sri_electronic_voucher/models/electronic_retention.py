@@ -101,7 +101,7 @@ class Retention(models.Model):
             tax = line.tax_id
             detail = {
                 'codigo': utils.table19[line.retention_type],
-                'codigoRetencion': tax.ats_code if line.retention_type == 'rent' else utils.table20[tax.amount],
+                'codigoRetencion': tax.code if line.retention_type == 'rent' else utils.table20[tax.amount],
                 'baseImponible': '{:.2f}'.format(line.base_taxable),
                 'porcentajeRetener': int(tax.amount),
                 'valorRetenido': '{:.2f}'.format(line.amount),
