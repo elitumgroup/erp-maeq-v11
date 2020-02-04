@@ -352,22 +352,20 @@ class Withhold(models.Model):
     def create(self, values):
         self.env['eliterp.global.functions'].valid_period(values[
                                                               'date_withhold'])  # Verificamos Período contable sea
-        # correcto
-        if values['type'] == 'purchase':
-            if values['is_sequential']:
+
+        invoice = self.env['account.invoice'].browse(values['invoice_id'])
+        withhold = super(Withhold, self).create(values)
+        # Correcto
+        if withhold.type == 'purchase':
+            if withhold.is_sequential and not withhold.is_electronic:
                 authorisation = self.env.user.company_id._get_authorisation(
                     'retention_in_invoice')
                 if not authorisation:
                     raise UserError("No hay Autorización del SRI para Retención en compra.")
                 else:
-                    values.update({'withhold_number': authorisation[0].sequence_id.prefix + values['reference']})
-            if 'is_sequential' in values:  # Consecutivo con código de procesos internos
-                if not values['is_sequential']:
-                    values.update({
-                        'withhold_number': self.env['ir.sequence'].next_by_code('internal.process')
-                    })
-        invoice = self.env['account.invoice'].browse(values['invoice_id'])
-        withhold = super(Withhold, self).create(values)
+                    withhold.withhold_number = authorisation[0].sequence_id.prefix + withhold.reference
+            if not withhold.is_sequential:  # Consecutivo con código de procesos internos
+                withhold.withhold_number = self.env['ir.sequence'].next_by_code('internal.process')
         invoice.write({
             'have_withhold': True,
             'withhold_id': withhold.id

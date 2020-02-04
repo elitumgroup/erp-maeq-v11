@@ -19,7 +19,6 @@
                             </group>
                             <group>
                                 <field name="authorization_status"/>
-                                <field name="is_electronic" invisible="1"/>
                             </group>
                         </group>
                     </page>
