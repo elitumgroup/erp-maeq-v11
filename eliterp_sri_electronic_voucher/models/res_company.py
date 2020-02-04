@@ -17,7 +17,7 @@ class Partner(models.Model):
 
     @api.constrains('email_optional')
     def _check_email_optional(self):
-        if not re.match(EMAIL_PATTERN, self.email_optional):
+        if self.email_optional and not re.match(EMAIL_PATTERN, self.email_optional):
             raise ValidationError(_("Email opcional esta en un formato inválido!"))
 
     email = fields.Char(required=True)
