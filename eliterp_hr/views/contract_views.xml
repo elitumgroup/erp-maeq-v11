@@ -70,7 +70,7 @@
                             <button name="imprimir_contrato"
                                     string="Imprimir contrato"
                                     type="object"
-                                    attrs="{'invisible':[('state_customize', '!=', 'active')]}"
+                                    attrs="{'invisible':['|', ('state_customize', '=', 'draft'), ('is_piece_contract', '=', True)]}"
                                     class="oe_highlight"/>
                             <button name="imprimir_certificate"
                                     string="Imprimir certificado"
@@ -79,7 +79,7 @@
                             <button name="imprimir_contract_term"
                                     string="Imprimir contrato (Destajo)"
                                     type="object"
-                                    attrs="{'invisible':[('state_customize', '=', 'draft'), ('is_piece_contract', '=', False)]}"
+                                    attrs="{'invisible':['|', ('state_customize', '=', 'draft'), ('is_piece_contract', '=', False)]}"
                                     class="oe_highlight"/>
                             <field name="state_customize" widget="statusbar"
                                    modifiers="{'readonly': true}"/>
