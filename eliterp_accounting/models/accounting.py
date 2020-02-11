@@ -6,6 +6,7 @@ from odoo.exceptions import UserError
 from odoo import api, fields, models, _
 from datetime import date, datetime
 import calendar
+from odoo.osv import expression
 
 YEARS = [
     (2015, '2015'),
@@ -104,10 +105,35 @@ class AccountAccountType(models.Model):
 class AccountAccount(models.Model):
     _inherit = 'account.account'
 
+    @api.multi
+    @api.depends('name', 'code', 'description')
+    def name_get(self):
+        result = []
+        for account in self:
+            if account.description:
+                name = '%s %s [%s]' % (account.code, account.name, account.description)
+            else:
+                name = account.code + ' ' + account.name
+            result.append((account.id, name))
+        return result
+
+    @api.model
+    def name_search(self, name, args=None, operator='ilike', limit=100):
+        args = args or []
+        domain = []
+        if name:
+            domain = ['|', '|', ('code', '=ilike', name + '%'), ('name', operator, name),
+                      ('description', operator, name)]
+            if operator in expression.NEGATIVE_TERM_OPERATORS:
+                domain = ['&', '!'] + domain[1:]
+        accounts = self.search(domain + args, limit=limit)
+        return accounts.name_get()
+
     account_type = fields.Selection([
         ('view', 'Vista'),
         ('movement', 'Movimiento'),
     ], 'Tipo de cuenta', required=True, default='movement')
+    description = fields.Char('Descripción')
 
 
 class AccountCommonReport(models.TransientModel):
