@@ -18,7 +18,7 @@ class Invoice(models.Model):
     def open_reason_cancel_invoice(self):
         if self.is_electronic:
             raise UserError(_("No se puede anular documentos electŕonicos!"))
-        super(Invoice, self).open_reason_cancel_invoice()
+        return super(Invoice, self).open_reason_cancel_invoice()
 
     @api.multi
     def copy(self, default=None):
