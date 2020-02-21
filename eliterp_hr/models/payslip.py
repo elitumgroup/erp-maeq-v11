@@ -259,7 +259,7 @@ class Payslip(models.Model):
                                  default=lambda self: self.env['account.journal'].search([('type', '=', 'general')],
                                                                                          limit=1))
     net_receive = fields.Float('Neto a recibir', compute='_get_net_receive', store=True, track_visibility='onchange')
-    approval_user = fields.Many2one('res.users', 'Aprobado por')
+    approval_user = fields.Many2one('res.users', 'Aprobado por', copy=False)
     reviewed_user = fields.Many2one('res.users', string='Revisado por')
     check_extra_hours = fields.Boolean('Otras horas extras?', default=False,
                                        readonly=True, states={'draft': [('readonly', False)]},

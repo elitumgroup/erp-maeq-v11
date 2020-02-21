@@ -380,7 +380,7 @@ class Holidays(models.Model):
              "\nChoose 'Allocation Request' if you want to increase the number of leaves available for someone")
     is_vacations = fields.Boolean('Es vacaciones?', related='holiday_status_id.is_vacations', store=True)
     lines_vacations = fields.One2many('eliterp.holiday.lines', 'holiday_id', string='Vacaciones', copy=False)
-    approval_user = fields.Many2one('res.users', 'Aprobado por')
+    approval_user = fields.Many2one('res.users', 'Aprobado por', copy=False)
     adjunt = fields.Binary('Adjunto', attachment=True, copy=False)
     adjunt_name = fields.Char('Nombre de adjunto', copy=False)
     employee_active = fields.Boolean('Empleado activo?', related='employee_id.active', store=True)
