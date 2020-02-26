@@ -267,7 +267,7 @@ class AdvancePayment(models.Model):
         ('posted', 'Contabilizado'),
         ('deny', 'Negado'),
         ('cancel', 'Anulado')], string="Estado", default='draft', track_visibility='onchange')
-    approval_user = fields.Many2one('res.users', string='Aprobado por')
+    approval_user = fields.Many2one('res.users', string='Aprobado por', copy=False)
     reviewed_user = fields.Many2one('res.users', string='Revisado por')
     reason_deny = fields.Text('Negado por')
     count_lines = fields.Integer('Nº empleados', compute='_get_count_lines')

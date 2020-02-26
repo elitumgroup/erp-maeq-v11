@@ -470,4 +470,4 @@ class ReplacementSmallBox(models.Model):
     opening_date = fields.Date('Fecha apertura', track_visibility='onchange')
     replacement_date = fields.Date(
         'Fecha reposición')  # La fecha de reposición es cuando se realiza el comprobante de egreso
-    approval_user = fields.Many2one('res.users', 'Aprobado por')
+    approval_user = fields.Many2one('res.users', 'Aprobado por', copy=False)

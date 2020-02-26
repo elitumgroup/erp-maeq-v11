@@ -164,7 +164,7 @@ class TravelAllowanceRequest(models.Model):
                                           states={'draft': [('readonly', False)]})
     reason = fields.Char('Motivo', required=True, readonly=True, states={'draft': [('readonly', False)]})
     amount_total = fields.Float(compute='_get_amount_total', string="Monto total", store=True)
-    approval_user = fields.Many2one('res.users', 'Aprobado por')
+    approval_user = fields.Many2one('res.users', 'Aprobado por', copy=False)
     reason_deny = fields.Text('Negado por')
     application_lines = fields.One2many('eliterp.viatical.concepts.line', 'travel_allowance_request_id',
                                         string='Línea de conceptos')
@@ -578,7 +578,7 @@ class LiquidationSettlement(models.Model):
     reason = fields.Char('Motivo', required=True, readonly=True, states={'draft': [('readonly', False)]})
     amount_total = fields.Float(string="Monto total", required=True, readonly=True,
                                 states={'draft': [('readonly', False)]}, track_visibility='onchange')
-    approval_user = fields.Many2one('res.users', 'Aprobado por')
+    approval_user = fields.Many2one('res.users', 'Aprobado por', copy=False)
     move_id = fields.Many2one('account.move', string='Asiento contable')
     journal_id = fields.Many2one('account.journal', string="Diario", default=_default_journal)
     reason_deny = fields.Text('Negado por')

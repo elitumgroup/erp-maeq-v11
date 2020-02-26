@@ -114,7 +114,7 @@ class PurchaseOrder(models.Model):
         ('to invoice', 'Para facturar'),
         ('invoiced', 'Facturado'),
     ], string='Estado de facturación', compute='_get_invoiced', store=True, readonly=True, copy=False, default='no', track_visibility='onchange')
-    approval_user = fields.Many2one('res.users', 'Aprobado por')
+    approval_user = fields.Many2one('res.users', 'Aprobado por', copy=False)
     state = fields.Selection([
         ('draft', 'SDP Borrador'),
         ('sent', 'SDP Enviada'),
