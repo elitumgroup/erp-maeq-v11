@@ -10,6 +10,11 @@ PRODUCT_CODE = {
     'out_refund': 'codigoInterno'
 }
 
+PRODUCT_CODE_2 = {
+    'out_invoice': 'codigoAuxiliar',
+    'out_refund': 'codigoAdicional'
+}
+
 
 class Invoice(models.Model):
     _inherit = 'account.invoice'
@@ -233,6 +238,7 @@ class Invoice(models.Model):
             discount = (fix_price - price) * line.quantity
             detail = {
                 PRODUCT_CODE[self.type]: productCode,
+                PRODUCT_CODE_2[self.type]: line.product_id.name or '-',
                 'descripcion': self.fix_chars(line.name.strip()),
                 'cantidad': '{:.4f}'.format(line.quantity),
                 'precioUnitario': '{:.4f}'.format(fix_price),
