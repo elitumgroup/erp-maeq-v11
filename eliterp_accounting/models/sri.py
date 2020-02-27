@@ -261,18 +261,25 @@ class AccountInvoice(models.Model):
             self.reference = number
 
     @api.one
-    @api.depends('type', 'point_printing_id', 'reference')
+    @api.depends('type', 'point_printing_id', 'reference', 'establishment', 'emission_point')
     def _compute_invoice_number(self):
         """
         Calcular el número de documento
         :return: self
         """
         if self.reference:
-            self.invoice_number = '{0}-{1}-{2}'.format(
-                self.point_printing_id.name[:3] if self.point_printing_id else self.establishment,
-                self.point_printing_id.name[4:] if self.point_printing_id else self.emission_point,
-                self.reference
-            )
+            if self.type in ['out_invoice', 'out_refund']:
+                self.invoice_number = '{0}-{1}-{2}'.format(
+                    self.point_printing_id.name[:3],
+                    self.point_printing_id.name[4:],
+                    self.reference
+                )
+            else:
+                self.invoice_number = '{0}-{1}-{2}'.format(
+                    self.establishment,
+                    self.emission_point,
+                    self.reference
+                )
         else:
             self.invoice_number = False
 
