@@ -542,6 +542,11 @@ class OperationsCmcReportXlsx(models.AbstractModel):
             'categories': "='IO-Diario'!$C$8:$C$%d" % row_chart,
             'values': "='IO-Diario'!$K$8:$K$%d" % row_chart,
         })
+        chart_1.add_series({
+            'name': "='IO-Diario'!$L$7",
+            'categories': "='IO-Diario'!$C$8:$C$%d" % row_chart,
+            'values': "='IO-Diario'!$L$8:$L$%d" % row_chart,
+        })
         chart_1.set_title({'name': 'Horas Máquinas'})
         chart_1.set_x_axis({'name': 'Máquinas'})
         chart_1.set_y_axis({'name': 'Horas'})
