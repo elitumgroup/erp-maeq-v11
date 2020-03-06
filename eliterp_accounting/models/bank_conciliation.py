@@ -9,6 +9,12 @@ from odoo.exceptions import UserError
 TODAY = date.today()
 
 
+class MoveLine(models.Model):
+    _inherit = 'account.move.line'
+
+    my_reconcile = fields.Boolean('Conciliado', defualt=False)
+
+
 class BankConciliationWizard(models.TransientModel):
     _name = 'eliterp.bank.conciliation.wizard'
 
@@ -36,8 +42,7 @@ class BankConciliationWizard(models.TransientModel):
         """
         moves = self.env['account.move.line'].search([
             ('account_id', '=', self.bank_id.account_id.id),
-            ('date', '>=', self.start_date),
-            ('date', '<=', self.end_date)
+            ('my_reconcile', '=', False)
         ])
         year, month = self.start_date[:4], self.start_date[5:7]
         if self._check_conciliation(year, month):
@@ -48,7 +53,6 @@ class BankConciliationWizard(models.TransientModel):
             ('state', '=', 'posted'),
             ('bank_id', '=', self.bank_id.id)
         ])
-        beginning_balance = 0.00
         if len(conciliation_ids) == 0:
             # Saldo inicial de cuenta contable si no existe conciliación alguna
             beginning_balance = self.env['eliterp.accounting.help']._get_beginning_balance(
@@ -58,9 +62,6 @@ class BankConciliationWizard(models.TransientModel):
         else:
             last_conciliation = conciliation_ids[-1]
             beginning_balance = last_conciliation.amount_account  # Saldo banco anterior
-            for line in last_conciliation.lines_banks_move:
-                if not line.check:
-                    move_lines.append([0, 0, {'move_line_id': line.move_line_id.id}])
         for line in moves:
             if line.move_id.state == 'posted' and not line.move_id.reversed:
                 move_lines.append([0, 0, {'move_line_id': line.id}])
@@ -199,6 +200,8 @@ class BankConciliation(models.Model):
 
     def _set_reconcile(self):
         # Colocamos cómo conciliados los documentos seleccionados al validar
+        for mline in self.lines_banks_move.filtered(lambda x: x.check):
+            mline.move_line_id.update({'my_reconcile': True})
         for line in self.lines_banks_move.filtered(lambda x: x.journal.name == 'Comprobante de egreso' and x.check):
             move = line.move_line_id.move_id
             voucher = self.env['account.voucher'].search([
@@ -208,6 +211,8 @@ class BankConciliation(models.Model):
 
     def _remove_reconcile(self):
         # Colocamos cómo no conciliados los documentos seleccionados al cancelar
+        for mline in self.lines_banks_move.filtered(lambda x: x.check):
+            mline.move_line_id.update({'my_reconcile': False})
         for line in self.lines_banks_move.filtered(lambda x: x.journal.name == 'Comprobante de egreso' and x.check):
             move = line.move_line_id.move_id
             voucher = self.env['account.voucher'].search([
