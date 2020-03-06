@@ -42,7 +42,8 @@ class BankConciliationWizard(models.TransientModel):
         """
         moves = self.env['account.move.line'].search([
             ('account_id', '=', self.bank_id.account_id.id),
-            ('my_reconcile', '=', False)
+            ('my_reconcile', '=', False),
+            ('date', '<=', self.end_date)
         ])
         year, month = self.start_date[:4], self.start_date[5:7]
         if self._check_conciliation(year, month):
