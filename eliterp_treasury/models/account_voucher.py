@@ -214,6 +214,8 @@ class AccountVoucher(models.Model):
 
     @api.multi
     def open_voucher_cancel_reason(self):
+        if self.reconcile:
+            raise UserError("No se puede anular un egreso conciliado, primero anule la conciliación!")
         context = dict(self._context or {})
         if 'voucher_type' not in context:
             del context['form_view_ref']
