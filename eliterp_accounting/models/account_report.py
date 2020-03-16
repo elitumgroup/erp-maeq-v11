@@ -33,8 +33,7 @@ class ReportPartnerLedger(models.AbstractModel):
             DEFAULT_SERVER_DATE_FORMAT)).do_query(options, line_id)
         context = self.env.context
         base_domain = [('date', '<=', context['date_to']), ('company_id', 'in', context['company_ids']),
-                       ('account_id.internal_type', 'in', account_types)]
-        base_domain.append(('date', '>=', date_from))
+                       ('account_id.internal_type', 'in', account_types), ('date', '>=', date_from)]
         if context['state'] == 'posted':
             base_domain.append(('move_id.state', '=', 'posted'))
 
@@ -54,7 +53,8 @@ class ReportPartnerLedger(models.AbstractModel):
                                                                        {'balance': 0, 'debit': 0, 'credit': 0})
             partners[partner]['balance'] += partners[partner]['initial_bal']['balance']
             if not context.get('print_mode'):
-                #  fetch the 81 first amls. The report only displays the first 80 amls. We will use the 81st to know if there are more than 80 in which case a link to the list view must be displayed.
+                # fetch the 81 first amls. The report only displays the first 80 amls. We will use the 81st to know
+                # if there are more than 80 in which case a link to the list view must be displayed.
                 partners[partner]['lines'] = self.env['account.move.line'].search(domain, order='date', limit=81)
             else:
                 partners[partner]['lines'] = self.env['account.move.line'].search(domain, order='date')

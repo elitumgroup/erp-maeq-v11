@@ -76,6 +76,8 @@ class FinancialSituationReportXlsx(models.AbstractModel):
         # 1
         row += 1
         for line in lines_1:
+            if float_is_zero(line['monto'], precision_rounding=0.01):
+                continue
             if line['tipo'] == 'padre':
                 sheet.write(row, 0, line['code'], heading_1)
                 sheet.write(row, 1, line['name'], heading_1)
@@ -88,6 +90,8 @@ class FinancialSituationReportXlsx(models.AbstractModel):
                 sheet.write(row, 3, line['monto'], heading_2_number)
                 if line['sub_cuenta']:
                     for lsb in line['sub_cuenta']:
+                        if float_is_zero(lsb['monto'], precision_rounding=0.01):
+                            continue
                         row += 1
                         sheet.write(row, 0, lsb['code'], heading_3)
                         sheet.write(row, 1, lsb['name'], heading_3)
@@ -96,6 +100,8 @@ class FinancialSituationReportXlsx(models.AbstractModel):
                 row += 1
         # 2
         for line in lines_2:
+            if float_is_zero(line['monto'], precision_rounding=0.01):
+                continue
             if line['tipo'] == 'padre':
                 sheet.write(row, 0, line['code'], heading_1)
                 sheet.write(row, 1, line['name'], heading_1)
@@ -108,6 +114,8 @@ class FinancialSituationReportXlsx(models.AbstractModel):
                 sheet.write(row, 3, line['monto'], heading_2_number)
                 if line['sub_cuenta']:
                     for lsb in line['sub_cuenta']:
+                        if float_is_zero(lsb['monto'], precision_rounding=0.01):
+                            continue
                         row += 1
                         sheet.write(row, 0, lsb['code'], heading_3)
                         sheet.write(row, 1, lsb['name'], heading_3)
@@ -115,7 +123,46 @@ class FinancialSituationReportXlsx(models.AbstractModel):
                         sheet.write(row, 3, lsb['monto'], heading_3_number)
                 row += 1
         # 3
+        movimientos = []
+        cuenta_estado = list(filter(lambda x: x['code'] == '3.3', lines_3))
+        monto = self.env['report.eliterp_accounting.eliterp_report_financial_situation'].estado_resultado(
+            context['start_date'], context['end_date'])
+        if cuenta_estado:
+            if cuenta_estado[0]['monto'] != 0.00:
+                # MARZ
+                movimientos_internos = {}
+                if monto >= 0:
+                    movimientos_internos['code'] = '3.3.1.1'
+                    movimientos_internos['name'] = 'GANANCIA NETA DEL PERIODO'
+                    movimientos_internos['monto'] = monto
+                else:
+                    movimientos_internos['code'] = '3.3.2.1'
+                    movimientos_internos['name'] = '(-) PERDIDA NETA DEL PERIODO'
+                    movimientos_internos['monto'] = monto
+                for cuenta in lines_3:
+                    if cuenta['code'] == '3.3':
+                        cuenta['sub_cuenta'].append(movimientos_internos)
+                        cuenta['monto'] = cuenta['monto'] + movimientos_internos['monto']
+                lines_3[0]['monto'] = lines_3[0]['monto'] + movimientos_internos['monto']
+        # Si Estado de Resultados es igual a 0
+        if monto >= 0:
+            movimientos.append({'code': '3.3.1.1',
+                                'name': 'GANANCIA NETA DEL PERIODO',
+                                'monto': monto})
+        else:
+            movimientos.append({'code': '3.3.2.1',
+                                'name': '(-) PERDIDA NETA DEL PERIODO',
+                                'monto': monto})
+        lines_3.append({'code': '3.3',
+                        'tipo': 'vista',
+                        'sub_cuenta': movimientos,
+                        'name': 'RESULTADO DEL EJERCICIO',
+                        'monto': monto,
+                        'cuenta': False,
+                        'padre': False})
         for line in lines_3:
+            if float_is_zero(line['monto'], precision_rounding=0.01):
+                continue
             if line['tipo'] == 'padre':
                 sheet.write(row, 0, line['code'], heading_1)
                 sheet.write(row, 1, line['name'], heading_1)
@@ -128,6 +175,8 @@ class FinancialSituationReportXlsx(models.AbstractModel):
                 sheet.write(row, 3, line['monto'], heading_2_number)
                 if line['sub_cuenta']:
                     for lsb in line['sub_cuenta']:
+                        if float_is_zero(lsb['monto'], precision_rounding=0.01):
+                            continue
                         row += 1
                         sheet.write(row, 0, lsb['code'], heading_3)
                         sheet.write(row, 1, lsb['name'], heading_3)
@@ -597,6 +646,8 @@ class StatusResultsReportXlsx(models.AbstractModel):
         # 4
         row += 1
         for line in lines_4:
+            if float_is_zero(line['amount'], precision_rounding=0.01):
+                continue
             if line['type'] == 'principal':
                 sheet.write(row, 0, line['code'], heading_1)
                 sheet.write(row, 1, line['name'], heading_1)
@@ -609,6 +660,8 @@ class StatusResultsReportXlsx(models.AbstractModel):
                 sheet.write(row, 3, line['amount'], heading_2_number)
                 if line['subaccounts']:
                     for lsb in line['subaccounts']:
+                        if float_is_zero(lsb['amount'], precision_rounding=0.01):
+                            continue
                         row += 1
                         sheet.write(row, 0, lsb['code'], heading_3)
                         sheet.write(row, 1, lsb['name'], heading_3)
@@ -617,6 +670,8 @@ class StatusResultsReportXlsx(models.AbstractModel):
                 row += 1
         # 5
         for line in lines_5:
+            if float_is_zero(line['amount'], precision_rounding=0.01):
+                continue
             if line['type'] == 'principal':
                 sheet.write(row, 0, line['code'], heading_1)
                 sheet.write(row, 1, line['name'], heading_1)
@@ -629,6 +684,8 @@ class StatusResultsReportXlsx(models.AbstractModel):
                 sheet.write(row, 3, line['amount'], heading_2_number)
                 if line['subaccounts']:
                     for lsb in line['subaccounts']:
+                        if float_is_zero(lsb['amount'], precision_rounding=0.01):
+                            continue
                         row += 1
                         sheet.write(row, 0, lsb['code'], heading_3)
                         sheet.write(row, 1, lsb['name'], heading_3)
@@ -1003,41 +1060,22 @@ class Taxes103104ReportXlsx(models.AbstractModel):
         :return: list
         """
         data = []
-        arg = []
-        arg.append(('date_invoice', '>=', context.start_date))
-        arg.append(('date_invoice', '<=', context.end_date))
-        arg.append(('state', 'not in', ('draft', 'cancel')))
-        arg.append(('type', '=', 'out_invoice'))
+        arg = [('date_invoice', '>=', context.start_date), ('date_invoice', '<=', context.end_date),
+               ('state', 'not in', ('draft', 'cancel')), ('type', '=', 'out_invoice')]
         invoices = self.env['account.invoice'].search(arg)
         count = 0
         for invoice in invoices:
             count_invoice = 0
             authorization = invoice.sri_authorization_id
             for line in invoice.invoice_line_ids:
-                register = []
-                register.append("F" if invoice.type == 'out_invoice' else "N")  # Tipo
-                register.append(authorization.establishment)  # Establecimiento
-                register.append(authorization.emission_point)  # P. Emisión
-                register.append(invoice.reference)  # Secuencial
-                register.append(datetime.strptime(invoice.date_invoice, "%Y-%m-%d"))  # Fecha
-                register.append(invoice.withhold_number if invoice.withhold_number else "-")  # No. Retención
-                register.append(line.name)  # Descripción
-                register.append(invoice.partner_id.name)  # Cliente
-                register.append(invoice.partner_id.documentation_number)  # No. Documento
-                register.append(authorization.authorization)  # Autorización
-                register.append(invoice.tax_support_id.code if invoice.tax_support_id else "-")  # S. Tributario
-                register.append(0.00)  # Base iva (11)
-                register.append(0.00)  # Base 0
-                register.append(0.00)  # ICE
-                register.append(0.00)  # Base no iva
-                register.append("-")  # C. Renta
-                register.append("-")  # P. Renta
-                register.append(0.00)  # Monto renta
-                register.append(invoice.amount_tax if count_invoice == 0 else 0.00)  # R. Base I.
-                register.append("-")  # C. Iva
-                register.append("-")  # P. Iva
-                register.append(0.00)  # Valor iva
-                register.append(0.00)  # Total de factura
+                register = ["F" if invoice.type == 'out_invoice' else "N", authorization.establishment,
+                            authorization.emission_point, invoice.reference,
+                            datetime.strptime(invoice.date_invoice, "%Y-%m-%d"),
+                            invoice.withhold_number if invoice.withhold_number else "-", line.name,
+                            invoice.partner_id.name, invoice.partner_id.documentation_number,
+                            authorization.authorization, invoice.tax_support_id.code if invoice.tax_support_id else "-",
+                            0.00, 0.00, 0.00, 0.00, "-", "-", 0.00, invoice.amount_tax if count_invoice == 0 else 0.00,
+                            "-", "-", 0.00, 0.00]
                 data.append(register)
                 count_invoice = 1
                 if len(line.invoice_line_tax_ids) == 0:
@@ -1077,11 +1115,8 @@ class Taxes103104ReportXlsx(models.AbstractModel):
         :return: list
         """
         data = []
-        arg = []
-        arg.append(('date_invoice', '>=', context.start_date))
-        arg.append(('date_invoice', '<=', context.end_date))
-        arg.append(('state', 'not in', ('draft', 'cancel')))
-        arg.append(('type', 'in', ('in_invoice', 'in_refund')))
+        arg = [('date_invoice', '>=', context.start_date), ('date_invoice', '<=', context.end_date),
+               ('state', 'not in', ('draft', 'cancel')), ('type', 'in', ('in_invoice', 'in_refund'))]
         invoices = self.env['account.invoice'].search(arg)
         count = 0
         for invoice in invoices:
@@ -1097,25 +1132,12 @@ class Taxes103104ReportXlsx(models.AbstractModel):
             else:
                 type = "N"
             for line in invoice.invoice_line_ids:
-                register = []
-                register.append(type)  # Tipo
-                register.append(establishment)  # Establecimiento
-                register.append(emission_point)  # P. Emisión
-                register.append(invoice.reference)  # Secuencial
-                register.append(datetime.strptime(invoice.date_invoice, "%Y-%m-%d"))  # Fecha
-                register.append(invoice.withhold_number if invoice.withhold_number else "-")  # No. Retención
-                register.append(line.name)  # Descripción
-                register.append(invoice.partner_id.name)  # Proveedor
-                register.append(invoice.partner_id.documentation_number)  # No. Documento
-                register.append(authorization)  # Autorización
-                register.append(invoice.tax_support_id.code if invoice.tax_support_id else "-")  # S. Tributario
-                register.append(0.00)  # Base iva (11)
-                register.append(0.00)  # Base 0
-                register.append(0.00)  # ICE
-                register.append(0.00)  # Base no iva
-                register.append("-")  # C. Renta
-                register.append("-")  # P. Renta
-                register.append(0.00)  # Monto renta
+                register = [type, establishment, emission_point, invoice.reference,
+                            datetime.strptime(invoice.date_invoice, "%Y-%m-%d"),
+                            invoice.withhold_number if invoice.withhold_number else "-", line.name,
+                            invoice.partner_id.name, invoice.partner_id.documentation_number, authorization,
+                            invoice.tax_support_id.code if invoice.tax_support_id else "-", 0.00, 0.00, 0.00, 0.00, "-",
+                            "-", 0.00]
                 invoice_tax = 0
                 if count_invoice == 0:
                     invoice_tax = -1 * invoice.amount_tax if invoice.type == 'in_refund' else invoice.amount_tax
@@ -1144,30 +1166,12 @@ class Taxes103104ReportXlsx(models.AbstractModel):
                 if line.retention_type == 'iva':
                     iva.append(line)
             if len(rent) == 2:
-                register = []
-                register.append(type)  # Tipo
-                register.append(establishment)  # Establecimiento
-                register.append(emission_point)  # P. Emisión
-                register.append(invoice.reference)  # Secuencial
-                register.append(datetime.strptime(invoice.date_invoice, "%Y-%m-%d"))  # Fecha
-                register.append(invoice.withhold_number if invoice.withhold_number else "-")  # No. Retención
-                register.append(line.name)  # Descripción
-                register.append(invoice.partner_id.name)  # Cliente
-                register.append(invoice.partner_id.documentation_number)  # No. Documento
-                register.append(authorization)  # Autorización
-                register.append(invoice.tax_support_id.code if invoice.tax_support_id else "-")  # S. Tributario
-                register.append(0.00)  # Base iva (11)
-                register.append(0.00)  # Base 0
-                register.append(0.00)  # ICE
-                register.append(0.00)  # Base no iva
-                register.append("-")  # C. Renta
-                register.append("-")  # P. Renta
-                register.append(0.00)  # Monto renta
-                register.append(0.00)  # R. Base I.
-                register.append("-")  # C. Iva
-                register.append("-")  # P. Iva
-                register.append(0.00)  # Valor iva
-                register.append(0.00)  # Total de factura
+                register = [type, establishment, emission_point, invoice.reference,
+                            datetime.strptime(invoice.date_invoice, "%Y-%m-%d"),
+                            invoice.withhold_number if invoice.withhold_number else "-", line.name,
+                            invoice.partner_id.name, invoice.partner_id.documentation_number, authorization,
+                            invoice.tax_support_id.code if invoice.tax_support_id else "-", 0.00, 0.00, 0.00, 0.00, "-",
+                            "-", 0.00, 0.00, "-", "-", 0.00, 0.00]
                 data.append(register)
             count = -1
             for r in rent:
