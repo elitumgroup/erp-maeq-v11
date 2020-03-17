@@ -226,7 +226,7 @@ class OperationsCmcReportPdf(models.AbstractModel):
         sql = """
         select  
         b.name, c.name, d.name, sum(a.worked_hours), sum(a.lost_hours), sum(a.stop_time_1)
-        , sum(a.stop_time_2), sum(a.stop_time_3), sum(a.stop_time_4), sum(a.stop_time_5), sum(e.product_quantity)
+        , sum(a.stop_time_2), sum(a.stop_time_3), sum(a.stop_time_4), sum(a.stop_time_5), sum(a.stop_time_6), sum(e.product_quantity)
         from
         eliterp_supplies_cmc as e
         left join eliterp_cmc as a on a.id = e.cmc_id
@@ -299,7 +299,7 @@ class OperationsCmcXlsx(models.AbstractModel):
         sql = """
                 select  
                 b.name, c.name, d.name, sum(a.worked_hours), sum(a.lost_hours), sum(a.stop_time_1)
-                , sum(a.stop_time_2), sum(a.stop_time_3), sum(a.stop_time_4), sum(a.stop_time_5), sum(e.product_quantity)
+                , sum(a.stop_time_2), sum(a.stop_time_3), sum(a.stop_time_4), sum(a.stop_time_5), sum(a.stop_time_6), sum(e.product_quantity)
                 from
                 eliterp_supplies_cmc as e
                 left join eliterp_cmc as a on a.id = e.cmc_id
@@ -385,7 +385,7 @@ class OperationsCmcReportXlsx(models.AbstractModel):
         sql = """
                 select  
                 b.name, c.name, f.name, d.name, sum(a.men_hours), sum(a.worked_hours), sum(a.stop_time_1)
-                , sum(a.stop_time_2), sum(a.stop_time_3), sum(a.stop_time_4), sum(a.stop_time_5), sum(e.product_quantity), a.grease
+                , sum(a.stop_time_2), sum(a.stop_time_3), sum(a.stop_time_4), sum(a.stop_time_5), sum(a.stop_time_6), sum(e.product_quantity), a.grease
                 from
                 eliterp_supplies_cmc as e
                 left join eliterp_cmc as a on a.id = e.cmc_id

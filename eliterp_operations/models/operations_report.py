@@ -20,6 +20,7 @@ class OperationsReport(models.Model):
     stop_time_3 = fields.Float('Paro Operador', readonly=True, group_operator="sum")
     stop_time_4 = fields.Float('Paro Mecánico', readonly=True, group_operator="sum")
     stop_time_5 = fields.Float('Paro No/Id', readonly=True, group_operator="sum")
+    stop_time_6 = fields.Float('Paro Ambiental', readonly=True, group_operator="sum")
     lost_hours = fields.Float('Horas no trabajadas', readonly=True, group_operator="sum")
 
     @api.model_cr
@@ -39,6 +40,7 @@ class OperationsReport(models.Model):
                        a.stop_time_3 as stop_time_3,
                        a.stop_time_4 as stop_time_4,
                        a.stop_time_5 as stop_time_5,
+                       a.stop_time_6 as stop_time_6,
                        a.lost_hours as lost_hours
                    FROM
                        eliterp_cmc as a
@@ -46,7 +48,7 @@ class OperationsReport(models.Model):
                        left join eliterp_machine as c ON (c.id=a.machine_id)
                        left join hr_employee as d ON (d.id=a.operator)
                    GROUP BY a.date, b.id, c.id, d.id, a.worked_hours, a.stop_time_1, a.stop_time_2, a.stop_time_3, 
-                   a.stop_time_4, a.stop_time_5, a.lost_hours
+                   a.stop_time_4, a.stop_time_5, a.stop_time_6, a.lost_hours
                )""")
 
 
