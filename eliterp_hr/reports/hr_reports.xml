@@ -2488,7 +2488,7 @@
                                     , fecha de ingreso:
                                     <span t-esc="employee['admission_date']"/>
                                 </caption>
-                                <table class="table table-condensed">
+                                <table class="table table-condensed table-sm">
                                     <thead>
                                         <tr>
                                             <th class="text-center">Período</th>
