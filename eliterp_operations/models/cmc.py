@@ -189,7 +189,7 @@ class CMC(models.Model):
             self._create_record_overtime(self.assistant)
         if self.picking_type_id:
             self.create_picking()  # Función para crear picking si tiene tipo de operación
-        self.machine_id.update({'ubication': self.ubication_id.id}) # Actualizamos la ubicación
+        self.machine_id.update({'ubication': self.ubication_id.id})  # Actualizamos la ubicación
         self.write({
             'state': 'validate'
         })
@@ -300,7 +300,7 @@ class CMC(models.Model):
     customer = fields.Many2one('res.partner', related='project_id.customer', string='Cliente')
     machine_id = fields.Many2one('eliterp.machine', string='Máquina', required=True, readonly=True,
                                  track_visibility='onchange',
-                                 domain=[('state', 'in', [ 'operative', 'operative_failures'])],
+                                 domain=[('state', 'in', ['operative', 'operative_failures'])],
                                  states={'draft': [('readonly', False)]})
     third_party_operator = fields.Boolean('Operador de Terceros', default=False)
     name_third_party_operator = fields.Char('Nombre de Operador de Terceros')
@@ -326,7 +326,8 @@ class CMC(models.Model):
     final_horometro = fields.Float('Horómetro final', copy=False, readonly=True,
                                    states={'draft': [('readonly', False)]}, track_visibility='onchange')
     horometro_difference = fields.Boolean('Hay diferencia?', default=False, copy=False,
-                                          help='En caso de diferencia con la información del CMC físico se indicará la información')
+                                          help='En caso de diferencia con la información del CMC físico se indicará '
+                                               'la información')
     reason = fields.Text('Motivo', copy=False, readonly=True,
                          states={'draft': [('readonly', False)]})
 
@@ -352,12 +353,14 @@ class CMC(models.Model):
     stop_time_3 = fields.Float('Paro Operador')
     stop_time_4 = fields.Float('Paro Mecánico')
     stop_time_5 = fields.Float('Paro No/Id')
+    stop_time_6 = fields.Float('Paro Ambiental')
 
-    @api.depends('stop_time_1', 'stop_time_2', 'stop_time_3', 'stop_time_4', 'stop_time_5')
+    @api.depends('stop_time_1', 'stop_time_2', 'stop_time_3', 'stop_time_4', 'stop_time_5', 'stop_time_6')
     @api.one
     def _get_lost_hours(self):
-        lost_hours = round(self.stop_time_1 + self.stop_time_2 + self.stop_time_3 + self.stop_time_4 + self.stop_time_5,
-                           2)
+        lost_hours = round(
+            self.stop_time_1 + self.stop_time_2 + self.stop_time_3 + self.stop_time_4 + self.stop_time_5 + self.stop_time_6,
+            2)
         self.lost_hours = lost_hours
 
     @api.one

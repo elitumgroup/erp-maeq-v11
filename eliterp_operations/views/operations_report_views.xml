@@ -34,6 +34,7 @@
                     <field name="stop_time_3" type="measure"/>
                     <field name="stop_time_4" type="measure"/>
                     <field name="stop_time_5" type="measure"/>
+                    <field name="stop_time_6" type="measure"/>
                 </pivot>
             </field>
         </record>
@@ -45,6 +46,7 @@
                 <graph>
                     <field name="machine_id" type="row"/>
                     <field name="date" interval="month" type="col"/>
+                    <field name="stop_time_6" type="measure"/>
                     <field name="stop_time_5" type="measure"/>
                     <field name="stop_time_4" type="measure"/>
                     <field name="stop_time_3" type="measure"/>

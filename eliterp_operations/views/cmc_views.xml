@@ -85,6 +85,7 @@
                                 <field name="stop_time_2"/>
                                 <field name="stop_time_3"/>
                                 <field name="stop_time_4"/>
+                                <field name="stop_time_6"/>
                                 <field name="stop_time_5"/>
                                 <field name="reason" placeholder="Colocar razón de diferencia entre horómetros"
                                        attrs="{'invisible':[('horometro_difference','!=', True)], 'required': [('horometro_difference','=', True)]}"/>
