@@ -296,17 +296,11 @@ class OperationsCmcXlsx(models.AbstractModel):
         if doc.gang_ids:
             gangs = ', '.join(map(str, doc.gang_ids._ids))
             where += "and a.gang_id in (%s)" % gangs
-        sql = """
-                select  
-                b.name, c.name, d.name, sum(a.worked_hours), sum(a.lost_hours), sum(a.stop_time_1)
-                , sum(a.stop_time_2), sum(a.stop_time_3), sum(a.stop_time_4), sum(a.stop_time_5), sum(a.stop_time_6), sum(e.product_quantity)
-                from
-                eliterp_supplies_cmc as e
-                left join eliterp_cmc as a on a.id = e.cmc_id
-                left join eliterp_gang as b on b.id = a.gang_id
-                left join hr_employee as c on c.id = a.operator
-                left join eliterp_machine as d on d.id = a.machine_id
-                """
+        sql = """select b.name, c.name, d.name, sum(a.worked_hours), sum(a.lost_hours), sum(a.stop_time_1) , 
+        sum(a.stop_time_2), sum(a.stop_time_3), sum(a.stop_time_4), sum(a.stop_time_5), sum(e.product_quantity) from 
+        eliterp_supplies_cmc as e left join eliterp_cmc as a on a.id = e.cmc_id left join eliterp_gang as b on b.id = 
+        a.gang_id left join hr_employee as c on c.id = a.operator left join eliterp_machine as d on d.id = 
+        a.machine_id """
         sql += where
         sql += """
                 group by 
@@ -319,7 +313,7 @@ class OperationsCmcXlsx(models.AbstractModel):
         return query
 
     def generate_xlsx_report(self, workbook, data, context):
-        data = self._get_lines(context)
+        lines = self._get_lines(context)
         sheet = workbook.add_worksheet('Operaciones')
         # Formatos
         bold = workbook.add_format({'align': 'center', 'bold': 1})
@@ -347,7 +341,7 @@ class OperationsCmcXlsx(models.AbstractModel):
 
         row = 3
         col = 0
-        for c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11 in (data):
+        for c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11 in lines:
             sheet.write(row, col, c1)
             sheet.write(row, col + 1, c2)
             sheet.write(row, col + 2, c3)
@@ -382,18 +376,11 @@ class OperationsCmcReportXlsx(models.AbstractModel):
         if doc.gang_ids:
             gangs = ', '.join(map(str, doc.gang_ids._ids))
             where += "and a.gang_id in (%s)" % gangs
-        sql = """
-                select  
-                b.name, c.name, f.name, d.name, sum(a.men_hours), sum(a.worked_hours), sum(a.stop_time_1)
-                , sum(a.stop_time_2), sum(a.stop_time_3), sum(a.stop_time_4), sum(a.stop_time_5), sum(a.stop_time_6), sum(e.product_quantity), a.grease
-                from
-                eliterp_supplies_cmc as e
-                left join eliterp_cmc as a on a.id = e.cmc_id
-                left join eliterp_gang as b on b.id = a.gang_id
-                left join hr_employee as c on c.id = a.operator
-                left join hr_employee as f on f.id = a.assistant
-                left join eliterp_machine as d on d.id = a.machine_id
-                """
+        sql = """select b.name, c.name, f.name, d.name, sum(a.men_hours), sum(a.worked_hours), sum(a.stop_time_1) , 
+        sum(a.stop_time_2), sum(a.stop_time_3), sum(a.stop_time_4), sum(a.stop_time_5), 
+        sum(e.product_quantity), a.grease from eliterp_supplies_cmc as e left join eliterp_cmc as a on a.id = 
+        e.cmc_id left join eliterp_gang as b on b.id = a.gang_id left join hr_employee as c on c.id = a.operator left 
+        join hr_employee as f on f.id = a.assistant left join eliterp_machine as d on d.id = a.machine_id """
         sql += where
         sql += """
                 group by 
@@ -406,7 +393,7 @@ class OperationsCmcReportXlsx(models.AbstractModel):
         return query
 
     def generate_xlsx_report(self, workbook, data, context):
-        data = self._get_lines(context)
+        lines = self._get_lines(context)
         sheet = workbook.add_worksheet('IO-Diario')
         sheet.hide_gridlines(1)  # Ocultar rejillas
         # Formatos
@@ -479,7 +466,7 @@ class OperationsCmcReportXlsx(models.AbstractModel):
         sheet.write(6, 13, "Grasa", title)
         row = 7
         con1 = 1
-        for c1, c3, c2, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13 in (data):
+        for c1, c3, c2, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13 in lines:
             sheet.write(row, 0, con1, content1)
             sheet.write(row, 1, c1, content1)
             sheet.write(row, 2, c4, content1)
