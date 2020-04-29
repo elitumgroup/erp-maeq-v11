@@ -18,13 +18,7 @@ PRODUCT_CODE_2 = {
 
 class Invoice(models.Model):
     _inherit = 'account.invoice'
-
-    @api.multi
-    def open_reason_cancel_invoice(self):
-        if self.is_electronic:
-            raise UserError(_("No se puede anular documentos electŕonicos!"))
-        return super(Invoice, self).open_reason_cancel_invoice()
-
+    
     @api.multi
     def copy(self, default=None):
         """
