@@ -110,7 +110,7 @@ class Retention(models.Model):
                 'codigo': utils.table19[line.retention_type],
                 'codigoRetencion': tax.code if line.retention_type == 'rent' else utils.table20[tax.amount],
                 'baseImponible': '{:.2f}'.format(line.base_taxable),
-                'porcentajeRetener': int(tax.amount),
+                'porcentajeRetener': '{:.2f}'.format(tax.amount),
                 'valorRetenido': '{:.2f}'.format(line.amount),
                 'codDocSustento': invoice.authorized_voucher_id.code,
                 'numDocSustento': invoice.invoice_number.replace('-', ''),
