@@ -122,7 +122,7 @@ class Invoice(models.Model):
         for tax in self.tax_line_ids:
             totalTax = {
                 'codigo': '2',
-                'codigoPorcentaje': '2',
+                'codigoPorcentaje': '0',
                 'baseImponible': '{:.2f}'.format(tax.base),
                 'valor': '{:.2f}'.format(tax.amount)
             }
@@ -247,7 +247,7 @@ class Invoice(models.Model):
                 amount = (line.price_subtotal * tax_line.amount) / 100
                 tax = {
                     'codigo': '2',
-                    'codigoPorcentaje': '2',
+                    'codigoPorcentaje': '0',
                     'tarifa': "%s" % int(tax_line.amount),
                     'baseImponible': '{:.2f}'.format(line.price_subtotal),
                     'valor': '{:.2f}'.format(amount)
