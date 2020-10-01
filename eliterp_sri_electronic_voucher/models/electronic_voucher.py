@@ -374,7 +374,8 @@ class ElectronicVoucher(models.Model):
                 'obligado': "SI",
                 'especialn': "-",
                 'p12': certificate.digital_signature.decode('utf-8'),
-                'clavep12': certificate.digital_electronic_signature
+                'clavep12': certificate.digital_electronic_signature,
+                'agenteRetencion': "NO"
             }
         })
         _logger.critical(data_json)  # Test
