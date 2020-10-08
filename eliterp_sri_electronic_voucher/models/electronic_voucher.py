@@ -325,6 +325,14 @@ class ElectronicVoucher(models.Model):
             'ride_file': ride
         }
 
+    @staticmethod
+    def _get_data_additional():
+        resolution = {
+            '_attributes': {'nombre': 'Agente de Retención'},
+            '_value': 'No. Resolución: 1'
+        }
+        return {"campoAdicional": [resolution]}
+
     # Operaciones
 
     def _get_data_json(self, code):
@@ -352,7 +360,8 @@ class ElectronicVoucher(models.Model):
             type_document: {
                 "infoTributaria": self._get_vals_information_company(),
                 BODY_JSON[code]: data_document,
-                DETAIL_JSON[code]: data_detail
+                DETAIL_JSON[code]: data_detail,
+                "infoAdicional": self._get_data_additional()
             }
         }
 
@@ -370,11 +379,12 @@ class ElectronicVoucher(models.Model):
                 'logo': logo.decode('utf-8'),
                 'email': partner.email or 'N.A',
                 'celular': partner.mobile if partner.mobile else 'N.A',
-                'detail':  self.document_id.comment or 'N.A' if self.document_id._name == 'account.invoice' else 'N.A',
+                'detail': self.document_id.comment or 'N.A' if self.document_id._name == 'account.invoice' else 'N.A',
                 'obligado': "SI",
                 'especialn': "-",
                 'p12': certificate.digital_signature.decode('utf-8'),
-                'clavep12': certificate.digital_electronic_signature
+                'clavep12': certificate.digital_electronic_signature,
+                'agenteRetencion': "SI"
             }
         })
         _logger.critical(data_json)  # Test
