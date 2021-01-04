@@ -24,8 +24,8 @@ class GlobalFunctions(models.TransientModel):
         if not period_id:
             raise UserError("No hay ninguna Línea de Período contable creada.")
         current_date = fields.Date.today()
-        if datetime.strptime(current_date, "%Y-%m-%d") < datetime.strptime(period_id.start_date, "%Y-%m-%d"):
-            raise UserError("La fecha del documento está fuera del rango del Período contable.")
+        # if datetime.strptime(current_date, "%Y-%m-%d") < datetime.strptime(period_id.start_date, "%Y-%m-%d"):
+        # raise UserError("La fecha del documento está fuera del rango del Período contable.")
         if datetime.strptime(current_date, "%Y-%m-%d") > datetime.strptime(period_id.closing_date, "%Y-%m-%d"):
             raise UserError("El Período contable está cerrado, comuníquese con el Departamento de Contabilidad.")
 
@@ -75,6 +75,7 @@ class GlobalFunctions(models.TransientModel):
     def get_date_format_invoice1(self, date):
         month = self._get_month_name(int(date[5:7]))
         return '%s días del mes de %s del año %s' % (date[8:], month, date[:4])
+
     def get_date_format_invoicesindia(self, date):
         month = self._get_month_name(int(date[5:7]))
         return '%s del mes de %s del año %s' % (date[8:], month, date[:4])
